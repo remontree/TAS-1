@@ -1,0 +1,32 @@
+/* 관리자 — Carbon g100 data table · tiles */
+body{overflow:auto}
+.adm{max-width:1400px;margin:0 auto;padding:0 16px 64px}
+.adm-h{display:flex;align-items:center;gap:8px;height:48px;border-bottom:1px solid var(--border-subtle-00)}
+.adm-h .brand{font-size:14px}.adm-h .brand b{font-weight:600}
+.adm-h .btn{align-items:center}
+.adm-login{max-width:400px;margin:64px auto}
+.adm-login h2{font-size:28px;font-weight:300}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--background);margin:16px 0}
+.cards div{background:var(--layer-01);padding:16px;display:grid;gap:4px}
+.cards b{font-size:28px;font-weight:300}
+.cards small{color:var(--text-helper);font-size:12px;letter-spacing:.32px}
+.adm-row{margin-top:16px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:800px){.two-col{grid-template-columns:1fr}}
+.panel{background:var(--layer-01);min-width:0}
+.panel-h{display:flex;align-items:center;gap:8px;padding:16px;flex-wrap:wrap}
+.panel-h h3{font-size:20px;font-weight:400}
+.panel-h input{height:40px;background:var(--layer-02);border:0;border-bottom:1px solid var(--border-strong-01);color:var(--text-primary);padding:0 16px;font-size:14px;min-width:0;font-family:var(--sans)}
+.panel-h .btn{align-items:center;min-height:40px}
+.panel>div:not(.panel-h){padding:0 16px 16px}
+.panel>.tbl{padding:0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:1000px;font-size:14px}
+th,td{text-align:left;padding:0 16px;height:48px;border-bottom:1px solid var(--border-subtle-01);white-space:nowrap}
+th{background:var(--layer-accent-01);font-weight:600;font-size:14px;color:var(--text-primary)}
+tbody tr:hover td{background:var(--layer-hover-01)}
+td.n{font-family:var(--mono);text-align:right}
+tr.hid td{color:var(--text-placeholder)}
+td .act{appearance:none;background:transparent;border:0;color:var(--link-primary);font-size:14px;padding:4px 8px;cursor:pointer}
+td .act:hover{background:var(--layer-hover-01);text-decoration:underline}
+code{font-family:var(--mono);background:var(--layer-02);padding:1px 4px}

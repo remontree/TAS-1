@@ -1,0 +1,306 @@
+#!/usr/bin/env bash
+# TAS-1 Launch League 서버 관리 명령어
+#   tas1-game install | start | stop | restart | status | logs [-f] | monitor | url | health [--watchdog]
+#             tunnel [on|off] | admin-password | cert | build-lut | ai-baseline | backup | purge | uninstall
+set -euo pipefail
+
+GAME="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
+LINK="$HOME/.local/share/tas1-game"          # 공백 없는 경로 (systemd 유닛용)
+UNIT_DIR="$HOME/.config/systemd/user"
+SVC=tas1-game.service
+PY="$GAME/.venv/bin/python"
+TAS1_PY="$GAME/../.venv/bin/python"
+DATA="$GAME/data"
+PORT="$("$PY" -c "import json;print(json.load(open('$GAME/server_config.json'))['port'])" 2>/dev/null || echo 28443)"
+ADMIN_PATH="$("$PY" -c "import json;print(json.load(open('$GAME/server_config.json')).get('admin_path','/admin'))" 2>/dev/null || echo /admin)"
+
+c_ok=$'\e[32m'; c_warn=$'\e[33m'; c_err=$'\e[31m'; c_dim=$'\e[2m'; c_off=$'\e[0m'
+say()  { echo "${c_ok}▸${c_off} $*"; }
+warn() { echo "${c_warn}!${c_off} $*" >&2; }
+die()  { echo "${c_err}✗${c_off} $*" >&2; exit 1; }
+
+public_ip() { curl -s -m 4 https://api.ipify.org | tr -d "\n" || true; }
+lan_ips()   { hostname -I 2>/dev/null | tr ' ' '\n' | grep -E '^[0-9]+\.' || true; }
+
+ensure_venv() {
+  if [ ! -x "$PY" ] || ! "$PY" -c "import flask, gunicorn, segno" 2>/dev/null; then
+    command -v uv >/dev/null || die "uv 가 필요합니다."
+    say "가상환경 준비"
+    uv venv --python 3.11 "$GAME/.venv" >/dev/null
+    uv pip install --python "$PY" flask gunicorn segno >/dev/null
+  fi
+  command -v node >/dev/null || die "node 가 필요합니다 (서버 비행 재계산)."
+}
+
+gen_cert() {
+  mkdir -p "$GAME/certs"
+  local ips san=""
+  ips="$( (public_ip; echo; lan_ips; echo 127.0.0.1) | grep -E "^[0-9.]+$" | sort -u)"
+  local i=1; for ip in $ips; do san+="IP.$i = $ip"$'\n'; i=$((i+1)); done
+  cat > "$GAME/certs/openssl.cnf" <<EOF
+[req]
+distinguished_name = dn
+x509_extensions = v3
+prompt = no
+[dn]
+CN = TAS-1 Launch League
+O = TAS-1
+[v3]
+subjectAltName = @alt
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+[alt]
+DNS.1 = localhost
+DNS.2 = $(hostname)
+$san
+EOF
+  openssl req -x509 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -nodes -days 30 \
+    -keyout "$GAME/certs/server.key" -out "$GAME/certs/server.crt" -config "$GAME/certs/openssl.cnf" 2>/dev/null
+  chmod 600 "$GAME/certs/server.key"
+  say "자체 서명 인증서 생성 (30일): $(echo $ips | tr '\n' ' ')"
+}
+
+ensure_secrets() {
+  mkdir -p "$DATA/logs" "$DATA/backups"
+  chmod 700 "$DATA"
+  if [ ! -s "$DATA/secret.key" ]; then
+    head -c 48 /dev/urandom > "$DATA/secret.key"; chmod 600 "$DATA/secret.key"; say "세션 서명 키 생성"
+  fi
+  [ -s "$DATA/admin.json" ] || admin_password
+  [ -s "$GAME/certs/server.crt" ] || gen_cert
+}
+
+admin_password() {
+  local pw
+  pw="$("$PY" - "$DATA/admin.json" <<'EOF'
+import json, os, secrets, sys
+from werkzeug.security import generate_password_hash
+pw = secrets.token_urlsafe(12)
+with open(sys.argv[1], "w") as f:
+    json.dump({"hash": generate_password_hash(pw)}, f)
+os.chmod(sys.argv[1], 0o600)
+print(pw)
+EOF
+)"
+  say "관리자 비밀번호: ${c_warn}${pw}${c_off}  (지금만 표시됩니다. 서버 재시작 없이 바로 적용)"
+}
+
+write_units() {
+  mkdir -p "$UNIT_DIR" "$(dirname "$LINK")"
+  ln -sfn "$GAME" "$LINK"
+  cat > "$UNIT_DIR/$SVC" <<EOF
+[Unit]
+Description=TAS-1 Launch League game server (HTTPS :$PORT)
+After=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=$LINK
+Environment=PYTHONUNBUFFERED=1
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStart=$LINK/.venv/bin/gunicorn -c $LINK/server/gunicorn.conf.py
+Restart=always
+RestartSec=2
+KillSignal=SIGTERM
+TimeoutStopSec=15
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target
+EOF
+  cat > "$UNIT_DIR/tas1-game-watchdog.service" <<EOF
+[Unit]
+Description=TAS-1 Launch League health watchdog
+
+[Service]
+Type=oneshot
+ExecStart=$LINK/bin/tas1-game health --watchdog
+EOF
+  cat > "$UNIT_DIR/tas1-game-watchdog.timer" <<EOF
+[Unit]
+Description=TAS-1 Launch League health check every 20 s
+
+[Timer]
+OnBootSec=60
+OnUnitActiveSec=20
+AccuracySec=2
+
+[Install]
+WantedBy=timers.target
+EOF
+  systemctl --user daemon-reload
+}
+
+set_public_url() {
+  local pip; pip="$(public_ip)"; [ -n "$pip" ] || return 0
+  "$PY" - "$GAME/server_config.json" "https://$pip:$PORT" <<'EOF'
+import json, sys
+p, url = sys.argv[1], sys.argv[2]
+c = json.load(open(p, encoding="utf-8"))
+if not c.get("public_url") or "127.0.0.1" in c["public_url"]:
+    c["public_url"] = url
+    json.dump(c, open(p, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+EOF
+}
+
+cmd_install() {
+  ensure_venv
+  set_public_url
+  ensure_secrets
+  [ -s "$DATA/engine_lut.jsonl.gz" ] || cmd_build_lut
+  [ -s "$DATA/ai_baseline.json" ] || (cd "$GAME" && node tools/ai_baseline.js)
+  write_units
+  mkdir -p "$HOME/.local/bin"; ln -sfn "$GAME/bin/tas1-game" "$HOME/.local/bin/tas1-game"
+  systemctl --user enable --now "$SVC" tas1-game-watchdog.timer >/dev/null
+  if loginctl enable-linger "$USER" 2>/dev/null; then say "로그아웃해도 서버 유지 (linger 켬)"
+  else warn "linger 를 켜지 못했습니다. 로그아웃하면 서버가 멈춥니다: sudo loginctl enable-linger $USER"; fi
+  sleep 2; cmd_status; cmd_url
+  if command -v ufw >/dev/null; then echo "${c_dim}방화벽(ufw)을 쓰는 경우: sudo ufw allow $PORT/tcp${c_off}"; fi
+}
+
+cmd_health() {
+  local state="$DATA/watchdog.state" n=0 code
+  code="$(curl -sk -o /dev/null -w '%{http_code}' --max-time 5 "https://127.0.0.1:$PORT/healthz" || true)"
+  if [ "${1:-}" = "--watchdog" ]; then
+    if [ "$code" = "200" ]; then
+      echo 0 > "$state"
+      # 터널도 점검: 공개 주소로 3회 연속 실패하면 터널 재시작 (새 주소 발급)
+      if [ -s "$DATA/tunnel_url" ]; then
+        local ts="$DATA/tunnel.state" tn=0 tc
+        tc="$(curl -s -o /dev/null -w '%{http_code}' --max-time 8 "$(cat "$DATA/tunnel_url")/healthz" || true)"
+        if [ "$tc" = "200" ]; then echo 0 > "$ts"; else
+          [ -f "$ts" ] && tn="$(cat "$ts")"; tn=$((tn+1)); echo "$tn" > "$ts"
+          echo "$(date '+%F %T') tunnel fail #$tn (http=$tc)" >> "$DATA/logs/watchdog.log"
+          if [ "$tn" -ge 3 ]; then
+            if grep -q "ts.net" "$DATA/tunnel_url"; then
+              tailscale funnel --bg --https=8443 "https+insecure://127.0.0.1:$PORT" >/dev/null 2>&1 || true
+            else
+              systemctl --user restart tas1-game-tunnel.service
+            fi
+            echo 0 > "$ts"; echo "$(date '+%F %T') re-applying tunnel" >> "$DATA/logs/watchdog.log"
+          fi
+        fi
+      fi
+      exit 0
+    fi
+    [ -f "$state" ] && n="$(cat "$state")"; n=$((n+1)); echo "$n" > "$state"
+    echo "$(date '+%F %T') health fail #$n (http=$code)" >> "$DATA/logs/watchdog.log"
+    if [ "$n" -ge 3 ]; then
+      echo "$(date '+%F %T') restarting $SVC" >> "$DATA/logs/watchdog.log"
+      systemctl --user restart "$SVC"; echo 0 > "$state"
+    fi
+    exit 0
+  fi
+  if [ "$code" = "200" ]; then say "정상 (https://127.0.0.1:$PORT/healthz)"; curl -sk "https://127.0.0.1:$PORT/healthz"; echo
+  else die "응답 없음 (http=$code)"; fi
+}
+
+cmd_url() {
+  local pip; pip="$(public_ip)"
+  echo
+  if [ -s "$DATA/tunnel_url" ]; then echo "  참가 주소     $(cat "$DATA/tunnel_url")/   ← 정식 인증서 (QR은 이 주소)"; fi
+  echo "  직접 주소     https://${pip:-<공인IP>}:$PORT/   (자체 서명 인증서)"
+  for ip in $(lan_ips); do echo "  같은 네트워크 https://$ip:$PORT/"; done
+  if [ -s "$DATA/tunnel_url" ]; then echo "  대형 화면     $(cat "$DATA/tunnel_url")/wall"; else echo "  대형 화면     https://${pip:-127.0.0.1}:$PORT/wall"; fi
+  echo "  관리자        https://127.0.0.1:$PORT$ADMIN_PATH"
+  echo
+  local qr="https://$pip:$PORT/"; [ -s "$DATA/tunnel_url" ] && qr="$(cat "$DATA/tunnel_url")/"
+  "$PY" -c "import segno,sys; segno.make(sys.argv[1]).terminal(compact=True)" "$qr" 2>/dev/null || true
+}
+
+cmd_build_lut() {
+  [ -x "$TAS1_PY" ] || die "TAS-1 .venv 가 없습니다 (torch 필요)."
+  say "서로게이트로 엔진 결과표 생성"
+  (cd "$GAME" && "$TAS1_PY" build_lut.py 2>&1 | grep -v Warning)
+  say "AI 기준선 다시 계산"; (cd "$GAME" && node tools/ai_baseline.js)
+  systemctl --user is-active --quiet "$SVC" && systemctl --user restart "$SVC" && say "서버 재시작" || true
+}
+
+cmd_backup() {
+  local out="$DATA/backups/game-$(date +%Y%m%d-%H%M%S).db"
+  "$PY" -c "import sqlite3,sys; s=sqlite3.connect(sys.argv[1]); d=sqlite3.connect(sys.argv[2]); s.backup(d); d.close()" "$DATA/game.db" "$out"
+  chmod 600 "$out"; say "백업: $out"
+}
+
+cmd_purge() {
+  warn "참가자 개인정보와 발사 기록, 백업을 모두 삭제합니다. 되돌릴 수 없습니다."
+  read -r -p "계속하려면 PURGE 를 입력하세요: " ans
+  [ "$ans" = "PURGE" ] || die "취소했습니다."
+  systemctl --user stop "$SVC" || true
+  rm -f "$DATA/game.db" "$DATA/game.db-wal" "$DATA/game.db-shm" "$DATA"/backups/*.db
+  : > "$DATA/logs/access.log"; : > "$DATA/logs/app.log"
+  systemctl --user start "$SVC"; say "삭제 완료"
+}
+
+cmd_tunnel() {
+  case "${1:-}" in
+    on)
+      command -v cloudflared >/dev/null || [ -x "$HOME/.local/bin/cloudflared" ] || die "cloudflared 를 먼저 설치하세요 (안내: tas1-game tunnel)"
+      ln -sfn "$GAME" "$LINK"
+      cat > "$UNIT_DIR/tas1-game-tunnel.service" <<EOF
+[Unit]
+Description=TAS-1 Launch League HTTPS tunnel (trycloudflare)
+After=network-online.target $SVC
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Environment=PATH=$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=$LINK/bin/tunnel.sh
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target
+EOF
+      systemctl --user daemon-reload; systemctl --user enable --now tas1-game-tunnel.service >/dev/null
+      for _ in $(seq 1 30); do [ -s "$DATA/tunnel_url" ] && break; sleep 1; done
+      [ -s "$DATA/tunnel_url" ] && say "터널 주소: $(cat "$DATA/tunnel_url")" || warn "터널 주소를 아직 받지 못했습니다: tas1-game logs-tunnel" ;;
+    off) systemctl --user disable --now tas1-game-tunnel.service 2>/dev/null || true; rm -f "$DATA/tunnel_url"; say "터널 끔" ;;
+    *) cat <<EOF
+정식 인증서 주소 만들기 (둘 중 하나)
+ A) Cloudflare 임시 터널 — 계정 불필요, 주소가 *.trycloudflare.com (터널 재시작 시 주소 바뀜)
+    curl -L -o ~/.local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+    chmod +x ~/.local/bin/cloudflared
+    tas1-game tunnel on
+ B) Tailscale Funnel — 주소 고정 (https://<기기>.<tailnet>.ts.net:8443)
+    관리 콘솔에서 HTTPS 인증서 + Funnel 허용 후:
+    sudo tailscale set --operator=\$USER
+    tailscale funnel --bg --https=8443 https+insecure://127.0.0.1:$PORT
+    tailscale funnel status 의 주소를 data/tunnel_url 에 저장
+EOF
+  esac
+}
+
+cmd_status() {
+  systemctl --user --no-pager status "$SVC" | head -n 12 || true
+  echo; systemctl --user --no-pager list-timers tas1-game-watchdog.timer | head -n 3 || true
+  echo "  재시작 횟수: $(systemctl --user show "$SVC" -p NRestarts --value)"
+}
+
+case "${1:-}" in
+  install)        cmd_install ;;
+  start)          systemctl --user start "$SVC" tas1-game-watchdog.timer; say "시작"; ;;
+  stop)           systemctl --user stop tas1-game-watchdog.timer "$SVC"; say "정지 (watchdog 포함)"; ;;
+  restart)        systemctl --user restart "$SVC"; say "재시작"; ;;
+  status)         cmd_status ;;
+  logs)           shift; if [ "${1:-}" = "-f" ]; then journalctl --user -u "$SVC" -f -o cat; else journalctl --user -u "$SVC" -n 80 --no-pager -o cat; echo "--- app.log"; tail -n 30 "$DATA/logs/app.log" 2>/dev/null; fi ;;
+  monitor)        exec "$PY" "$GAME/bin/monitor.py" ;;
+  url)            cmd_url ;;
+  health)         shift; cmd_health "${1:-}" ;;
+  admin-password) admin_password ;;
+  cert)           gen_cert; systemctl --user restart "$SVC" || true ;;
+  build-lut)      cmd_build_lut ;;
+  ai-baseline)    (cd "$GAME" && node tools/ai_baseline.js) ;;
+  backup)         cmd_backup ;;
+  purge)          cmd_purge ;;
+  tunnel)         shift; cmd_tunnel "${1:-}" ;;
+  logs-tunnel)    journalctl --user -u tas1-game-tunnel -n 60 --no-pager -o cat ;;
+  uninstall)      systemctl --user disable --now tas1-game-tunnel.service 2>/dev/null || true; rm -f "$UNIT_DIR/tas1-game-tunnel.service"
+      systemctl --user disable --now tas1-game-watchdog.timer "$SVC" 2>/dev/null || true
+                  rm -f "$UNIT_DIR/$SVC" "$UNIT_DIR/tas1-game-watchdog.service" "$UNIT_DIR/tas1-game-watchdog.timer" "$HOME/.local/bin/tas1-game"
+                  systemctl --user daemon-reload; say "서비스 제거 (데이터는 그대로 남김: $DATA)" ;;
+  *) sed -n '2,4p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+esac

@@ -1,0 +1,2151 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TUSI — MDO</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="/vendor/react.production.min.js" crossorigin></script>
+  <script src="/vendor/react-dom.production.min.js" crossorigin></script>
+  <script src="/vendor/prop-types.min.js" crossorigin></script>
+  <script src="/vendor/babel.min.js"></script>
+  <script src="/vendor/Recharts.js"></script>
+  <style>
+    /* ======================================================
+       IBM Carbon Design System v11 — White Theme
+       ====================================================== */
+    :root, [data-theme="light"] {
+      --cds-background:              #ffffff;
+      --cds-layer-01:                #f4f4f4;
+      --cds-layer-02:                #ffffff;
+      --cds-layer-accent-01:         #e0e0e0;
+      --cds-field-01:                #f4f4f4;
+      --cds-border-subtle-00:        #e0e0e0;
+      --cds-border-subtle-01:        #c6c6c6;
+      --cds-border-strong-01:        #8d8d8d;
+      --cds-text-primary:            #161616;
+      --cds-text-secondary:          #525252;
+      --cds-text-placeholder:        #a8a8a8;
+      --cds-text-on-color:           #ffffff;
+      --cds-text-on-color-disabled:  #8d8d8d;
+      --cds-text-helper:             #6f6f6f;
+      --cds-text-inverse:            #ffffff;
+      --cds-text-warning:            #8e6a00;
+      --cds-background-inverse:      #393939;
+      --cds-link-primary:            #0f62fe;
+      --cds-interactive:             #0f62fe;
+      --cds-interactive-hover:       #0050e6;
+      --cds-button-secondary:        #393939;
+      --cds-button-secondary-hover:  #474747;
+      --cds-button-tertiary:         #0f62fe;
+      --cds-button-tertiary-hover:   #0050e6;
+      --cds-button-tertiary-hover-text: #ffffff;
+      --cds-button-disabled:         #c6c6c6;
+      --cds-button-danger:           #da1e28;
+      --cds-button-danger-hover:     #b81921;
+      --cds-support-error:           #da1e28;
+      --cds-support-success:         #24a148;
+      --cds-support-warning:         #f1c21b;
+      --cds-support-info:            #0043ce;
+      --cds-accent-gold:             #b28600;
+      --cds-focus:                   #0f62fe;
+      --cds-highlight:               #d0e2ff;
+      --cds-overlay:                 rgba(22,22,22,0.5);
+      --cds-hover-ui:                #e8e8e8;
+      --cds-hover-row:               #e8e8e8;
+      --cds-notif-error-bg:          #fff1f1;
+      --cds-notif-success-bg:        #defbe6;
+      --cds-notif-warning-bg:        #fcf4d6;
+      --cds-notif-info-bg:           #edf5ff;
+      --cds-tag-blue-bg:             #d0e2ff;
+      --cds-tag-blue-text:           #0043ce;
+      --cds-tag-green-bg:            #a7f0ba;
+      --cds-tag-green-text:          #0e6027;
+      --cds-tag-red-bg:              #ffd7d9;
+      --cds-tag-red-text:            #a2191f;
+      --cds-tag-gray-bg:             #e0e0e0;
+      --cds-tag-gray-text:           #161616;
+      --cds-drop-bg:                 #edf5ff;
+      --cds-drop-border:             #0f62fe;
+      --cds-log-bg:                  #161616;
+      --cds-log-text:                #6fdc8c;
+      --cds-log-border:              #24a148;
+      --cds-grain-bg:                #ffffff;
+      --cds-grain-grid:              #e0e0e0;
+      --cds-grain-casing:            #525252;
+    }
+
+    /* ======================================================
+       IBM Carbon Design System v11 — Gray 100 Theme
+       ====================================================== */
+    [data-theme="dark"] {
+      --cds-background:              #161616;
+      --cds-layer-01:                #262626;
+      --cds-layer-02:                #393939;
+      --cds-layer-accent-01:         #393939;
+      --cds-field-01:                #262626;
+      --cds-border-subtle-00:        #393939;
+      --cds-border-subtle-01:        #525252;
+      --cds-border-strong-01:        #6f6f6f;
+      --cds-text-primary:            #f4f4f4;
+      --cds-text-secondary:          #c6c6c6;
+      --cds-text-placeholder:        #6f6f6f;
+      --cds-text-on-color:           #ffffff;
+      --cds-text-on-color-disabled:  #8d8d8d;
+      --cds-text-helper:             #a8a8a8;
+      --cds-text-inverse:            #161616;
+      --cds-text-warning:            #f1c21b;
+      --cds-background-inverse:      #f4f4f4;
+      --cds-link-primary:            #78a9ff;
+      --cds-interactive:             #0f62fe;
+      --cds-interactive-hover:       #0050e6;
+      --cds-button-secondary:        #6f6f6f;
+      --cds-button-secondary-hover:  #5e5e5e;
+      --cds-button-tertiary:         #ffffff;
+      --cds-button-tertiary-hover:   #f4f4f4;
+      --cds-button-tertiary-hover-text: #161616;
+      --cds-button-disabled:         #6f6f6f;
+      --cds-button-danger:           #da1e28;
+      --cds-button-danger-hover:     #b81921;
+      --cds-support-error:           #fa4d56;
+      --cds-support-success:         #42be65;
+      --cds-support-warning:         #f1c21b;
+      --cds-support-info:            #4589ff;
+      --cds-accent-gold:             #d2a106;
+      --cds-focus:                   #ffffff;
+      --cds-highlight:               #001d6c;
+      --cds-overlay:                 rgba(0,0,0,0.65);
+      --cds-hover-ui:                #333333;
+      --cds-hover-row:               #333333;
+      --cds-notif-error-bg:          #262626;
+      --cds-notif-success-bg:        #262626;
+      --cds-notif-warning-bg:        #262626;
+      --cds-notif-info-bg:           #262626;
+      --cds-tag-blue-bg:             #0043ce;
+      --cds-tag-blue-text:           #d0e2ff;
+      --cds-tag-green-bg:            #198038;
+      --cds-tag-green-text:          #a7f0ba;
+      --cds-tag-red-bg:              #da1e28;
+      --cds-tag-red-text:            #ffd7d9;
+      --cds-tag-gray-bg:             #525252;
+      --cds-tag-gray-text:           #f4f4f4;
+      --cds-drop-bg:                 #262626;
+      --cds-drop-border:             #78a9ff;
+      --cds-log-bg:                  #262626;
+      --cds-log-text:                #6fdc8c;
+      --cds-log-border:              #42be65;
+      --cds-grain-bg:                #161616;
+      --cds-grain-grid:              #393939;
+      --cds-grain-casing:            #c6c6c6;
+    }
+
+    /* ── Smooth theme transition ────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      transition: background-color .2s ease, border-color .2s ease, color .15s ease;
+    }
+    .cds-accordion__arrow { transition: transform .25s cubic-bezier(.25,.46,.45,.94) !important; }
+
+    html { font-size:16px; -webkit-font-smoothing:antialiased; }
+    body {
+      font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+      background:var(--cds-background); color:var(--cds-text-primary);
+      line-height:1.5; overflow-x:hidden;
+    }
+
+    @keyframes fadeInUp  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn    { from{opacity:0} to{opacity:1} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .animate-fadeInUp { animation:fadeInUp .4s cubic-bezier(.25,.46,.45,.94) forwards; }
+    .animate-fadeIn   { animation:fadeIn .3s ease forwards; }
+
+    /* ======================================================
+       Carbon Header (always dark) — 시뮬레이터 페이지와 동일
+       ====================================================== */
+    .cds-header {
+      position:fixed;top:0;left:0;right:0;z-index:8000;
+      height:48px; background:#161616;
+      display:flex;align-items:center;padding:0 16px;
+      border-bottom:1px solid #393939;
+    }
+    .cds-header__name { color:#f4f4f4;font-size:14px;font-weight:600;letter-spacing:.16px;display:flex;align-items:center;gap:8px; }
+    .cds-header__divider { color:#6f6f6f;font-weight:300;margin:0 2px; }
+    .cds-header__page { color:#c6c6c6;font-weight:400; }
+    .cds-header__nav  { margin-left:auto;display:flex;align-items:center;gap:8px; }
+    .theme-toggle {
+      background:transparent;border:1px solid #6f6f6f;
+      height:32px;padding:0 12px;text-decoration:none;
+      font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;
+      letter-spacing:.32px;cursor:pointer;display:flex;align-items:center;gap:6px;
+      color:#c6c6c6;transition:background .15s,border-color .15s,color .15s;
+    }
+    .theme-toggle:hover { background:#2c2c2c;border-color:#c6c6c6;color:#f4f4f4; }
+    .theme-toggle--active { background:#0f62fe;border-color:#0f62fe;color:#ffffff; }
+    .theme-toggle--active:hover { background:#0050e6;border-color:#0050e6;color:#ffffff; }
+
+    /* ======================================================
+       Layout
+       ====================================================== */
+    .app-container { margin-top:48px;display:flex;min-height:calc(100vh - 48px); }
+    .config-panel {
+      width:400px;min-width:400px;background:var(--cds-layer-01);
+      border-right:1px solid var(--cds-border-subtle-00);
+      overflow-y:auto;height:calc(100vh - 48px);position:sticky;top:48px;
+    }
+    .config-panel::-webkit-scrollbar { width:4px; }
+    .config-panel::-webkit-scrollbar-thumb { background:var(--cds-border-subtle-01);border-radius:2px; }
+    .config-header { padding:24px 24px 16px;border-bottom:1px solid var(--cds-border-subtle-00); }
+    .config-header h2 { font-size:20px;font-weight:600;color:var(--cds-text-primary);margin-bottom:4px; }
+    .config-header p  { font-size:12px;color:var(--cds-text-helper);letter-spacing:.32px; }
+    .config-actions { padding:12px 24px;display:flex;gap:8px;border-bottom:1px solid var(--cds-border-subtle-00);flex-wrap:wrap; }
+    .result-panel  { flex:1;padding:32px;overflow-y:auto;min-width:0; }
+
+    /* ======================================================
+       Accordion
+       ====================================================== */
+    .cds-accordion { border-top:1px solid var(--cds-border-subtle-00); }
+    .cds-accordion__item { border-bottom:1px solid var(--cds-border-subtle-00); }
+    .cds-accordion__heading {
+      width:100%;background:transparent;border:none;
+      padding:10px 24px 10px 48px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;
+      color:var(--cds-text-primary);cursor:pointer;display:flex;align-items:center;
+      position:relative;text-align:left;min-height:40px;
+      transition:background .15s;letter-spacing:.16px;
+    }
+    .cds-accordion__heading:hover { background:var(--cds-hover-ui); }
+    .cds-accordion__arrow { position:absolute;left:16px;width:16px;height:16px;fill:var(--cds-text-primary); }
+    .cds-accordion__item--open .cds-accordion__arrow { transform:rotate(90deg); }
+    .cds-accordion__content { padding:0 24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px 16px; }
+    .full-width { grid-column:1/-1; }
+
+    /* ======================================================
+       Form / Input
+       ====================================================== */
+    .cds-form-item { display:flex;flex-direction:column; }
+    .cds-label { font-size:12px;color:var(--cds-text-secondary);letter-spacing:.32px;margin-bottom:6px;line-height:16px; }
+    .cds-text-input {
+      width:100%;height:40px;padding:0 16px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--cds-text-primary);
+      background:var(--cds-field-01);border:none;border-bottom:1px solid var(--cds-border-strong-01);
+      outline:none;transition:border-color .15s,box-shadow .15s,background .2s;
+    }
+    .cds-text-input:focus { border-bottom-color:var(--cds-focus);box-shadow:inset 0 -2px 0 0 var(--cds-focus); }
+    .cds-text-input:disabled { color:var(--cds-text-placeholder);cursor:not-allowed; }
+    .cds-helper-text { font-size:12px;color:var(--cds-text-helper);margin-top:4px;letter-spacing:.32px; }
+    .config-panel .cds-text-input { background:var(--cds-layer-02); }
+    .input-unit-wrap { position:relative; }
+    .input-unit-wrap .cds-text-input { padding-right:56px;font-family:'IBM Plex Mono',monospace; }
+    .input-unit { position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--cds-text-helper);font-family:'IBM Plex Mono',monospace;pointer-events:none; }
+    .target-block { padding:16px 24px;display:flex;flex-direction:column;gap:16px; }
+    .target-derived {
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 12px;background:var(--cds-layer-02);border-left:3px solid var(--cds-interactive);
+      font-size:12px;color:var(--cds-text-secondary);letter-spacing:.32px;
+    }
+    .target-derived strong { font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary);font-weight:500;font-size:13px; }
+
+    /* ======================================================
+       Buttons
+       ====================================================== */
+    .cds-btn {
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:400;letter-spacing:.16px;
+      border:none;cursor:pointer;padding:11px 64px 11px 16px;min-height:40px;white-space:nowrap;
+    }
+    .cds-btn svg { fill:currentColor;width:16px;height:16px; }
+    .cds-btn--primary  { background:var(--cds-interactive);color:#fff; }
+    .cds-btn--primary:hover  { background:var(--cds-interactive-hover); }
+    .cds-btn--primary:disabled { background:var(--cds-button-disabled);color:var(--cds-text-on-color-disabled);cursor:not-allowed; }
+    .cds-btn--danger { background:var(--cds-button-danger);color:#fff; }
+    .cds-btn--danger:hover { background:var(--cds-button-danger-hover); }
+    .cds-btn--danger:disabled { background:var(--cds-button-disabled);color:var(--cds-text-on-color-disabled);cursor:not-allowed; }
+    .cds-btn--tertiary {
+      background:transparent;color:var(--cds-button-tertiary);
+      border:1px solid var(--cds-button-tertiary);padding:10px 63px 10px 15px;
+    }
+    .cds-btn--tertiary:hover { background:var(--cds-button-tertiary-hover);color:var(--cds-button-tertiary-hover-text);border-color:var(--cds-button-tertiary-hover); }
+    .cds-btn--ghost { background:transparent;color:var(--cds-link-primary);padding:11px 16px; }
+    .cds-btn--ghost:hover { background:var(--cds-hover-ui); }
+    .cds-btn--compact { padding-right:16px; }
+
+    /* ======================================================
+       Data Table / Notifications / Tags
+       ====================================================== */
+    .cds-data-table { width:100%;border-collapse:collapse;font-size:13px; }
+    .cds-data-table th { padding:8px 12px;text-align:left;font-weight:600;font-size:12px;letter-spacing:.16px;color:var(--cds-text-primary);border-bottom:1px solid var(--cds-border-subtle-01);background:var(--cds-layer-accent-01); }
+    .cds-data-table td { padding:7px 12px;border-bottom:1px solid var(--cds-border-subtle-00);color:var(--cds-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:12px; }
+    .cds-data-table td.num { text-align:right;color:var(--cds-text-primary); }
+    .cds-data-table td.label { font-family:'IBM Plex Sans',sans-serif; }
+    .cds-data-table tbody tr:hover { background:var(--cds-hover-row); }
+
+    .cds-notification { display:flex;align-items:flex-start;gap:12px;padding:13px 16px;font-size:14px;border-left:3px solid;margin-bottom:16px;animation:fadeInUp .3s ease; }
+    .cds-notification--error   { background:var(--cds-notif-error-bg);border-color:var(--cds-support-error); }
+    .cds-notification--success { background:var(--cds-notif-success-bg);border-color:var(--cds-support-success); }
+    .cds-notification--warning { background:var(--cds-notif-warning-bg);border-color:var(--cds-support-warning); }
+    .cds-notification__title    { font-weight:600;margin-bottom:2px;color:var(--cds-text-primary); }
+    .cds-notification__subtitle { font-size:13px;color:var(--cds-text-secondary); }
+    .cds-notification__close    { margin-left:auto;background:none;border:none;cursor:pointer;padding:4px;color:var(--cds-text-secondary); }
+
+    .cds-tag { display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:12px;font-size:12px;font-weight:500;letter-spacing:.32px; }
+    .cds-tag--blue  { background:var(--cds-tag-blue-bg);color:var(--cds-tag-blue-text); }
+    .cds-tag--green { background:var(--cds-tag-green-bg);color:var(--cds-tag-green-text); }
+    .cds-tag--red   { background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text); }
+    .cds-tag--gray  { background:var(--cds-tag-gray-bg);color:var(--cds-tag-gray-text); }
+    .tag-dot { width:8px;height:8px;border-radius:50%;background:currentColor; }
+    .tag-dot--live { animation:livePulse 1.2s ease-in-out infinite; }
+    @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.7)} }
+
+    /* ======================================================
+       Cards / sections
+       ====================================================== */
+    .chart-card { background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-00);padding:20px;min-width:0;animation:fadeInUp .4s ease both; }
+    .chart-card__title    { font-size:14px;font-weight:600;color:var(--cds-text-primary);margin-bottom:4px;letter-spacing:.16px;display:flex;align-items:center;gap:8px; }
+    .chart-card__subtitle { font-size:12px;color:var(--cds-text-helper);margin-bottom:16px;letter-spacing:.32px; }
+    .grid-2 { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px; }
+    .grid-3 { display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:16px; }
+    @media(max-width:1300px){ .grid-3{grid-template-columns:1fr;} }
+    .mini-title { font-size:12px;font-weight:600;color:var(--cds-text-secondary);margin-bottom:4px; }
+    .empty-mini { height:280px;display:flex;align-items:center;justify-content:center;color:var(--cds-text-helper);font-size:13px; }
+    .section-title    { font-size:20px;font-weight:600;color:var(--cds-text-primary);margin-bottom:8px; }
+    .section-subtitle { font-size:14px;color:var(--cds-text-secondary);margin-bottom:24px; }
+    .mono { font-family:'IBM Plex Mono',monospace; }
+    .recharts-tooltip-wrapper { z-index:100; }
+    .custom-tooltip { background:var(--cds-background-inverse);color:var(--cds-text-inverse);padding:10px 14px;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,.3); }
+    .custom-tooltip .label { font-weight:600;margin-bottom:4px; }
+    .custom-tooltip .value { font-family:'IBM Plex Mono',monospace; }
+
+    /* ======================================================
+       MDO — run status
+       ====================================================== */
+    .run-status { display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px; }
+    .run-status__gen { font-size:28px;font-weight:300;letter-spacing:-.4px;color:var(--cds-text-primary); }
+    .run-status__gen span { font-size:14px;color:var(--cds-text-helper);margin-left:4px;font-weight:400; }
+    .run-status__meta { margin-left:auto;display:flex;gap:24px;font-size:12px;color:var(--cds-text-helper);letter-spacing:.32px; }
+    .run-status__meta strong { display:block;font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary);font-size:16px;font-weight:400; }
+    .gen-track { display:flex;gap:2px;height:8px;margin-bottom:24px; }
+    .cds-select {
+      width:100%;height:40px;padding:0 12px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--cds-text-primary);
+      background:var(--cds-layer-02);border:none;border-bottom:1px solid var(--cds-border-strong-01);outline:none;cursor:pointer;
+    }
+    .cds-select:disabled { color:var(--cds-text-placeholder);cursor:not-allowed; }
+    .mode-switch { display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--cds-border-strong-01); }
+    .mode-switch button {
+      height:40px;border:none;background:transparent;color:var(--cds-text-secondary);font:inherit;font-size:13px;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:6px;
+    }
+    .mode-switch button + button { border-left:1px solid var(--cds-border-strong-01); }
+    .mode-switch button.active { background:var(--cds-interactive);color:#fff; }
+    .mode-switch button:disabled { cursor:not-allowed;opacity:.6; }
+    .strat-track { display:flex;gap:2px;height:28px;margin:4px 0 12px; }
+    .strat-seg { flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden; }
+    .strat-seg > div { display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;font-family:'IBM Plex Mono',monospace;min-height:0; }
+    .strat-seg--empty { background:var(--cds-layer-accent-01); }
+    .strat-legend { display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;color:var(--cds-text-secondary); }
+    .strat-legend i { display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px; }
+    .strat-legend strong { font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary);font-weight:500;margin-left:4px; }
+    .gen-seg { flex:1;background:var(--cds-layer-accent-01);position:relative;overflow:hidden; }
+    .gen-seg--done { background:var(--cds-interactive); }
+    .gen-seg--feasible { background:var(--cds-support-success); }
+    .gen-seg__fill { position:absolute;inset:0 auto 0 0;background:var(--cds-interactive);transition:width .4s ease; }
+    .gen-seg--active .gen-seg__fill {
+      background-image:repeating-linear-gradient(-45deg, rgba(255,255,255,.28) 0 6px, transparent 6px 12px);
+      background-size:17px 17px;animation:stripes .6s linear infinite;
+    }
+    @keyframes stripes { to { background-position:17px 0; } }
+
+    /* KPI tiles */
+    .kpi-row { display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--cds-border-subtle-00);border:1px solid var(--cds-border-subtle-00);margin-bottom:16px; }
+    .kpi { background:var(--cds-layer-01);padding:16px;min-width:0; }
+    .kpi__label { font-size:11px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;color:var(--cds-text-helper);margin-bottom:6px; }
+    .kpi__value { font-size:28px;font-weight:300;font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary);letter-spacing:-.6px;line-height:1.15;white-space:nowrap; }
+    .kpi__unit { font-size:13px;color:var(--cds-text-helper);margin-left:4px;letter-spacing:0; }
+    .kpi__sub { font-size:12px;color:var(--cds-text-helper);margin-top:6px;letter-spacing:.32px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .kpi__sub--ok { color:var(--cds-support-success); }
+    .kpi__sub--bad { color:var(--cds-support-error); }
+    .kpi--flash { animation:kpiFlash 1.4s ease; }
+    @keyframes kpiFlash { 0%{box-shadow:inset 0 -3px 0 var(--cds-support-success);background:var(--cds-notif-success-bg)} 100%{box-shadow:inset 0 -3px 0 transparent} }
+    .kpi-bar { height:4px;background:var(--cds-layer-accent-01);margin-top:8px;display:flex; }
+    .kpi-bar > div { height:100%;transition:width .4s ease; }
+
+    /* Pipeline flow */
+    .flow { display:flex;align-items:stretch;margin-bottom:16px;background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-00);padding:16px 12px; }
+    .flow-node { flex:1;min-width:0;padding:10px 12px;border:1px solid var(--cds-border-subtle-00);background:var(--cds-layer-02);position:relative; }
+    .flow-node--active { border-color:var(--cds-interactive);box-shadow:0 0 0 1px var(--cds-interactive), 0 0 16px -2px var(--cds-interactive); }
+    .flow-node__step { font-size:10px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;color:var(--cds-text-helper); }
+    .flow-node__name { font-size:13px;font-weight:600;color:var(--cds-text-primary);margin:2px 0 6px; }
+    .flow-node__nums { display:flex;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;flex-wrap:wrap; }
+    .flow-node__nums span { display:inline-flex;align-items:center;gap:4px;color:var(--cds-text-secondary); }
+    .flow-node__nums i { width:8px;height:8px;display:inline-block; }
+    .flow-arrow { width:36px;flex:0 0 36px;display:flex;align-items:center;justify-content:center; }
+    .flow-arrow svg { width:36px;height:12px;overflow:visible; }
+    .flow-arrow line { stroke:var(--cds-border-strong-01);stroke-width:2;stroke-dasharray:4 4; }
+    .flow-arrow--live line { stroke:var(--cds-interactive);animation:dash .5s linear infinite; }
+    .flow-arrow polygon { fill:var(--cds-border-strong-01); }
+    .flow-arrow--live polygon { fill:var(--cds-interactive); }
+    @keyframes dash { to { stroke-dashoffset:-8; } }
+
+    /* Population matrix */
+    .pop-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:4px; }
+    .pop-cell {
+      aspect-ratio:1;position:relative;cursor:default;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'IBM Plex Mono',monospace;font-size:11px;
+      border:1px solid transparent;user-select:none;
+    }
+    .pop-cell__rank { position:absolute;top:2px;left:4px;font-size:9px;opacity:.75; }
+    .pop-cell__star { position:absolute;top:1px;right:3px;font-size:10px; }
+    .pop-cell--pending { border:1px dashed var(--cds-border-subtle-01);color:var(--cds-text-placeholder); }
+    .pop-cell--simulating { background:var(--cds-interactive);color:#fff;animation:cellPulse 1.1s ease-in-out infinite; }
+    @keyframes cellPulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+    .pop-cell--rejected {
+      color:var(--cds-text-helper);background-color:var(--cds-layer-accent-01);
+      background-image:repeating-linear-gradient(45deg, transparent 0 5px, var(--cds-border-subtle-01) 5px 6px);
+    }
+    .pop-cell--near { background:#ff832b;color:#161616; }
+    .pop-cell--far  { background:var(--cds-support-error);color:#fff; }
+    .pop-cell--feasible { background:var(--cds-support-success);color:#fff; }
+    [data-theme="dark"] .pop-cell--feasible { color:#161616; }
+    .pop-cell--elite { outline:2px solid var(--cds-accent-gold);outline-offset:1px; }
+    .pop-cell--hover { box-shadow:0 0 0 2px var(--cds-text-primary); }
+    .pop-cell .mini-spin { width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite; }
+    .pop-legend { display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11px;color:var(--cds-text-helper);letter-spacing:.32px; }
+    .pop-legend span { display:inline-flex;align-items:center;gap:6px; }
+    .pop-legend i { width:12px;height:12px;display:inline-block; }
+    .inspector { margin-top:12px;padding:10px 12px;background:var(--cds-layer-02);border-left:3px solid var(--cds-border-strong-01);font-size:12px;min-height:58px;color:var(--cds-text-secondary); }
+    .inspector strong { color:var(--cds-text-primary);font-weight:600; }
+    .inspector .mono { color:var(--cds-text-primary); }
+
+    /* Best design */
+    .best-layout { display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px; }
+    .engine-svg { width:100%;height:auto;display:block;background:var(--cds-grain-bg);border:1px solid var(--cds-border-subtle-00); }
+    /* Feasible designs */
+    .feas-head { display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px; }
+    .feas-controls { display:flex;gap:12px;flex-wrap:wrap; }
+    .seg { display:inline-flex;border:1px solid var(--cds-border-strong-01); }
+    .seg button { height:32px;padding:0 14px;border:none;background:transparent;color:var(--cds-text-secondary);font:inherit;font-size:13px;cursor:pointer; }
+    .seg button + button { border-left:1px solid var(--cds-border-strong-01); }
+    .seg button.active { background:var(--cds-interactive);color:#fff; }
+    .feas-empty { padding:40px;text-align:center;color:var(--cds-text-helper);font-size:13px;background:var(--cds-layer-02);border:1px solid var(--cds-border-subtle-00); }
+    .feas-table-wrap { max-height:440px;overflow:auto;border:1px solid var(--cds-border-subtle-00); }
+    .feas-table thead th { position:sticky;top:0;z-index:1; }
+    .feas-row { cursor:pointer; }
+    .feas-row:hover td { background:var(--cds-hover-row); }
+    .feas-sub { font-size:11px;color:var(--cds-text-helper); }
+    .feas-gallery-bar { display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px; }
+    .feas-check { display:flex;align-items:center;gap:8px;font-size:13px;color:var(--cds-text-secondary);cursor:pointer; }
+    .feas-check input { accent-color:var(--cds-interactive);width:16px;height:16px; }
+    .feas-gallery { display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--cds-border-subtle-00);border:1px solid var(--cds-border-subtle-00); }
+    .feas-card { text-align:left;background:var(--cds-layer-02);border:none;padding:12px;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;gap:8px; }
+    .feas-card:hover { background:var(--cds-hover-ui);outline:2px solid var(--cds-interactive);outline-offset:-2px; }
+    .feas-card__head { display:flex;align-items:center;gap:8px; }
+    .feas-card__rank { font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--cds-text-helper); }
+    .feas-card__isp { margin-left:auto;font-size:20px;font-weight:300;color:var(--cds-text-primary); }
+    .feas-card__isp small { font-size:11px;color:var(--cds-text-helper); }
+    .feas-card__meta { display:flex;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--cds-text-secondary); }
+    /* Modal (Carbon) */
+    .modal-overlay { position:fixed;inset:0;background:rgba(22,22,22,.5);z-index:9000;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .15s ease; }
+    .modal { background:var(--cds-layer-01);width:100%;max-width:1080px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 2px 6px rgba(0,0,0,.3); }
+    .modal__header { display:flex;justify-content:space-between;gap:16px;padding:16px 16px 12px 24px; }
+    .modal__label { font-size:12px;color:var(--cds-text-secondary);letter-spacing:.32px;font-family:'IBM Plex Mono',monospace; }
+    .modal__title { font-size:24px;font-weight:400;color:var(--cds-text-primary);margin-top:4px;display:flex;align-items:center; }
+    .modal__sub { font-size:13px;color:var(--cds-text-secondary);margin-top:4px; }
+    .modal__close { width:48px;height:48px;border:none;background:transparent;color:var(--cds-text-primary);font-size:18px;cursor:pointer;flex-shrink:0; }
+    .modal__close:hover { background:var(--cds-hover-ui); }
+    .modal__body { padding:0 24px 16px;overflow:auto; }
+    .modal__grid { display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px; }
+    .modal__h { font-size:14px;font-weight:600;margin:0 0 8px;color:var(--cds-text-primary); }
+    .modal__geom { display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:start; }
+    .modal__cons { margin-top:4px;padding:10px 12px;font-size:13px;background:var(--cds-layer-02);border-left:3px solid var(--cds-border-strong-01);color:var(--cds-text-secondary); }
+    .modal__cons--ok { border-left-color:var(--cds-support-success);color:var(--cds-text-primary); }
+    .modal__cons--bad { border-left-color:var(--cds-support-error);color:var(--cds-text-primary); }
+    .modal__cons + .modal__h, table + .modal__h { margin-top:16px; }
+    .modal__footer { display:flex;justify-content:flex-end;gap:8px;padding:12px 24px;border-top:1px solid var(--cds-border-subtle-00);background:var(--cds-layer-01); }
+    @media(max-width:1200px){ .feas-gallery{grid-template-columns:repeat(2,1fr);} .modal__grid{grid-template-columns:1fr;} }
+    @media(max-width:700px){ .feas-gallery{grid-template-columns:1fr;} .modal__geom{grid-template-columns:1fr;} }
+    .best-actions { display:flex;gap:8px;flex-wrap:wrap;margin-top:12px; }
+    .perf-row { display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--cds-border-subtle-00);font-size:12px;color:var(--cds-text-secondary); }
+    .perf-row strong { font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:14px;color:var(--cds-text-primary); }
+    .perf-row em { font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:11px;margin-left:6px; }
+
+    /* Log */
+    .sim-log { background:var(--cds-log-bg);color:var(--cds-log-text);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:16px;height:180px;overflow-y:auto;white-space:pre-wrap;border-left:3px solid var(--cds-log-border); }
+
+    /* Empty state pipeline */
+    .hero { max-width:880px;margin:24px auto 0;animation:fadeInUp .5s ease both; }
+    .hero h1 { font-size:32px;font-weight:300;letter-spacing:-.4px;margin-bottom:8px; }
+    @media(max-width:1400px){ .kpi-row{grid-template-columns:repeat(3,1fr);} }
+    @media(max-width:1200px){ .grid-2{grid-template-columns:1fr;} .best-layout{grid-template-columns:1fr;} .flow{flex-wrap:wrap;gap:8px;} .flow-arrow{display:none;} .flow-node{flex:1 1 30%;} }
+    @media(max-width:900px){ .app-container{flex-direction:column;} .config-panel{width:100%;min-width:unset;height:auto;position:static;} .kpi-row{grid-template-columns:repeat(2,1fr);} .result-panel{padding:16px;} }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+const {
+  ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip,
+  ReferenceArea, ReferenceLine, ComposedChart, Line, Bar, BarChart, Cell, Legend, Area,
+} = Recharts;
+
+/* ===================================================================
+   CONSTANTS
+   =================================================================== */
+const POLL_MS = 1000;
+const HANDOFF_KEY = 'tusi-mdo-handoff';
+
+// 테마별 차트 색 (Carbon support / data-viz 팔레트)
+const PALETTE = {
+  light: { ok:'#24a148', bad:'#da1e28', near:'#ff832b', blue:'#0f62fe', gold:'#b28600', past:'#a8a8a8', purple:'#8a3ffc', tick:'#525252', grid:'#e0e0e0', box:'#24a148' },
+  dark:  { ok:'#42be65', bad:'#fa4d56', near:'#ff832b', blue:'#4589ff', gold:'#d2a106', past:'#6f6f6f', purple:'#a56eff', tick:'#c6c6c6', grid:'#393939', box:'#42be65' },
+};
+
+// rl/actions.py 전략 순서와 같은 색
+const STRATEGY_COLORS = ['#0f62fe', '#8a3ffc', '#24a148', '#007d79', '#ff7eb6', '#b28600', '#1192e8', '#da1e28'];
+
+// constrain.py 클래스 이름 → 표시 이름
+const CONSTRAINT_LABELS = {
+  ChamberThickness: '두께 < 구매 파이프 두께',
+  ChamberEquality:  '탱크 = 챔버 (반지름·두께)',
+  ChamberLength:    '탱크/챔버 길이 < 파이프 길이',
+  OxtFill:          '산화제 충진 (ullage)',
+  OxtPressure:      '탱크 초기 압력 < 산화제 임계압',
+  OxtVolume:        '산화제+가압제 부피',
+  Toxt:             '탱크 두께 (내압)',
+  Tcc:              '챔버 두께 (내압)',
+  InjectorDP:       '인젝터 차압 (Pt−Pc)/Pc',
+  InjectorArea:     '인젝터 총 면적',
+  MaxOri:           '오리피스 최대 길이',
+  FuelArea:         '포트 면적 비율',
+  FuelPort:         '포트가 연료 안에 위치',
+  PortWeb:          '포트 사이 웹 두께',
+  PortResolution:   '포트 격자 해상도',
+  FuelLenght:       '연료 + 프리/포스트 챔버 길이',
+  FuelRadius:       '연료 반지름 < 챔버',
+  NozzleThroatSize: '노즐 목 < 챔버',
+  NozzleExpansion:  '노즐 출구 > 목',
+  NozzleExitSize:   '노즐 출구 ≤ 기체 외경',
+  Impulse:          '목표 임펄스',
+  ThrustAvg:        '목표 평균 추력',
+  SimCompleted:     '시뮬레이션 완료',
+};
+const POST_SIM = new Set(['Impulse', 'ThrustAvg', 'SimCompleted', 'Tcc', 'Toxt', 'InjectorDP']);
+
+/* ===================================================================
+   HELPERS
+   =================================================================== */
+const fmt = (v, d=2) => (v == null || !isFinite(v)) ? '—' : Number(v).toFixed(d);
+const fmtInt = (v) => (v == null || !isFinite(v)) ? '—' : Math.round(v).toLocaleString('en-US');
+const mm  = (v) => fmt(v * 1000, 2);
+const pct = (sim, target) => (sim == null || !target) ? null : (sim / target - 1) * 100;
+const fmtTime = (s) => {
+  if (s == null || !isFinite(s)) return '—';
+  s = Math.max(0, Math.round(s));
+  const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), r = s % 60;
+  return h ? `${h}:${String(m).padStart(2,'0')}:${String(r).padStart(2,'0')}` : `${m}:${String(r).padStart(2,'0')}`;
+};
+const cellClass = (c) => {
+  if (c.state === 'infeasible') return (c.violation != null && c.violation < 0.25) ? 'near' : 'far';
+  return c.state;
+};
+
+/* ===================================================================
+   ICONS
+   =================================================================== */
+const ChevronRight = () => <svg viewBox="0 0 16 16" className="cds-accordion__arrow"><path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"/></svg>;
+const PlayIcon     = () => <svg viewBox="0 0 32 32"><path d="M7 28V4l22 12z"/></svg>;
+const StopIcon     = () => <svg viewBox="0 0 32 32"><rect x="8" y="8" width="16" height="16"/></svg>;
+const DownloadIcon = () => <svg viewBox="0 0 16 16"><path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM7.5 11.4l-3.7-3.7.7-.7L7 9.6V1h1v8.6l2.5-2.6.7.7-3.7 3.7z"/></svg>;
+const LaunchIcon   = () => <svg viewBox="0 0 32 32"><path d="M26 28H6a2 2 0 01-2-2V6a2 2 0 012-2h10v2H6v20h20V16h2v10a2 2 0 01-2 2z"/><path d="M20 2v2h6.59L18 12.59 19.41 14 28 5.41V12h2V2H20z"/></svg>;
+const MoonIcon     = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M13.502 5.414a15.075 15.075 0 000 21.17C17.275 30.357 22.497 32 27.502 32c1.252 0 2.5-.108 3.726-.321-6.827.674-13.019-1.49-17.488-5.96a15.065 15.065 0 010-21.305z"/></svg>;
+const SunIcon      = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M16 8a8 8 0 100 16A8 8 0 0016 8zm0-6a1 1 0 010 2 1 1 0 010-2zm0 24a1 1 0 010 2 1 1 0 010-2zM4 16a1 1 0 01-2 0 1 1 0 012 0zm24 0a1 1 0 01-2 0 1 1 0 012 0z"/></svg>;
+const EngineIcon   = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M4 11h14v10H4zM18 13l4-2v10l-4-2zM22 11l6-3v16l-6-3z" fill="none" stroke="currentColor" strokeWidth="2"/></svg>;
+const DnaIcon      = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 3c0 9 14 9 14 18s-14 4-14 8M23 3c0 9-14 9-14 18M23 29c0-3-3-5-6-6"/><path d="M11 8h10M11 24h10M13 13h6"/></svg>;
+const ChartIcon    = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M4 2H2v26a2 2 0 002 2h26v-2H4z"/><path d="M30 9h-7v2h3.59L19 18.59l-4.29-4.3a1 1 0 00-1.42 0L6 21.59 7.41 23 14 16.41l4.29 4.3a1 1 0 001.42 0l8.29-8.3V16h2z"/></svg>;
+const RulerIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M29.4 9.6 22.4 2.6a2 2 0 0 0-2.8 0L2.6 19.6a2 2 0 0 0 0 2.8l7 7a2 2 0 0 0 2.8 0l17-17a2 2 0 0 0 0-2.8zM11 28l-7-7 3-3 3.5 3.5 1.4-1.4L8.4 16.6l2.6-2.6 2 2 1.4-1.4-2-2 2.6-2.6 3.5 3.5 1.4-1.4L16.4 8.6l2.6-2.6 2 2 1.4-1.4-2-2L21 4l7 7z"/></svg>;
+const BoltIcon     = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M11.61 29.92a1 1 0 01-.6-1.07L12.83 17H8a1 1 0 01-1-1.23l3-13A1 1 0 0111 2h10a1 1 0 01.78.37 1 1 0 01.2.85L20.25 11H25a1 1 0 01.83 1.55l-12 17a1 1 0 01-1.22.37z"/></svg>;
+
+/* ===================================================================
+   SMALL COMPONENTS
+   =================================================================== */
+function AccordionItem({ title, defaultOpen, children, grid=true }) {
+  const [open, setOpen] = useState(!!defaultOpen);
+  return (
+    <div className={`cds-accordion__item ${open?'cds-accordion__item--open':''}`}>
+      <button className="cds-accordion__heading" onClick={()=>setOpen(o=>!o)}>
+        <ChevronRight/>{title}
+      </button>
+      <div className={open ? '' : 'cds-accordion__content--hidden'} style={open?{}:{display:'none'}}>
+        {grid ? <div className="cds-accordion__content">{children}</div> : <div style={{padding:'0 24px 16px'}}>{children}</div>}
+      </div>
+    </div>
+  );
+}
+
+function UnitInput({ label, unit, value, onChange, helper, disabled, step, placeholder }) {
+  return (
+    <div className="cds-form-item">
+      <label className="cds-label">{label}</label>
+      <div className="input-unit-wrap">
+        <input className="cds-text-input" type="number" value={value} step={step} disabled={disabled}
+               placeholder={placeholder} onChange={e=>onChange(e.target.value)}/>
+        {unit && <span className="input-unit">{unit}</span>}
+      </div>
+      {helper && <div className="cds-helper-text">{helper}</div>}
+    </div>
+  );
+}
+
+function ChartTooltip({ active, payload }) {
+  if (!active || !payload || !payload.length) return null;
+  const p = payload[0].payload;
+  return (
+    <div className="custom-tooltip">
+      <div className="label">세대 {p.gen + 1}{p.feasible ? ' · 합격' : ''}</div>
+      <div className="value">I {fmt(p.impulse,1)} N·s</div>
+      <div className="value">F̄ {fmt(p.thrust_avg,1)} N</div>
+      <div className="value">Isp {fmt(p.isp,2)} s</div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   EMPTY STATE
+   =================================================================== */
+function Hero() {
+  return (
+    <div className="hero">
+      <h1>Hybrid MDO</h1>
+    </div>
+  );
+}
+
+/* ===================================================================
+   RUN STATUS (generation track + timing)
+   =================================================================== */
+function RunStatus({ job }) {
+  const nGen = shownGenerations(job);
+  const { per: segPer, nSeg } = genBuckets(nGen);
+  const histByGen = Object.fromEntries((job.history || []).map(h => [h.generation, h]));
+  const pop = job.population || [];
+  const evaluated = pop.filter(c => c.state !== 'pending' && c.state !== 'simulating').length;
+  const frac = pop.length ? evaluated / pop.length : 0;
+  const durations = job.history.map(h => h.duration);
+  const avgDur = durations.length ? durations.reduce((a,b)=>a+b,0) / durations.length : null;
+  const remaining = job.status === 'running' && avgDur != null
+    ? avgDur * Math.max(0, nGen - job.generation - frac) : null;
+
+  const tag = {
+    running: ['cds-tag--blue', job.stop_requested ? 'STOPPING' : 'RUNNING', true],
+    done:    ['cds-tag--green', 'COMPLETE', false],
+    stopped: ['cds-tag--gray', 'STOPPED', false],
+    error:   ['cds-tag--red', 'ERROR', false],
+  }[job.status] || ['cds-tag--gray', job.status, false];
+
+  return (
+    <>
+      <div className="run-status">
+        <span className={`cds-tag ${tag[0]}`}><i className={`tag-dot ${tag[2]?'tag-dot--live':''}`}/>{tag[1]}</span>
+        <div className="run-status__gen">
+          Generation {Math.max(job.generation, 0) + 1}
+          <span>/ {nGen}</span>
+        </div>
+        <div className="run-status__meta">
+          {job.settings?.feasible_parents && <div>Parents<strong>{job.parents_feasible_from != null ? `합격만 (세대 ${job.parents_feasible_from + 1}~)` : '합격만 (대기)'}</strong></div>}
+          <div>Optimizer<strong>{job.mode === 'ppo' ? `AI GA (PPO${job.argmax ? ' · argmax' : ' · 확률적'})` : job.mode === 'direct' ? `AI 직접 설계${job.argmax ? ' · 평균 행동' : ' · 확률적'}` : job.mode === 'curve' ? `AI 곡선 판단${job.argmax ? ' · 최선 이동' : ' · 확률적'}` : 'GA'} · {job.evaluator === 'surrogate' ? (job.mode === 'direct' || job.mode === 'curve' ? 'TS Surrogate' : 'Surrogate') : 'core'}</strong></div>
+          <div>Target<strong>{fmt(job.targets.impulse,0)} N·s · {fmt(job.targets.thrust_avg,0)} N · ±{+((job.tolerance ?? 0.05) * 100).toFixed(2)}%</strong></div>
+          <div>Elapsed<strong>{fmtTime(job.elapsed)}</strong></div>
+          <div>ETA<strong>{job.status === 'running' ? (remaining != null ? `≤ ${fmtTime(remaining)}` : '계산 중') : '—'}</strong></div>
+        </div>
+      </div>
+      <div className="gen-track" title={`세대 진행 (초록 = 합격 해 존재)${segPer > 1 ? ` · 칸 하나 = ${segPer}세대` : ''}`}>
+        {Array.from({length: nSeg}).map((_, k) => {
+          const g0 = k * segPer, g1 = Math.min(nGen, g0 + segPer);
+          const hs = [];
+          for (let g = g0; g < g1; g++) if (histByGen[g]) hs.push(histByGen[g]);
+          const active = job.status === 'running' && job.generation >= g0 && job.generation < g1 && hs.length < g1 - g0;
+          const cls = hs.length ? (hs.some(h => h.n_feasible > 0) ? 'gen-seg--feasible' : 'gen-seg--done') : '';
+          const fill = (hs.length + frac) / (g1 - g0);
+          return (
+            <div key={k} className={`gen-seg ${cls} ${active?'gen-seg--active':''}`}>
+              {active && <div className="gen-seg__fill" style={{width:`${Math.max(fill*100, 6)}%`}}/>}
+            </div>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+/* ===================================================================
+   세대 막대 공통: 표시할 세대 수 / 구간 묶기
+   =================================================================== */
+const MAX_SEG = 120;   // 막대 칸 수 상한. 세대가 더 많으면 여러 세대를 한 칸으로 묶는다
+
+// 진행 중이면 계획 세대 수, 끝났거나 검증 단계면 실제로 진행한 세대까지 (조기 종료 시 빈 칸이 길게 남지 않게)
+function shownGenerations(job) {
+  const h = job.history || [];
+  const ran = h.length ? h[h.length - 1].generation + 1 : 0;
+  if (job.status !== 'running') return Math.max(ran, 1);
+  // core 검증 단계: 보정 재탐색 전이면 진행한 세대까지, 보정 후면 재탐색 목표 세대까지
+  if ((job.verify_n || 0) > 0) return Math.max(ran, (job.corrections || []).length ? job.n_generations : ran, 1);
+  return Math.max(job.n_generations || 0, ran, 1);
+}
+
+function genBuckets(n) {
+  const per = Math.max(1, Math.ceil(n / MAX_SEG));
+  return { per, nSeg: Math.ceil(n / per) };
+}
+
+/* ===================================================================
+   AI DIRECT DESIGN (직접 설계 모드: 에이전트가 개체마다 설계 변수를 직접 조정)
+   =================================================================== */
+const VAR_LABELS = {
+  oxidizer_M: '산화제 질량', port_num: '포트 수', outter_radius: '연료 외경', port_center_radius: '포트 배치 반지름',
+  inner_radius: '포트 반지름', fuel_length: '연료 길이', oxidizer_tank_length: '탱크 길이', oxidizer_tank_tickness: '가공 두께',
+  combution_chamber_length: '챔버 길이', supercharge_pressure: '헬륨 슈퍼차징', pressurant_M: '헬륨 질량', injector_oriffice_n: '오리피스 수', injector_oriffice_radius: '오리피스 반지름',
+  injector_oriffice_length: '오리피스 길이', nozzle_throat_radius: '노즐 목', nozzle_exit_radius: '노즐 출구',
+};
+
+function DirectPanel({ job, meta, colors }) {
+  const steps = (job.direct_steps || []).map(([g, m, lo, hi, pc]) => ({ gen: g + 1, mean: m * 100, band: [lo * 100, hi * 100], pipe: pc }));
+  const d = job.direct_last;
+  const vars = meta?.design_vars || Object.keys(VAR_LABELS);
+  const moves = d ? vars.map((v, i) => ({ name: VAR_LABELS[v] || v, move: (d.move?.[i] || 0) * 100 })).sort((a, b) => b.move - a.move) : [];
+  const curve = d?.curve ? d.curve.thrust.map((f, i) => ({
+    t: +((i + 0.5) * (d.curve_dt || 1)).toFixed(2), thrust: f,
+    pc: d.curve.chamber_pressure[i] / 1e6, pt: d.curve.tank_pressure[i] / 1e6,
+  })) : [];
+  const burnT = job.targets.impulse / job.targets.thrust_avg;
+  const tip = { contentStyle: {background:'var(--cds-background-inverse)',border:'none',fontSize:12},
+                labelStyle: {color:'var(--cds-text-inverse)'}, itemStyle: {color:'var(--cds-text-inverse)'} };
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">AI Direct Design</div>
+      <div className="chart-card__subtitle">
+        에이전트가 개체마다 연소 곡선 경향성(시계열 대리모델 예측)을 보고 14개 설계 변수·파이프를 직접 조정 · 교배/선택 없음 · 모델 {job.model}
+        {d ? ` · 최근: 세대 ${d.generation + 1}, 평균 스텝 ${fmt(d.step_mean * 100, 2)}%, 파이프 변경 ${d.pipe_changes}개` : ' · 첫 세대 평가 중'}
+      </div>
+      <div className="grid-3">
+        <div>
+          <div className="mini-title">이동 스텝 크기 (탐색 범위 대비 %)</div>
+          <ResponsiveContainer width="100%" height={280}>
+            <ComposedChart data={steps} margin={{top:8,right:8,bottom:16,left:0}}>
+              <CartesianGrid stroke={colors.grid} strokeDasharray="3 3"/>
+              <XAxis dataKey="gen" tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid}
+                     label={{value:'Generation',position:'insideBottom',offset:-8,fill:colors.tick,fontSize:11}}/>
+              <YAxis scale="log" domain={[0.1, 12]} allowDataOverflow ticks={[0.2, 0.5, 1, 2, 5, 10]} tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid} width={36}/>
+              <Tooltip {...tip} labelFormatter={g => `세대 ${g}`} formatter={(v, n) => [Array.isArray(v) ? `${fmt(v[0], 2)}–${fmt(v[1], 2)} %` : `${fmt(v, 2)} %`, n]}/>
+              <Area dataKey="band" name="최소–최대" stroke="none" fill={colors.blue} fillOpacity={0.15} isAnimationActive={false}/>
+              <Line dataKey="mean" name="평균 스텝" stroke={colors.blue} strokeWidth={2} dot={false} isAnimationActive={false}/>
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
+        <div>
+          <div className="mini-title">변수별 평균 이동량 (최근 세대, 범위 대비 %)</div>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={moves} layout="vertical" margin={{top:0,right:16,bottom:0,left:0}}>
+              <XAxis type="number" tick={{fill:colors.tick,fontSize:10}} stroke={colors.grid} tickFormatter={v => fmt(v, 2)}/>
+              <YAxis type="category" dataKey="name" width={96} interval={0} tick={{fill:colors.tick,fontSize:10}} stroke={colors.grid}/>
+              <Tooltip {...tip} cursor={{fill:'var(--cds-hover-ui)'}} formatter={v => [`${fmt(v, 3)} %`, '이동']}/>
+              <Bar dataKey="move" fill={colors.purple} isAnimationActive={false}/>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div>
+          <div className="mini-title">현재 세대 최고 개체의 예측 연소 곡선</div>
+          {curve.length ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <ComposedChart data={curve} margin={{top:8,right:0,bottom:16,left:0}}>
+                <CartesianGrid stroke={colors.grid} strokeDasharray="3 3"/>
+                <XAxis dataKey="t" type="number" domain={[0, 'dataMax']} tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid}
+                       label={{value:'Time [s]',position:'insideBottom',offset:-8,fill:colors.tick,fontSize:11}}/>
+                <YAxis yAxisId="f" tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid} width={40}/>
+                <YAxis yAxisId="p" orientation="right" tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid} width={32}/>
+                <Tooltip {...tip} labelFormatter={t => `${t} s`} formatter={(v, n) => [n === '추력' ? `${fmt(v, 0)} N` : `${fmt(v, 2)} MPa`, n]}/>
+                <ReferenceLine yAxisId="f" y={job.targets.thrust_avg} stroke={colors.gold} strokeDasharray="4 3"
+                               label={{value:'목표 F̄', position:'insideTopRight', fontSize:10, fill:colors.tick}}/>
+                <ReferenceLine yAxisId="f" x={burnT} stroke={colors.gold} strokeDasharray="4 3"
+                               label={{value:'목표 연소', position:'insideTopLeft', fontSize:10, fill:colors.tick}}/>
+                <Line yAxisId="f" dataKey="thrust" name="추력" stroke={colors.blue} strokeWidth={2} dot={false} isAnimationActive={false}/>
+                <Line yAxisId="p" dataKey="pc" name="챔버압" stroke={colors.near} strokeWidth={1.5} dot={false} isAnimationActive={false}/>
+                <Line yAxisId="p" dataKey="pt" name="탱크압" stroke={colors.purple} strokeWidth={1.5} strokeDasharray="5 3" dot={false} isAnimationActive={false}/>
+                <Legend verticalAlign="top" height={22} iconSize={9} wrapperStyle={{fontSize:11}}/>
+              </ComposedChart>
+            </ResponsiveContainer>
+          ) : <div className="empty-mini">첫 이동 후 표시</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   AI CURVE JUDGEMENT (곡선 판단 에이전트, rl/curve_agent.py)
+   =================================================================== */
+const moveText = (m) => {
+  if (!m || !m.var) return null;
+  if (m.var === 'pipe+') return '파이프 ▲';
+  if (m.var === 'pipe-') return '파이프 ▼';
+  const pct = (Math.exp(m.mag) - 1) * 100;
+  return `${VAR_LABELS[m.var] || m.var} ${pct >= 0 ? '+' : '−'}${fmt(Math.abs(pct), 0)}%`;
+};
+
+function CurvePanel({ job, colors }) {
+  const d = job.curve_last;
+  const tip = { contentStyle: {background:'var(--cds-background-inverse)',border:'none',fontSize:12},
+                labelStyle: {color:'var(--cds-text-inverse)'}, itemStyle: {color:'var(--cds-text-inverse)'} };
+  const burnT = job.targets.impulse / job.targets.thrust_avg;
+  // 최고 개체의 예측 곡선 (1 s 간격) + 어텐션 (시간 패치 50개 → 같은 축)
+  let curve = [];
+  if (d?.curve) {
+    const dt = d.curve_dt || 1;
+    curve = d.curve.thrust.map((f, i) => {
+      const md = (d.curve.mox_dot?.[i] || 0) + (d.curve.mf_dot?.[i] || 0);
+      return { t: +((i + 0.5) * dt).toFixed(2), thrust: f, isp: md > 1e-4 && f > 0 ? f / (md * 9.80665) : null };
+    });
+  }
+  const att = d?.attention ? d.attention.map((a, i) => ({ t: +((i + 0.5) * (d.attn_dt || 0.4)).toFixed(2), att: a })) : [];
+  const merged = [...curve.map(r => ({ ...r })), ...att].sort((a, b) => a.t - b.t);
+  const maxAtt = att.reduce((m, r) => Math.max(m, r.att), 0) || 1;
+  const counts = d?.counts ? Object.entries(d.counts).map(([v, n]) => ({
+    name: v === 'pipe+' || v === 'pipe-' ? (v === 'pipe+' ? '파이프 ▲' : '파이프 ▼') : (VAR_LABELS[v] || v), n,
+    mag: (Math.exp(d.mean_mag?.[v] || 0) - 1) * 100,
+  })).sort((a, b) => b.n - a.n) : [];
+  const logRows = [...(job.curve_log || [])].reverse().slice(0, 14);
+  const bestMoves = (d?.best_moves || []).map(moveText).filter(Boolean);
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">AI Curve Judgement</div>
+      <div className="chart-card__subtitle">
+        개체마다 예측 연소 곡선을 어텐션으로 읽고 바꿀 변수·방향·크기를 판단 · 모델 {job.model}
+        {d ? ` · 세대 ${d.generation + 1} 최고 개체: ${d.desc || bestMoves.join(', ') || '유지'}` : ' · 첫 세대 평가 중'}
+      </div>
+      <div className="grid-3">
+        <div>
+          <div className="mini-title">최고 개체의 예측 곡선 · 에이전트가 주목한 시간대</div>
+          {curve.length ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <ComposedChart data={merged} margin={{top:8,right:0,bottom:16,left:0}}>
+                <CartesianGrid stroke={colors.grid} strokeDasharray="3 3"/>
+                <XAxis dataKey="t" type="number" domain={[0, 'dataMax']} tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid}
+                       label={{value:'Time [s]',position:'insideBottom',offset:-8,fill:colors.tick,fontSize:11}}/>
+                <YAxis yAxisId="f" tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid} width={40}/>
+                <YAxis yAxisId="i" orientation="right" domain={[0, 260]} tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid} width={32}/>
+                <YAxis yAxisId="a" hide domain={[0, maxAtt * 3]}/>
+                <Tooltip {...tip} labelFormatter={t => `${t} s`} formatter={(v, n) => [n === '추력' ? `${fmt(v, 0)} N` : n === 'Isp(t)' ? `${fmt(v, 1)} s` : `${fmt(v * 100, 1)} %`, n]}/>
+                <Area yAxisId="a" dataKey="att" name="주목도" type="stepAfter" stroke="none" fill={colors.gold} fillOpacity={0.45} connectNulls isAnimationActive={false}/>
+                <ReferenceLine yAxisId="f" y={job.targets.thrust_avg} stroke={colors.gold} strokeDasharray="4 3"
+                               label={{value:'목표 F̄', position:'insideTopRight', fontSize:10, fill:colors.tick}}/>
+                <ReferenceLine yAxisId="f" x={burnT} stroke={colors.gold} strokeDasharray="4 3"
+                               label={{value:'목표 연소', position:'insideTopLeft', fontSize:10, fill:colors.tick}}/>
+                <Line yAxisId="f" dataKey="thrust" name="추력" stroke={colors.blue} strokeWidth={2} dot={false} connectNulls isAnimationActive={false}/>
+                <Line yAxisId="i" dataKey="isp" name="Isp(t)" stroke={colors.purple} strokeWidth={1.5} dot={false} connectNulls isAnimationActive={false}/>
+                <Legend verticalAlign="top" height={22} iconSize={9} wrapperStyle={{fontSize:11}}/>
+              </ComposedChart>
+            </ResponsiveContainer>
+          ) : <div className="empty-mini">첫 판단 후 표시</div>}
+        </div>
+        <div>
+          <div className="mini-title">이번 세대 개체군의 선택 (이동 횟수 · 평균 크기)</div>
+          {counts.length ? (
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={counts} layout="vertical" margin={{top:0,right:16,bottom:0,left:0}}>
+                <XAxis type="number" allowDecimals={false} tick={{fill:colors.tick,fontSize:10}} stroke={colors.grid}/>
+                <YAxis type="category" dataKey="name" width={96} interval={0} tick={{fill:colors.tick,fontSize:10}} stroke={colors.grid}/>
+                <Tooltip {...tip} cursor={{fill:'var(--cds-hover-ui)'}} formatter={(v, n, p) => [`${v}회 · 평균 크기 ±${fmt(p.payload.mag, 0)}%`, '선택']}/>
+                <Bar dataKey="n" fill={colors.purple} isAnimationActive={false}/>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : <div className="empty-mini">첫 판단 후 표시</div>}
+        </div>
+        <div>
+          <div className="mini-title">판단 로그 (세대별 최고 개체의 이동)</div>
+          <div style={{ height: 280, overflowY: 'auto', fontSize: 12 }}>
+            {logRows.length ? (
+              <table className="cds-data-table">
+                <tbody>
+                  {logRows.map(([g, desc]) => (
+                    <tr key={g}><td className="num" style={{ width: 56 }}>세대 {g + 1}</td><td className="label">{desc}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : <div className="empty-mini">첫 판단 후 표시</div>}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   AI STRATEGY (PPO 모드에서 세대별로 고른 GA 전략)
+   =================================================================== */
+function StrategyTimeline({ job, meta }) {
+  const names = meta?.actions || [];
+  const nGen = shownGenerations(job);
+  // job.strategies = [[세대, 전략 번호], ...] (서버에서 압축)
+  const byGen = Object.fromEntries((job.strategies || []).map(([g, a]) => [g, a]));
+  const counts = names.map((_, a) => (job.strategies || []).filter(([, b]) => b === a).length);
+  const last = job.last_strategy;
+  const { per, nSeg } = genBuckets(nGen);
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">AI Strategy</div>
+      <div className="chart-card__subtitle">
+        PPO 정책이 세대마다 {job.argmax ? 'argmax 로' : '확률적으로'} 고른 GA 전략 · 세대 1은 무작위 초기 개체군{per > 1 ? ` · 칸 하나 = ${per}세대 (색 높이 = 전략 사용 비율)` : ''} · 모델 {job.model}
+        {last ? ` · 최근: 세대 ${last.generation + 1} → ${last.name}` : ''}
+      </div>
+      <div className="strat-track">
+        {Array.from({length: nSeg}).map((_, k) => {
+          // 여러 세대를 묶은 칸은 전략별 사용 비율만큼 색을 쌓아 표시
+          const g0 = k * per, g1 = Math.min(nGen, g0 + per);
+          const cnt = {};
+          for (let g = g0; g < g1; g++) if (byGen[g] != null) cnt[byGen[g]] = (cnt[byGen[g]] || 0) + 1;
+          const label = per === 1 ? `세대 ${g0 + 1}` : `세대 ${g0 + 1}–${g1}`;
+          const parts = Object.entries(cnt).sort((a, b) => a[0] - b[0]);
+          if (!parts.length) return <div key={k} className="strat-seg strat-seg--empty" title={g0 === 0 ? `${label}: 초기 개체군` : label}/>;
+          return (
+            <div key={k} className="strat-seg" title={`${label}: ${parts.map(([a, c]) => `${names[a] || a} ${c}`).join(', ')}`}>
+              {parts.map(([a, c]) => (
+                <div key={a} style={{flex: c, background: STRATEGY_COLORS[a % STRATEGY_COLORS.length]}}>{per === 1 ? a : ''}</div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+      <div className="strat-legend">
+        {names.map((n, a) => (
+          <span key={a}><i style={{background: STRATEGY_COLORS[a % STRATEGY_COLORS.length]}}/>{a} {n}<strong>{counts[a]}</strong></span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   CORE VERIFICATION (대리모델 평가 모드)
+   =================================================================== */
+function Verification({ job }) {
+  const rows = [...(job.verified || [])].sort((a, b) => a.rank - b.rank);
+  const n = job.verify_n || 0;
+  const running = job.status === 'running';
+  const bestCore = job.best_source === 'core' ? job.best : null;
+  const cell = (v, d) => v == null ? '—' : fmt(v, d);
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">Core Verification</div>
+      <div className="chart-card__subtitle">
+        {n === 0
+          ? (running ? '대리모델로 탐색 중 · 끝나면 예측 상위 후보를 core 시뮬레이션으로 다시 평가합니다' : '검증 없음')
+          : `대리모델 예측 상위 ${n}개 → core 시뮬레이션 ${rows.length}/${n} 완료${running && rows.length < n ? ' (진행 중)' : ''} · 최종 결과는 core 값 기준`}
+      </div>
+      {(job.corrections || []).length > 0 && (
+        <div className="cds-helper-text" style={{marginBottom:8}}>
+          {job.corrections.map(c => `${c.round}회차 검증 불합격 → 편향 보정 (F̄ ${c.bias.thrust_avg >= 0 ? '+' : ''}${fmt(c.bias.thrust_avg, 1)} N, I ${c.bias.impulse >= 0 ? '+' : ''}${fmt(c.bias.impulse, 0)} N·s, Δp/Pc ${c.bias.dp_ratio_min >= 0 ? '+' : ''}${fmt((c.bias.dp_ratio_min || 0) * 100, 1)}%p) 후 재탐색`).join(' · ')}
+        </div>
+      )}
+      {rows.length > 0 && (
+        <table className="cds-data-table">
+          <thead><tr>
+            <th>순위</th><th>파이프</th>
+            <th style={{textAlign:'right'}}>Isp 예측 → core [s]</th>
+            <th style={{textAlign:'right'}}>임펄스 예측 → core [N·s]</th>
+            <th style={{textAlign:'right'}}>평균 추력 예측 → core [N]</th>
+            <th style={{textAlign:'right'}}>Δp/Pc 예측 → core [%]</th>
+            <th>core 판정</th>
+          </tr></thead>
+          <tbody>
+            {rows.map(r => {
+              const c = r.core, p = r.surrogate;
+              const chosen = bestCore && c.isp === bestCore.isp && c.pipe_id === bestCore.pipe_id;
+              return (
+                <tr key={r.rank} style={chosen ? {fontWeight:600} : undefined}>
+                  <td>{r.rank + 1}{chosen ? ' ★' : ''}</td>
+                  <td style={{fontSize:11}}>{c.pipe_id}</td>
+                  <td className="num">{cell(p.isp, 2)} → {cell(c.isp, 2)}</td>
+                  <td className="num">{cell(p.impulse, 0)} → {cell(c.impulse, 0)}</td>
+                  <td className="num">{cell(p.thrust_avg, 1)} → {cell(c.thrust_avg, 1)}</td>
+                  <td className="num">{cell(p.dp_ratio_min == null ? null : p.dp_ratio_min * 100, 1)} → {cell(c.dp_ratio_min == null ? null : c.dp_ratio_min * 100, 1)}</td>
+                  <td style={{color: c.state === 'feasible' ? 'var(--cds-support-success)' : 'var(--cds-support-error)'}}>
+                    {c.state === 'feasible' ? '✓ 합격' : `✕ ${c.failed.map(f => CONSTRAINT_LABELS[f] || f).join(', ')}`}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+/* ===================================================================
+   KPI TILES
+   =================================================================== */
+// 지금 보여줄 최고 형상. 대리모델 모드에서 탐색 중이면 실시간 core 검증 최고(best_core)를 우선한다
+function displayBest(job) {
+  if (job.evaluator !== 'surrogate') return { b: job.best, src: 'core' };
+  if (job.best_source === 'core') return { b: job.best, src: 'core' };
+  if (job.best_core && job.best_core.state === 'feasible') return { b: job.best_core, src: 'core-live' };
+  return { b: job.best, src: 'surrogate' };
+}
+
+function KpiRow({ job, colors }) {
+  const { b: best, src } = displayBest(job);
+  const feasible = best && best.state === 'feasible';
+  const pop = job.population || [];
+  const nF = pop.filter(c => c.state === 'feasible').length;
+  const nDone = pop.filter(c => !['pending','simulating'].includes(c.state)).length;
+  const last = job.history[job.history.length - 1];
+  const tol = (job.tolerance || 0.05) * 100;
+  const dI = best ? pct(best.impulse, job.targets.impulse) : null;
+  const dF = best ? pct(best.thrust_avg, job.targets.thrust_avg) : null;
+  const errCls = (d) => d == null ? '' : (Math.abs(d) <= tol ? 'kpi__sub--ok' : 'kpi__sub--bad');
+
+  return (
+    <div className="kpi-row">
+      <div key={feasible ? `isp-${best.isp}` : 'isp-none'} className={`kpi ${feasible ? 'kpi--flash' : ''}`}>
+        <div className="kpi__label">Best Isp{job.evaluator === 'surrogate' ? (src === 'surrogate' ? ' (예측)' : ' (core 검증)') : ''}</div>
+        <div className="kpi__value">{feasible ? fmt(best.isp, 2) : '—'}<span className="kpi__unit">s</span></div>
+        <div className="kpi__sub">
+          {src === 'core-live' ? `탐색 중 core 로 확인된 최고 · 예측 최고 ${job.best?.state === 'feasible' ? fmt(job.best.isp, 2) : '—'} s`
+           : feasible ? `세대 ${job.best_improved_at != null ? job.best_improved_at + 1 : '—'}에서 갱신 · ${best.pipe_id}`
+                      : best ? `합격 해 탐색 중 · 최소 위반 ${fmt(best.violation, 3)}` : '평가 대기'}
+        </div>
+      </div>
+      <div className="kpi">
+        <div className="kpi__label">Feasible (this gen)</div>
+        <div className="kpi__value">{nF}<span className="kpi__unit">/ {pop.length || job.pop_size}</span></div>
+        <div className="kpi-bar">
+          <div style={{width:`${pop.length ? nF/pop.length*100 : 0}%`, background:colors.ok}}/>
+          <div style={{width:`${pop.length ? (nDone-nF)/pop.length*100 : 0}%`, background:colors.past}}/>
+        </div>
+      </div>
+      <div className="kpi">
+        <div className="kpi__label">{job.evaluator === 'surrogate' ? 'Surrogate Predictions' : 'Simulations'}</div>
+        <div className="kpi__value">{last ? last.simulated_total : 0}</div>
+        <div className="kpi__sub">형상 검사 탈락 {last ? last.rejected_total : 0} · 워커 {job.n_workers || '—'}</div>
+      </div>
+      <div className="kpi">
+        <div className="kpi__label">Impulse Error</div>
+        <div className="kpi__value">{dI == null ? '—' : `${dI>=0?'+':''}${fmt(dI,1)}`}<span className="kpi__unit">%</span></div>
+        <div className={`kpi__sub ${errCls(dI)}`}>{best && best.impulse != null ? `${fmt(best.impulse,0)} N·s (허용 ±${tol}%)` : `허용 ±${tol}%`}</div>
+      </div>
+      <div className="kpi">
+        <div className="kpi__label">Avg Thrust Error</div>
+        <div className="kpi__value">{dF == null ? '—' : `${dF>=0?'+':''}${fmt(dF,1)}`}<span className="kpi__unit">%</span></div>
+        <div className={`kpi__sub ${errCls(dF)}`}>{best && best.thrust_avg != null ? `${fmt(best.thrust_avg,0)} N (허용 ±${tol}%)` : `허용 ±${tol}%`}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   PIPELINE FLOW (current generation)
+   =================================================================== */
+function PipelineFlow({ job, colors }) {
+  const pop = job.population || [];
+  const count = (s) => pop.filter(c => c.state === s).length;
+  const pending = count('pending'), sim = count('simulating'), rej = count('rejected');
+  const ok = count('feasible'), bad = count('infeasible');
+  const genDone = !!job.history[job.generation];
+  const running = job.status === 'running';
+  const elite = pop.filter(c => c.elite).length;
+
+  const active = !running ? -1 : genDone ? 4 : sim > 0 ? 2 : pending > 0 ? 1 : 3;
+  const nodes = [
+    { step:'Step 1', name:'후보 생성', nums:[[colors.blue, `${pop.length} 개체`]] },
+    { step:'Step 2', name:'형상 검사', nums:[[colors.ok, `통과 ${pop.length - rej - pending}`], [colors.past, `탈락 ${rej}`]] },
+    { step:'Step 3', name: job.evaluator === 'surrogate' ? 'Surrogate 예측' : 'Core 시뮬레이션', nums:[[colors.blue, `실행 ${sim}`], [colors.purple, `완료 ${ok + bad}`]] },
+    { step:'Step 4', name:'성능 검사', nums:[[colors.ok, `합격 ${ok}`], [colors.near, `불합격 ${bad}`]] },
+    job.mode === 'curve'
+      ? { step:'Step 5', name:'곡선 판단 · 이동', nums:[[colors.purple, job.curve_last ? job.curve_last.desc : '대기']] }
+      : job.mode === 'direct'
+      ? { step:'Step 5', name:'에이전트 이동', nums:[[colors.purple, job.direct_last ? `평균 스텝 ${fmt(job.direct_last.step_mean * 100, 2)}%` : '대기']] }
+      : { step:'Step 5', name:'선택 · 교배 · 변이', nums:[[colors.gold, genDone ? `엘리트 ${elite}` : '대기']] },
+  ];
+  return (
+    <div className="flow">
+      {nodes.map((n, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && (
+            <div className={`flow-arrow ${running && active >= i ? 'flow-arrow--live' : ''}`}>
+              <svg viewBox="0 0 36 12"><line x1="2" y1="6" x2="28" y2="6"/><polygon points="28,1 35,6 28,11"/></svg>
+            </div>
+          )}
+          <div className={`flow-node ${active === i ? 'flow-node--active' : ''}`}>
+            <div className="flow-node__step">{n.step}</div>
+            <div className="flow-node__name">{n.name}</div>
+            <div className="flow-node__nums">
+              {n.nums.map(([c, t], k) => <span key={k}><i style={{background:c}}/>{t}</span>)}
+            </div>
+          </div>
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+/* ===================================================================
+   POPULATION MATRIX
+   =================================================================== */
+function PopulationMatrix({ job }) {
+  const [hover, setHover] = useState(null);
+  const pop = job.population || [];
+  const cell = hover != null ? pop[hover] : null;
+  const bestIsp = Math.max(0, ...pop.filter(c => c.state === 'feasible').map(c => c.isp || 0));
+
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title"><DnaIcon/> Population — Generation {Math.max(job.generation, 0) + 1}</div>
+      <div className="chart-card__subtitle">개체 하나 = 엔진 형상 후보 · 번호는 세대 내 순위 · 마우스를 올려 상세 확인</div>
+      <div className="pop-grid" onMouseLeave={()=>setHover(null)}>
+        {pop.map((c, i) => {
+          const cls = cellClass(c);
+          const shade = c.state === 'feasible' && bestIsp ? 0.55 + 0.45 * Math.pow((c.isp || 0) / bestIsp, 6) : 1;
+          return (
+            <div key={i}
+                 className={`pop-cell pop-cell--${cls} ${c.elite?'pop-cell--elite':''} ${hover===i?'pop-cell--hover':''}`}
+                 style={{opacity: shade}}
+                 onMouseEnter={()=>setHover(i)}>
+              {c.rank != null && <span className="pop-cell__rank">{c.rank + 1}</span>}
+              {c.elite && <span className="pop-cell__star">★</span>}
+              {c.state === 'simulating' ? <div className="mini-spin"/>
+                : c.state === 'feasible' ? fmt(c.isp, 0)
+                : c.state === 'rejected' ? '✕'
+                : c.state === 'infeasible' ? (c.error ? '!' : '△') : ''}
+            </div>
+          );
+        })}
+      </div>
+      <div className="pop-legend">
+        <span><i style={{border:'1px dashed var(--cds-border-subtle-01)'}}/>대기</span>
+        <span><i style={{background:'var(--cds-interactive)'}}/>시뮬레이션 중</span>
+        <span><i className="pop-cell--rejected"/>형상 탈락</span>
+        <span><i style={{background:'#ff832b'}}/>근접 불합격</span>
+        <span><i style={{background:'var(--cds-support-error)'}}/>불합격</span>
+        <span><i style={{background:'var(--cds-support-success)'}}/>합격 (진할수록 Isp↑)</span>
+        <span><i style={{outline:'2px solid var(--cds-accent-gold)',outlineOffset:-2}}/>엘리트</span>
+      </div>
+      <div className="inspector">
+        {!cell ? '개체 위에 마우스를 올리면 상세 정보가 표시됩니다.' : (
+          <>
+            <div><strong>#{cell.index}</strong> · {{
+              pending:'대기', simulating:'시뮬레이션 중', rejected:'형상 검사 탈락',
+              infeasible:'시뮬레이션 후 불합격', feasible:'합격'}[cell.state]}
+              {cell.pipe_id && <> · <span className="mono">{cell.pipe_id}</span></>}
+              {cell.rank != null && <> · 순위 {cell.rank + 1}</>}</div>
+            {cell.impulse != null && (
+              <div className="mono">Isp {fmt(cell.isp,2)} s · I {fmt(cell.impulse,0)} N·s · F̄ {fmt(cell.thrust_avg,0)} N{cell.dp_ratio_min != null ? ` · Δp/Pc ${fmt(cell.dp_ratio_min*100,1)}%` : ''}</div>
+            )}
+            {cell.failed && cell.failed.length > 0 && (
+              <div>위반: {cell.failed.map(f => CONSTRAINT_LABELS[f] || f).join(', ')}
+                {cell.violation != null && <span className="mono"> (위반량 {fmt(cell.violation,3)})</span>}</div>
+            )}
+            {cell.error && <div className="mono">{cell.error}</div>}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   OBJECTIVE SPACE (impulse vs avg thrust)
+   =================================================================== */
+function ObjectiveSpace({ job, points, colors }) {
+  const tI = job.targets.impulse, tF = job.targets.thrust_avg, tol = job.tolerance || 0.05;
+  const cur = job.generation;
+  const best = job.best && job.best.impulse != null ? [{...job.best, gen: job.best_improved_at ?? cur, feasible: job.best.state === 'feasible'}] : [];
+
+  const xMax = Math.min(Math.max(...points.map(p => p.impulse), tI * 1.3) * 1.05, tI * 3);
+  const yMax = Math.min(Math.max(...points.map(p => p.thrust_avg), tF * 1.3) * 1.05, tF * 3);
+  const inView = (p) => p.impulse <= xMax && p.thrust_avg <= yMax;
+  const past = points.filter(p => p.gen < cur && !p.feasible && inView(p));
+  const now  = points.filter(p => p.gen >= cur && !p.feasible && inView(p));
+  const ok   = points.filter(p => p.feasible && inView(p));
+  const hidden = points.length - past.length - now.length - ok.length;
+
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">Objective Space</div>
+      <div className="chart-card__subtitle">
+        {job.evaluator === 'surrogate' ? '대리모델로 평가한' : '시뮬레이션한'} 모든 후보의 (총 임펄스, 평균 추력) · 초록 박스 = 목표 ±{tol*100}% 허용 영역
+        {hidden > 0 && ` · 범위 밖 ${hidden}개 생략`}
+      </div>
+      <ResponsiveContainer width="100%" height={340}>
+        <ScatterChart margin={{top:8,right:16,bottom:24,left:8}}>
+          <CartesianGrid stroke={colors.grid} strokeDasharray="3 3"/>
+          <XAxis type="number" dataKey="impulse" name="Impulse" domain={[0, Math.ceil(xMax)]} allowDataOverflow
+                 tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid}
+                 label={{value:'Total Impulse [N·s]',position:'insideBottom',offset:-14,fill:colors.tick,fontSize:12}}/>
+          <YAxis type="number" dataKey="thrust_avg" name="Thrust" domain={[0, Math.ceil(yMax)]} allowDataOverflow
+                 tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid}
+                 label={{value:'Avg Thrust [N]',angle:-90,position:'insideLeft',fill:colors.tick,fontSize:12}}/>
+          <ZAxis range={[28, 28]}/>
+          <ZAxis zAxisId="best" range={[260, 260]}/>
+          <ReferenceArea x1={tI*(1-tol)} x2={tI*(1+tol)} y1={tF*(1-tol)} y2={tF*(1+tol)}
+                         fill={colors.box} fillOpacity={0.14} stroke={colors.box} strokeOpacity={0.8}/>
+          <ReferenceLine x={tI} stroke={colors.box} strokeDasharray="4 4" strokeOpacity={0.6}/>
+          <ReferenceLine y={tF} stroke={colors.box} strokeDasharray="4 4" strokeOpacity={0.6}/>
+          <Tooltip content={<ChartTooltip/>} cursor={{strokeDasharray:'3 3'}}/>
+          <Scatter name="이전 세대" data={past} fill={colors.past} fillOpacity={0.45} isAnimationActive={false}/>
+          <Scatter name="현재 세대" data={now} fill={colors.blue} fillOpacity={0.85} isAnimationActive={false}/>
+          <Scatter name="합격" data={ok} fill={colors.ok} isAnimationActive={false}/>
+          <Scatter name="최적" data={best} fill={colors.gold} shape="star" zAxisId="best" isAnimationActive={false}/>
+          <Legend verticalAlign="top" height={28} iconSize={10} wrapperStyle={{fontSize:12,color:colors.tick}}/>
+        </ScatterChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+/* ===================================================================
+   CONVERGENCE + CONSTRAINT BOTTLENECK
+   =================================================================== */
+function Convergence({ job, colors }) {
+  const data = job.history.map(h => ({
+    gen: h.generation + 1, best: h.best_isp, mean: h.mean_feasible_isp, feasible: h.n_feasible,
+    violation: h.best_violation,
+  }));
+  // 합격 해가 나오기 전에는 Isp 대신 최소 제약 위반량이 0 으로 줄어드는 과정을 보여준다
+  const searching = !job.history.some(h => h.best_isp != null);
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">Convergence</div>
+      <div className="chart-card__subtitle">
+        {searching ? '합격 해 탐색 단계 · 세대별 최소 제약 위반량 (0 이 되면 합격)'
+                   : '세대별 누적 최고 Isp · 합격 개체 평균 Isp · 합격 개체 수'}
+      </div>
+      <ResponsiveContainer width="100%" height={260}>
+        <ComposedChart data={data} margin={{top:8,right:8,bottom:16,left:0}}>
+          <CartesianGrid stroke={colors.grid} strokeDasharray="3 3"/>
+          <XAxis dataKey="gen" tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid}
+                 label={{value:'Generation',position:'insideBottom',offset:-8,fill:colors.tick,fontSize:12}}/>
+          <YAxis yAxisId="isp" domain={searching ? [0, 'auto'] : ['auto','auto']} tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid} width={48}/>
+          <YAxis yAxisId="n" orientation="right" allowDecimals={false} domain={[0, job.pop_size || 'auto']}
+                 tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid} width={32}/>
+          <Tooltip contentStyle={{background:'var(--cds-background-inverse)',border:'none',fontSize:12}}
+                   labelStyle={{color:'var(--cds-text-inverse)'}} itemStyle={{color:'var(--cds-text-inverse)'}}
+                   formatter={(v, n) => [n === '합격 개체' ? v : n === '최소 위반량' ? fmt(v,3) : `${fmt(v,2)} s`, n]} labelFormatter={g => `세대 ${g}`}/>
+          <Bar yAxisId="n" dataKey="feasible" name="합격 개체" fill={colors.ok} fillOpacity={0.25} isAnimationActive={false}/>
+          {searching
+            ? <Line yAxisId="isp" type="stepAfter" dataKey="violation" name="최소 위반량" stroke={colors.near} strokeWidth={2.5} dot={{r:3}} isAnimationActive={false}/>
+            : <Line yAxisId="isp" type="stepAfter" dataKey="best" name="최고 Isp" stroke={colors.gold} strokeWidth={2.5} dot={{r:3}} connectNulls isAnimationActive={false}/>}
+          {!searching && <Line yAxisId="isp" type="monotone" dataKey="mean" name="평균 Isp (합격)" stroke={colors.blue} strokeWidth={1.5} strokeDasharray="5 4" dot={false} connectNulls isAnimationActive={false}/>}
+          <Legend verticalAlign="top" height={28} iconSize={10} wrapperStyle={{fontSize:12}}/>
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function Bottleneck({ job, colors }) {
+  const data = Object.entries(job.fail_counts || {})
+    .map(([k, v]) => ({ key:k, name: CONSTRAINT_LABELS[k] || k, count: v }))
+    .sort((a, b) => b.count - a.count).slice(0, 10);
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">Constraint Bottleneck</div>
+      <div className="chart-card__subtitle">고유 후보 기준 제약별 위반 횟수 · 회색 = 시뮬레이션 전 형상 검사, 주황 = 시뮬레이션 후 검사</div>
+      {data.length === 0 ? (
+        <div style={{height:260,display:'flex',alignItems:'center',justifyContent:'center',color:'var(--cds-text-helper)',fontSize:13}}>아직 위반 기록이 없습니다</div>
+      ) : (
+        <ResponsiveContainer width="100%" height={260}>
+          <BarChart data={data} layout="vertical" margin={{top:0,right:24,bottom:0,left:0}}>
+            <CartesianGrid stroke={colors.grid} strokeDasharray="3 3" horizontal={false}/>
+            <XAxis type="number" allowDecimals={false} tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid}/>
+            <YAxis type="category" dataKey="name" width={170} tick={{fill:colors.tick,fontSize:11}} stroke={colors.grid}/>
+            <Tooltip cursor={{fill:'var(--cds-hover-ui)'}} contentStyle={{background:'var(--cds-background-inverse)',border:'none',fontSize:12}}
+                     labelStyle={{color:'var(--cds-text-inverse)'}} itemStyle={{color:'var(--cds-text-inverse)'}} formatter={v => [v, '위반']}/>
+            <Bar dataKey="count" isAnimationActive={false}>
+              {data.map(d => <Cell key={d.key} fill={POST_SIM.has(d.key) ? colors.near : colors.past}/>)}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      )}
+    </div>
+  );
+}
+
+/* ===================================================================
+   BEST DESIGN — engine schematic
+   =================================================================== */
+// scale = {len, rad}: 여러 형상을 같은 축척으로 그릴 때 (갤러리). 없으면 이 형상에 맞춰 꽉 채운다
+function EngineSchematic({ d, colors, scale, compact }) {
+  const W = 900, H = compact ? 150 : 220, padX = 24, axisY = compact ? 75 : 96;
+  const t = d.oxidizer_tank_tickness;
+  const Ro = d.oxidizer_tank_radius, Rc = d.combution_chamber_radius;
+  const Rt = d.nozzle_throat_radius, Re = d.nozzle_exit_radius;
+  const conv = Math.max(Rc - Rt, 0.005);
+  const div = Math.max((Re - Rt) / Math.tan(15 * Math.PI / 180), 0.01);
+  const gap = 0.03;
+  const total = d.oxidizer_tank_length + gap + d.combution_chamber_length + conv + div;
+  const sx = (W - 2 * padX) / (scale ? scale.len : total);
+  const sy = scale ? Math.min((compact ? 62 : 70) / scale.rad, sx * 6)   // 반경 방향은 확대 표시 (공통 축척이면 모두 같은 배율)
+                   : Math.min(70 / (Rc + t), sx * 6);
+  const exag = sy / sx;
+  const X = (m) => padX + m * sx, Y = (r) => axisY - r * sy, Yb = (r) => axisY + r * sy;
+
+  const x0 = 0, x1 = d.oxidizer_tank_length, x2 = x1 + gap, x3 = x2 + d.combution_chamber_length;
+  const fx0 = x2 + d.outter_radius, fx1 = fx0 + d.fuel_length;
+  const ports = d.port_num === 1 ? [0] : [d.port_center_radius, -d.port_center_radius];
+  const nozzle = [
+    [x3, Rc], [x3 + conv, Rt], [x3 + conv + div, Re],
+    [x3 + conv + div, -Re], [x3 + conv, -Rt], [x3, -Rc],
+  ].map(([x, r]) => `${X(x)},${r >= 0 ? Y(r) : Yb(-r)}`).join(' ');
+
+  const dim = (a, b, label, y) => (
+    <g>
+      <line x1={X(a)} x2={X(b)} y1={y} y2={y} stroke={colors.tick} strokeWidth="1" markerStart="url(#arr)" markerEnd="url(#arr)"/>
+      <text x={(X(a)+X(b))/2} y={y+14} textAnchor="middle" fontSize="11" fill={colors.tick} fontFamily="IBM Plex Mono">{label}</text>
+    </g>
+  );
+
+  return (
+    <svg className="engine-svg" viewBox={`0 0 ${W} ${H}`}>
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill={colors.tick}/>
+        </marker>
+      </defs>
+      <line x1={padX-8} x2={W-padX+8} y1={axisY} y2={axisY} stroke={colors.grid} strokeDasharray="8 4 2 4"/>
+      {/* 산화제 탱크 */}
+      <rect x={X(x0)} y={Y(Ro+t)} width={(x1-x0)*sx} height={(Ro+t)*2*sy} fill={colors.tick} fillOpacity="0.35"/>
+      <rect x={X(x0)} y={Y(Ro)} width={(x1-x0)*sx} height={Ro*2*sy} fill={colors.blue} fillOpacity="0.22"/>
+      {!compact && <text x={X((x0+x1)/2)} y={axisY+4} textAnchor="middle" fontSize="12" fill={colors.blue} fontWeight="600">N₂O {fmt(d.oxidizer_M,2)} kg</text>}
+      {/* 인젝터 */}
+      <rect x={X(x1)} y={Y(Rc)} width={gap*sx} height={Rc*2*sy} fill={colors.tick} fillOpacity="0.6"/>
+      {/* 연소 챔버 */}
+      <rect x={X(x2)} y={Y(Rc+t)} width={(x3-x2)*sx} height={(Rc+t)*2*sy} fill={colors.tick} fillOpacity="0.35"/>
+      <rect x={X(x2)} y={Y(Rc)} width={(x3-x2)*sx} height={Rc*2*sy} fill="var(--cds-grain-bg)"/>
+      {/* 연료 그레인 + 포트 */}
+      <rect x={X(fx0)} y={Y(d.outter_radius)} width={d.fuel_length*sx} height={d.outter_radius*2*sy} fill={colors.near} fillOpacity="0.75"/>
+      {ports.map((pc, i) => (
+        <rect key={i} x={X(fx0)} y={(pc >= 0 ? Y(pc + d.inner_radius) : Yb(-pc - d.inner_radius))} width={d.fuel_length*sx}
+              height={d.inner_radius*2*sy} fill="var(--cds-grain-bg)"/>
+      ))}
+      {!compact && <text x={X((fx0+fx1)/2)} y={Y(Rc+t)-6} textAnchor="middle" fontSize="11" fill={colors.near} fontWeight="600">
+        {d.port_num === 1 ? 'single port' : `${d.port_num}-port`} grain
+      </text>}
+      {/* 노즐 */}
+      <polygon points={nozzle} fill={colors.tick} fillOpacity="0.55"/>
+      {/* 치수 */}
+      {!compact && dim(x0, x1, `tank ${mm(d.oxidizer_tank_length)} mm`, H-46)}
+      {!compact && dim(x2, x3, `chamber ${mm(d.combution_chamber_length)} mm`, H-46)}
+      {!compact && dim(fx0, fx1, `fuel ${mm(d.fuel_length)}`, H-20)}
+
+      {!compact && <text x={W-padX} y={16} textAnchor="end" fontSize="10" fill={colors.tick} fontFamily="IBM Plex Mono">radial ×{fmt(exag,1)}{scale ? ' · 공통 축척' : ''}</text>}
+    </svg>
+  );
+}
+
+function GrainSection({ d, colors }) {
+  const S = 180, c = S / 2, t = d.oxidizer_tank_tickness;
+  const k = (S / 2 - 6) / (d.combution_chamber_radius + t);
+  const ports = d.port_num === 1 ? [[0, 0]]
+    : Array.from({length: d.port_num}, (_, i) => {
+        const a = 2 * Math.PI * i / d.port_num;
+        return [d.port_center_radius * Math.cos(a), d.port_center_radius * Math.sin(a)];
+      });
+  return (
+    <svg viewBox={`0 0 ${S} ${S}`} style={{width:'100%',maxWidth:180,display:'block',margin:'0 auto',background:'var(--cds-grain-bg)',border:'1px solid var(--cds-border-subtle-00)'}}>
+      <circle cx={c} cy={c} r={(d.combution_chamber_radius + t) * k} fill={colors.tick} fillOpacity="0.35"/>
+      <circle cx={c} cy={c} r={d.combution_chamber_radius * k} fill="var(--cds-grain-bg)"/>
+      <circle cx={c} cy={c} r={d.outter_radius * k} fill={colors.near} fillOpacity="0.75"/>
+      {ports.map(([x, y], i) => <circle key={i} cx={c + x * k} cy={c + y * k} r={d.inner_radius * k} fill="var(--cds-grain-bg)"/>)}
+    </svg>
+  );
+}
+
+function BestDesign({ job, meta, colors, onDownload, onOpenSim }) {
+  const { b, src } = displayBest(job);
+  if (!b) return null;
+  const d = b.design;
+  const feasible = b.state === 'feasible';
+  const pipe = (meta?.pipes || []).find(p => p.pipe_id === b.pipe_id);
+  const tol = (job.tolerance || 0.05) * 100;
+  const dI = pct(b.impulse, job.targets.impulse), dF = pct(b.thrust_avg, job.targets.thrust_avg);
+  const devColor = (v) => v == null ? '' : Math.abs(v) <= tol ? 'var(--cds-support-success)' : 'var(--cds-support-error)';
+  const rows = [
+    ['파이프', b.pipe_id],
+    ['탱크/챔버 내경 반지름', `${mm(d.oxidizer_tank_radius)} mm`],
+    ['가공 두께', `${mm(d.oxidizer_tank_tickness)} mm${pipe ? ` (구매 ${mm(pipe.wall_thickness)})` : ''}`],
+    ['산화제 탱크 길이', `${mm(d.oxidizer_tank_length)} mm`],
+    ['연소 챔버 길이', `${mm(d.combution_chamber_length)} mm (연료+2R ×1.3)`],
+    ...(d.supercharge_pressure != null ? [['헬륨 슈퍼차징', `${fmt(d.supercharge_pressure / 1e6, 2)} MPa (헬륨 ${fmt(d.pressurant_M * 1e3, 1)} g)`]] : []),
+    ['연료 외경 반지름 / 길이', `${mm(d.outter_radius)} / ${mm(d.fuel_length)} mm`],
+    ['포트', d.port_num === 1 ? `단일 · r ${mm(d.inner_radius)} mm` : `${d.port_num}개 · r ${mm(d.inner_radius)} · 배치 ${mm(d.port_center_radius)} mm`],
+    ['인젝터', `${d.injector_oriffice_n}개 · r ${mm(d.injector_oriffice_radius)} · L ${mm(d.injector_oriffice_length)} mm`],
+    ['노즐 목 / 출구', `${mm(d.nozzle_throat_radius)} / ${mm(d.nozzle_exit_radius)} mm (ε ${fmt((d.nozzle_exit_radius/d.nozzle_throat_radius)**2, 2)})`],
+    ['산화제 질량', `${fmt(d.oxidizer_M, 2)} kg`],
+  ];
+
+  return (
+    <div className="chart-card" style={{marginBottom:16}}>
+      <div className="chart-card__title">
+        <EngineIcon/> {feasible ? 'Best Design' : 'Best Candidate (제약 미충족)'}
+        <span className={`cds-tag ${feasible ? 'cds-tag--green' : 'cds-tag--red'}`} style={{marginLeft:8}}>
+          {feasible ? 'ALL CONSTRAINTS MET' : `위반: ${b.failed.map(f => CONSTRAINT_LABELS[f] || f).join(', ')}`}
+        </span>
+        {job.evaluator === 'surrogate' && (
+          <span className={`cds-tag ${src !== 'surrogate' ? 'cds-tag--blue' : 'cds-tag--gray'}`} style={{marginLeft:8}}>
+            {src !== 'surrogate' ? 'CORE VERIFIED' : 'SURROGATE PREDICTION'}
+          </span>
+        )}
+        {job.robust && job.status !== 'running' && (
+          <span className="cds-tag cds-tag--blue" style={{marginLeft:8}}
+                title={`Isp ${fmt(job.robust.top_isp - job.robust.band, 2)} s 이상 합격 형상 ${job.robust.n_plateau}개 중 제약 여유 최대`}>
+            {job.robust.same ? `견고성 선택 · 최고 Isp 형상이 여유도 최대 (${fmt(job.robust.pick_margin, 2)})`
+                             : `견고성 선택 · Isp ${fmt(job.robust.pick_isp - job.robust.top_isp, 2)} s · 여유 ${fmt(job.robust.top_margin, 2)} → ${fmt(job.robust.pick_margin, 2)}`}
+          </span>
+        )}
+        {job.trim && job.status !== 'running' && (
+          <span className={`cds-tag ${job.trim.accepted ? 'cds-tag--green' : 'cds-tag--gray'}`} style={{marginLeft:8}}
+                title={job.trim.accepted ? '' : `줄인 형상이 core 에서 불합격 (${(job.trim.failed || []).join(', ')}) → 원래 길이 유지`}>
+            {job.trim.accepted ? `챔버 ${fmt(job.trim.old_length * 1e3, 0)} → ${fmt(job.trim.new_length * 1e3, 0)} mm` : '챔버 길이 유지'}
+          </span>
+        )}
+      </div>
+      <div className="chart-card__subtitle">
+        {src === 'surrogate'
+          ? '대리모델 예측 기준 최선 형상 · 탐색 중 예측 상위 후보를 core 로 계속 검증하며, 합격이 나오면 그 형상으로 바뀝니다'
+          : src === 'core-live'
+            ? '탐색 중 core 시뮬레이션으로 확인된 최고 형상 · 더 좋은 형상이 검증되면 바로 갱신됩니다'
+            : '현재까지 가장 좋은 형상 · 세대가 진행되며 실시간으로 갱신됩니다'}
+      </div>
+      <div className="best-layout">
+        <div>
+          <EngineSchematic d={d} colors={colors}/>
+          <table className="cds-data-table" style={{marginTop:12}}>
+            <tbody>
+              {rows.map(([k, v]) => <tr key={k}><td className="label">{k}</td><td className="num">{v}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <GrainSection d={d} colors={colors}/>
+          <div style={{marginTop:12}}>
+            <div className="perf-row">비추력 Isp<strong>{fmt(b.isp, 2)} s</strong></div>
+            <div className="perf-row">총 임펄스<span><strong>{fmt(b.impulse, 0)} N·s</strong><em style={{color:devColor(dI)}}>{dI == null ? '' : `${dI>=0?'+':''}${fmt(dI,1)}%`}</em></span></div>
+            <div className="perf-row">평균 추력<span><strong>{fmt(b.thrust_avg, 0)} N</strong><em style={{color:devColor(dF)}}>{dF == null ? '' : `${dF>=0?'+':''}${fmt(dF,1)}%`}</em></span></div>
+            <div className="perf-row">연소 시간<strong>{fmt(b.burn_time, 2)} s</strong></div>
+            {b.thrust_avg_ss != null && (
+              <>
+                <div className="perf-row">정상상태 평균 추력<span><strong>{fmt(b.thrust_avg_ss, 0)} N</strong><em>{`${fmt(b.ss_start, 2)}–${fmt(b.ss_end, 2)} s`}</em></span></div>
+                <div className="perf-row">정상상태 평균 비추력<strong>{fmt(b.isp_ss, 2)} s</strong></div>
+              </>
+            )}
+            <div className="perf-row">인젝터 차압 (최소 Δp/Pc)<span><strong>{b.dp_ratio_min == null ? '—' : `${fmt(b.dp_ratio_min * 100, 1)} %`}</strong><em style={{color: b.dp_ratio_min == null ? '' : b.dp_ratio_min >= (job.min_dp_ratio ?? 0.2) ? 'var(--cds-support-success)' : 'var(--cds-support-error)'}}>{`≥ ${fmt((job.min_dp_ratio ?? 0.2) * 100, 0)}%`}</em></span></div>
+            <div className="perf-row">최대 탱크압 / 챔버압<strong>{b.max_tank_pressure == null ? '—' : `${fmt(b.max_tank_pressure / 1e6, 2)} / ${fmt(b.max_chamber_pressure / 1e6, 2)} MPa`}</strong></div>
+          </div>
+          <div className="best-actions">
+            <button className="cds-btn cds-btn--tertiary cds-btn--compact" onClick={onDownload} disabled={!meta}><DownloadIcon/> Save JSON</button>
+            <button className="cds-btn cds-btn--primary cds-btn--compact" onClick={onOpenSim} disabled={!meta}><LaunchIcon/> Open in Simulator</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   MAIN APP
+   =================================================================== */
+/* ===================================================================
+   FEASIBLE DESIGNS — 제약 만족 형상 목록 / 갤러리 / 상세 팝업
+   =================================================================== */
+const VERIFY_TAG = {
+  pass:    ['cds-tag--green', 'CORE 합격'],
+  fail:    ['cds-tag--red',   'CORE 불합격'],
+  pending: ['cds-tag--blue',  'core 검증 중'],
+  none:    ['cds-tag--gray',  '예측 합격'],
+};
+const verifyTag = (row) => row.source === 'core' ? ['cds-tag--green', '합격'] : VERIFY_TAG[row.verify] || VERIFY_TAG.none;
+
+// 그림 전체 길이 / 최대 반경 (EngineSchematic 과 같은 계산) — 공통 축척용
+function engineExtent(d) {
+  const Rc = d.combution_chamber_radius ?? d.oxidizer_tank_radius, Rt = d.nozzle_throat_radius, Re = d.nozzle_exit_radius;
+  const conv = Math.max(Rc - Rt, 0.005), div = Math.max((Re - Rt) / Math.tan(15 * Math.PI / 180), 0.01);
+  return { len: d.oxidizer_tank_length + 0.03 + d.combution_chamber_length + conv + div, rad: Rc + d.oxidizer_tank_tickness };
+}
+
+function errText(v, target) {
+  const e = pct(v, target);
+  return e == null ? '' : `${e >= 0 ? '+' : ''}${fmt(e, 1)}%`;
+}
+
+function FeasiblePanel({ job, colors, onOpen }) {
+  const [rows, setRows] = useState([]);
+  const [filter, setFilter] = useState('all');        // all | verified
+  const [view, setView] = useState('table');          // table | gallery
+  const [sameScale, setSameScale] = useState(true);
+  const [group, setGroup] = useState(true);           // 거의 같은 형상 묶기
+  const surrogate = job.evaluator === 'surrogate';
+
+  useEffect(() => {
+    let alive = true, timer = null;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/mdo/feasible?filter=${filter}&group=${group ? 1 : 0}`, { credentials:'same-origin' });
+        const d = await r.json();
+        if (alive) setRows(d.rows || []);
+      } catch {}
+      if (alive && job.status === 'running') timer = setTimeout(load, 2000);
+    };
+    load();
+    return () => { alive = false; clearTimeout(timer); };
+  }, [job.id, job.status, filter, group]);
+
+  const c = job.feasible_counts || {};
+  const galleryRows = rows.slice(0, 24);
+  const scale = useMemo(() => {
+    if (!sameScale || !galleryRows.length) return null;
+    const ex = galleryRows.map(r => engineExtent(r.geom));
+    return { len: Math.max(...ex.map(e => e.len)), rad: Math.max(...ex.map(e => e.rad)) };
+  }, [rows, sameScale]);
+
+  return (
+    <div className="chart-card">
+      <div className="feas-head">
+        <div>
+          <div className="chart-card__title">Feasible Designs</div>
+          <div className="chart-card__subtitle">
+            모든 제약을 만족한 형상 {fmtInt(job.feasible_total || 0)}개{group ? ` (유사 형상 묶어 ${rows.length}개 표시)` : ''}
+            {surrogate ? ` · core 합격 ${c.pass || 0} · 검증 중 ${c.pending || 0} · core 불합격 ${c.fail || 0} · 예측만 ${c.none || 0}` : ''}
+            {' · 행을 누르면 상세 (실행 중에도 갱신)'}
+          </div>
+        </div>
+        <div className="feas-controls">
+          <label className="feas-check" title="설계 변수 차이가 탐색 범위의 1% 미만인 형상을 하나로 묶습니다">
+            <input type="checkbox" checked={group} onChange={e => setGroup(e.target.checked)}/>유사 형상 묶기</label>
+          {surrogate && (
+            <div className="seg">
+              <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>전체</button>
+              <button className={filter === 'verified' ? 'active' : ''} onClick={() => setFilter('verified')}>core 합격만</button>
+            </div>
+          )}
+          <div className="seg">
+            <button className={view === 'table' ? 'active' : ''} onClick={() => setView('table')}>목록</button>
+            <button className={view === 'gallery' ? 'active' : ''} onClick={() => setView('gallery')}>형상 모아보기</button>
+          </div>
+        </div>
+      </div>
+
+      {!rows.length ? (
+        <div className="feas-empty">{job.status === 'running' ? '아직 모든 제약을 만족한 형상이 없습니다 — 탐색 중' : '모든 제약을 만족한 형상이 없습니다'}</div>
+      ) : view === 'table' ? (
+        <div className="feas-table-wrap">
+          <table className="cds-data-table feas-table">
+            <thead><tr>
+              <th>#</th><th>상태</th>
+              <th style={{textAlign:'right'}}>Isp [s]</th>
+              <th style={{textAlign:'right'}}>총 임펄스 [N·s]</th>
+              <th style={{textAlign:'right'}}>평균 추력 [N]</th>
+              <th style={{textAlign:'right'}}>Δp/Pc</th>
+              <th style={{textAlign:'right'}}>연소 시간</th>
+              <th>파이프</th><th style={{textAlign:'right'}}>세대</th>
+            </tr></thead>
+            <tbody>
+              {rows.slice(0, 150).map((r, i) => {
+                const tg = verifyTag(r);
+                return (
+                  <tr key={r.id} className="feas-row" onClick={() => onOpen(r.id)}>
+                    <td className="num">{i + 1}</td>
+                    <td><span className={`cds-tag ${tg[0]}`}>{tg[1]}</span>{r.similar ? <span className="feas-sub"> +유사 {r.similar}</span> : ''}</td>
+                    <td className="num"><strong>{fmt(r.isp, 2)}</strong>{r.verify === 'pass' && r.source === 'surrogate' && r.pred_isp != null ? <span className="feas-sub"> 예측 {fmt(r.pred_isp, 2)}</span> : ''}</td>
+                    <td className="num">{fmtInt(r.impulse)} <span className="feas-sub">{errText(r.impulse, job.targets.impulse)}</span></td>
+                    <td className="num">{fmt(r.thrust_avg, 1)} <span className="feas-sub">{errText(r.thrust_avg, job.targets.thrust_avg)}</span></td>
+                    <td className="num">{r.dp_ratio_min != null ? `${fmt(r.dp_ratio_min * 100, 1)}%` : '—'}</td>
+                    <td className="num">{fmt(r.burn_time, 2)} s</td>
+                    <td style={{fontSize:11}}>{r.pipe_id}</td>
+                    <td className="num">{(r.generation ?? 0) + 1}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {rows.length > 150 && <div className="cds-helper-text" style={{padding:'8px 16px'}}>상위 150개 표시 (전체 {rows.length}개)</div>}
+        </div>
+      ) : (
+        <>
+          <div className="feas-gallery-bar">
+            <label className="feas-check"><input type="checkbox" checked={sameScale} onChange={e => setSameScale(e.target.checked)}/>
+              같은 축척으로 그리기 (형상끼리 크기 비교)</label>
+            <span className="cds-helper-text">상위 {galleryRows.length}개 · 반경 방향은 확대 표시</span>
+          </div>
+          <div className="feas-gallery">
+            {galleryRows.map((r, i) => {
+              const tg = verifyTag(r), ex = engineExtent(r.geom);
+              return (
+                <button key={r.id} className="feas-card" onClick={() => onOpen(r.id)}>
+                  <div className="feas-card__head">
+                    <span className="feas-card__rank">#{i + 1}</span>
+                    <span className={`cds-tag ${tg[0]}`}>{tg[1]}</span>
+                    {r.similar ? <span className="feas-sub">+유사 {r.similar}</span> : null}
+                    <span className="feas-card__isp">{fmt(r.isp, 2)}<small> s</small></span>
+                  </div>
+                  <EngineSchematic d={r.geom} colors={colors} scale={scale} compact/>
+                  <div className="feas-card__meta">
+                    <span>L {fmt(ex.len * 1000, 0)} mm</span><span>Ø {fmt(ex.rad * 2000, 0)} mm</span>
+                    <span>N₂O {fmt(r.geom.oxidizer_M, 2)} kg</span><span>{r.geom.port_num === 1 ? '단일 포트' : `${r.geom.port_num}포트`}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function DesignModal({ id, job, meta, colors, onClose }) {
+  const [detail, setDetail] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let alive = true, timer = null;
+    const load = async () => {
+      try {
+        const r = await fetch(`/api/mdo/design/${id}`, { credentials:'same-origin' });
+        const d = await r.json();
+        if (!alive) return;
+        if (d.error) { setError(d.error); return; }
+        setDetail(d);
+        if (['pending', 'none'].includes(d.design.verify) && job.status === 'running') timer = setTimeout(load, 2000);
+      } catch { if (alive) setError('형상 정보를 불러오지 못했습니다.'); }
+    };
+    load();
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => { alive = false; clearTimeout(timer); window.removeEventListener('keydown', onKey); };
+  }, [id]);
+
+  const e = detail?.design;
+  const main = e ? (e.core || e.pred) : null;
+  const d = main?.design;
+  const tg = e ? verifyTag(e) : null;
+  const targets = detail?.targets || job.targets;
+  const cfg = () => ({ 'TAS-I': { ...(meta?.fixed || {}), ...d } });
+  const save = () => {
+    const blob = new Blob([JSON.stringify(cfg(), null, 4)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `mdo_design_${id}.json`; a.click(); URL.revokeObjectURL(url);
+  };
+  const openSim = () => { try { localStorage.setItem(HANDOFF_KEY, JSON.stringify(cfg())); } catch {} window.location.href = '/'; };
+
+  const perf = [
+    ['비추력 Isp', s => `${fmt(s.isp, 2)} s`],
+    ['총 임펄스', s => `${fmtInt(s.impulse)} N·s (${errText(s.impulse, targets.impulse)})`],
+    ['평균 추력', s => `${fmt(s.thrust_avg, 1)} N (${errText(s.thrust_avg, targets.thrust_avg)})`],
+    ['연소 시간', s => s.burn_time != null ? `${fmt(s.burn_time, 2)} s` : '—'],
+    ['정상상태 평균 추력', s => s.thrust_avg_ss != null ? `${fmt(s.thrust_avg_ss, 1)} N (${fmt(s.ss_start, 2)}–${fmt(s.ss_end, 2)} s)` : '—'],
+    ['정상상태 평균 비추력', s => s.isp_ss != null ? `${fmt(s.isp_ss, 2)} s` : '—'],
+    ['최소 인젝터 차압 Δp/Pc', s => s.dp_ratio_min != null ? `${fmt(s.dp_ratio_min * 100, 1)} %` : '—'],
+    ['최대 탱크압', s => s.max_tank_pressure != null ? `${fmt(s.max_tank_pressure / 1e6, 3)} MPa` : '—'],
+    ['최대 챔버압', s => s.max_chamber_pressure != null ? `${fmt(s.max_chamber_pressure / 1e6, 3)} MPa` : '—'],
+  ];
+  const showPred = e && e.source === 'surrogate';
+
+  return (
+    <div className="modal-overlay" onMouseDown={onClose}>
+      <div className="modal" onMouseDown={ev => ev.stopPropagation()} role="dialog" aria-modal="true">
+        <div className="modal__header">
+          <div>
+            <div className="modal__label">Feasible Design · {id}</div>
+            <div className="modal__title">
+              {main ? `Isp ${fmt(main.isp, 2)} s` : '불러오는 중…'}
+              {tg && <span className={`cds-tag ${tg[0]}`} style={{marginLeft:12}}>{tg[1]}</span>}
+            </div>
+            {e && <div className="modal__sub">{main.pipe_id} · 세대 {(e.generation ?? 0) + 1}에서 발견 · {e.source === 'surrogate' ? '대리모델 평가' : 'core 시뮬레이션 평가'}</div>}
+          </div>
+          <button className="modal__close" onClick={onClose} aria-label="닫기">✕</button>
+        </div>
+        <div className="modal__body">
+          {error && <div className="cds-notification cds-notification--error"><div><div className="cds-notification__title">오류</div><div className="cds-notification__subtitle">{error}</div></div></div>}
+          {d && (
+            <>
+              <EngineSchematic d={d} colors={colors}/>
+              <div className="modal__grid">
+                <div>
+                  <h4 className="modal__h">성능</h4>
+                  <table className="cds-data-table">
+                    <thead><tr><th>항목</th>{showPred && <th style={{textAlign:'right'}}>대리모델 예측</th>}<th style={{textAlign:'right'}}>{showPred ? 'core 검증' : 'core'}</th></tr></thead>
+                    <tbody>
+                      {perf.map(([label, f]) => (
+                        <tr key={label}>
+                          <td className="label">{label}</td>
+                          {showPred && <td className="num">{f(e.pred)}</td>}
+                          <td className="num">{e.core ? f(e.core) : (e.source === 'core' ? f(e.pred) : (e.verify === 'pending' ? '검증 중…' : '미검증'))}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <h4 className="modal__h">제약 조건</h4>
+                  {e.core ? (
+                    e.core.failed.length
+                      ? <div className="modal__cons modal__cons--bad">core 불합격: {e.core.failed.map(f => CONSTRAINT_LABELS[f] || f).join(', ')}</div>
+                      : <div className="modal__cons modal__cons--ok">core 시뮬레이션 기준 모든 제약 만족</div>
+                  ) : e.source === 'core'
+                    ? <div className="modal__cons modal__cons--ok">core 시뮬레이션 기준 모든 제약 만족</div>
+                    : <div className="modal__cons">대리모델 예측 기준 만족 (안전 여유 포함) · {e.verify === 'pending' ? 'core 검증 중' : 'core 미검증 — 상위 후보 위주로 검증합니다'}</div>}
+                </div>
+                <div>
+                  <h4 className="modal__h">형상</h4>
+                  <div className="modal__geom">
+                    <GrainSection d={d} colors={colors}/>
+                    <table className="cds-data-table">
+                      <tbody>
+                        {[
+                          ['탱크/챔버 내경 반지름', `${mm(d.oxidizer_tank_radius)} mm`],
+                          ['가공 두께', `${mm(d.oxidizer_tank_tickness)} mm`],
+                          ['산화제 탱크 길이', `${mm(d.oxidizer_tank_length)} mm`],
+                          ['연소 챔버 길이', `${mm(d.combution_chamber_length)} mm (연료+2R ×1.3)`],
+                          ...(d.supercharge_pressure != null ? [['헬륨 슈퍼차징', `${fmt(d.supercharge_pressure / 1e6, 2)} MPa (헬륨 ${fmt(d.pressurant_M * 1e3, 1)} g)`]] : []),
+                          ['연료 외경 반지름 / 길이', `${mm(d.outter_radius)} / ${mm(d.fuel_length)} mm`],
+                          ['포트', d.port_num === 1 ? `단일 · r ${mm(d.inner_radius)} mm` : `${d.port_num}개 · r ${mm(d.inner_radius)} · 배치 ${mm(d.port_center_radius)} mm`],
+                          ['인젝터', `${d.injector_oriffice_n}개 · r ${mm(d.injector_oriffice_radius)} · L ${mm(d.injector_oriffice_length)} mm`],
+                          ['노즐 목 / 출구', `${mm(d.nozzle_throat_radius)} / ${mm(d.nozzle_exit_radius)} mm`],
+                          ['산화제 질량', `${fmt(d.oxidizer_M, 2)} kg`],
+                        ].map(([k, v]) => <tr key={k}><td className="label">{k}</td><td className="num">{v}</td></tr>)}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="modal__footer">
+          <button className="cds-btn cds-btn--tertiary cds-btn--compact" onClick={save} disabled={!d}><DownloadIcon/> Save JSON</button>
+          <button className="cds-btn cds-btn--primary cds-btn--compact" onClick={openSim} disabled={!d}><LaunchIcon/> Open in Simulator</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  const [theme, setTheme] = useState(() => { try { return localStorage.getItem('tusi-theme') || 'light'; } catch { return 'light'; } });
+  const [meta, setMeta] = useState(null);
+  const [form, setForm] = useState({ target_impulse:'', target_thrust_avg:'', pop_size:'', n_generations:'', seed:'', mode:'ga', model:'', evaluator:'core', verify_top:'', argmax:false, feasible_parents:false, robust_pick:false, robust_band:'', tolerance:'' });
+  const [job, setJob] = useState(null);
+  const [points, setPoints] = useState([]);
+  const [error, setError] = useState(null);
+  const [notice, setNotice] = useState(null);
+  const [busy, setBusy] = useState(false);
+  // 상세 팝업으로 연 형상 id — 주소(#design=<id>)와 맞춰 두어 링크로도 열 수 있다
+  const [openId, setOpenIdState] = useState(() => (location.hash.match(/^#design=([0-9a-f]+)/) || [])[1] || null);
+  const setOpenId = (id) => {
+    setOpenIdState(id);
+    try { history.replaceState(null, '', id ? `#design=${id}` : location.pathname); } catch {}
+  };
+  const jobIdRef = useRef(null);
+  const pointsRef = useRef([]);
+  const epochRef = useRef(-1);
+  const logRef = useRef(null);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem('tusi-theme', theme); } catch {}
+  }, [theme]);
+  const colors = PALETTE[theme] || PALETTE.light;
+
+  // 기본값 / 파이프 DB / 고정값
+  useEffect(() => {
+    fetch('/api/mdo/meta', { credentials:'same-origin' })
+      .then(r => r.json())
+      .then(m => {
+        if (m.error) { setError(m.error); return; }
+        setMeta(m);
+        setForm(f => ({
+          target_impulse:    f.target_impulse    || String(m.defaults.target_impulse),
+          target_thrust_avg: f.target_thrust_avg || String(m.defaults.target_thrust_avg),
+          pop_size:          f.pop_size          || String(m.defaults.pop_size),
+          n_generations:     f.n_generations     || String(m.defaults.n_generations),
+          seed:              f.seed,
+          mode:              f.mode,
+          evaluator:         f.evaluator,
+          verify_top:        f.verify_top || String(m.defaults.verify_top),
+          robust_band:       f.robust_band || String(m.defaults.robust_band),
+          tolerance:         f.tolerance || String(+(m.defaults.tolerance * 100).toFixed(2)),
+          model:             f.model || (m.ppo_models[0]?.id ?? ''),
+        }));
+      })
+      .catch(() => setError('MDO 설정을 불러오지 못했습니다.'));
+  }, []);
+
+  // 상태 폴링 (실행 중이면 1초 간격, 페이지 재접속 시 진행 중인 잡 복구)
+  const poll = useCallback(async () => {
+    try {
+      const r = await fetch(`/api/mdo/status?points_from=${pointsRef.current.length}&points_epoch=${epochRef.current}`, { credentials:'same-origin' });
+      const { job: j } = await r.json();
+      if (!j) { setJob(null); return null; }
+      if (j.id !== jobIdRef.current || j.points_epoch !== epochRef.current) {
+        // 새 잡이거나 서버가 점을 솎았으면 (points_epoch 변경) 처음부터 다시 받는다
+        const fresh = j.id === jobIdRef.current;
+        jobIdRef.current = j.id;
+        epochRef.current = j.points_epoch;
+        pointsRef.current = [];
+        if (!fresh && j.points_total !== j.points.length) return poll();
+      }
+      pointsRef.current = pointsRef.current.concat(j.points);
+      setPoints(pointsRef.current);
+      setJob({ ...j, tolerance: j.settings?.tolerance ?? meta?.defaults?.tolerance ?? 0.05, min_dp_ratio: meta?.defaults?.min_dp_ratio ?? 0.2 });
+      return j;
+    } catch { return null; }
+  }, [meta]);
+
+  useEffect(() => {
+    let timer = null, alive = true;
+    const loop = async () => {
+      const j = await poll();
+      if (alive && j && j.status === 'running') timer = setTimeout(loop, POLL_MS);
+    };
+    loop();
+    return () => { alive = false; clearTimeout(timer); };
+  }, [poll, job?.id, job?.status === 'running']);
+
+  useEffect(() => { if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight; }, [job?.log?.length]);
+
+  const running = job?.status === 'running';
+  const setField = (k) => (v) => setForm(f => ({ ...f, [k]: v }));
+  const I = parseFloat(form.target_impulse), F = parseFloat(form.target_thrust_avg);
+  const burnEst = I > 0 && F > 0 ? I / F : null;
+  const tolPct = (() => { const t = parseFloat(form.tolerance); return t > 0 ? +t.toFixed(2) : +((meta?.defaults?.tolerance ?? 0.05) * 100).toFixed(2); })();
+  const directModels = meta?.direct_models || [];
+  const curveModels = meta?.curve_models || [];
+  const modelsFor = (mode) => mode === 'direct' ? directModels : mode === 'curve' ? curveModels : (meta?.ppo_models || []);
+  const ppoModels = modelsFor(form.mode);
+  const selModel = ppoModels.find(m => m.id === form.model);
+  const usesTS = form.mode === 'direct' || form.mode === 'curve';
+  const ppoReady = form.mode === 'ga' || !!selModel;
+  const setMode = (mode) => setForm(f => {
+    const list = modelsFor(mode);
+    const keep = list.some(m => m.id === f.model);
+    return { ...f, mode, model: keep ? f.model : (list[0]?.id ?? ''),
+             evaluator: (mode === 'direct' || mode === 'curve') && f.evaluator === 'surrogate' && !meta?.ts_surrogate_available ? 'core' : f.evaluator };
+  });
+
+  const start = async () => {
+    setError(null); setNotice(null); setBusy(true);
+    try {
+      const r = await fetch('/api/mdo/start', {
+        method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(form),
+      });
+      const data = await r.json();
+      if (!r.ok) { setError(data.error || 'MDO 시작 실패'); return; }
+      pointsRef.current = []; setPoints([]); jobIdRef.current = null;
+      await poll();
+    } catch (e) { setError(e.message || 'Network error'); }
+    finally { setBusy(false); }
+  };
+
+  const stop = async () => {
+    const r = await fetch('/api/mdo/stop', { method:'POST', credentials:'same-origin' });
+    if (!r.ok) { const d = await r.json(); setError(d.error); }
+    poll();
+  };
+
+  const bestConfig = () => {
+    const { b } = job ? displayBest(job) : {};
+    if (!b || !meta) return null;
+    return { 'TAS-I': { ...meta.fixed, ...b.design } };
+  };
+  const downloadBest = () => {
+    const cfg = bestConfig(); if (!cfg) return;
+    const blob = new Blob([JSON.stringify(cfg, null, 4)], { type:'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'mdo_best_rocket.json'; a.click(); URL.revokeObjectURL(url);
+  };
+  const openInSimulator = () => {
+    const cfg = bestConfig(); if (!cfg) return;
+    try { localStorage.setItem(HANDOFF_KEY, JSON.stringify(cfg)); } catch {}
+    window.location.href = '/';
+  };
+
+  const lastStatus = useRef(null);
+  useEffect(() => {
+    if (!job) return;
+    if (lastStatus.current === 'running' && job.status !== 'running') {
+      if (job.status === 'done') setNotice(job.best?.state === 'feasible'
+        ? `최적화 완료 — 최고 Isp ${fmt(job.best.isp, 2)} s${job.evaluator === 'surrogate' ? (job.best_source === 'core' ? ' (core 검증)' : ' (대리모델 예측, 미검증)') : ''} · 결과 저장: ${job.output_dir}`
+        : `최적화 완료 — 모든 제약을 만족하는 형상을 찾지 못했습니다. 세대 수를 늘리거나 목표/탐색 범위를 확인하세요.`);
+      if (job.status === 'stopped') setNotice('사용자 요청으로 중단되었습니다. 지금까지의 최적 형상을 표시합니다.');
+      if (job.status === 'error') setError(job.error);
+    }
+    lastStatus.current = job.status;
+  }, [job?.status]);
+
+  return (
+    <>
+      <header className="cds-header">
+        <div className="cds-header__name">
+          <img src="/static/logo.png" alt="" style={{height:24,opacity:0.9}}/>
+          TUSI Hybrid Rocket Engine Simulator
+          <span className="cds-header__divider">/</span>
+          <span className="cds-header__page">MDO</span>
+        </div>
+        <nav className="cds-header__nav">
+          <a className="theme-toggle" href="/"><EngineIcon/> Simulator</a>
+          <a className="theme-toggle theme-toggle--active" href="/mdo"><DnaIcon/> MDO</a>
+          <a className="theme-toggle" href="/surrogate"><BoltIcon/> Surrogate</a>
+          <a className="theme-toggle" href="/training"><ChartIcon/> Training</a>
+          <a className="theme-toggle" href="/drawing"><RulerIcon/> Drawing</a>
+          <button className="theme-toggle" onClick={()=>setTheme(t=>t==='light'?'dark':'light')}>
+            {theme==='dark'?<SunIcon/>:<MoonIcon/>}
+            {theme==='dark'?'Light':'Dark'}
+          </button>
+        </nav>
+      </header>
+
+      <div className="app-container">
+        <aside className="config-panel">
+          <div className="config-header">
+            <h2>MDO Configuration</h2>
+            <p>유전 알고리즘 기반 엔진 형상 최적화 · 목적: 비추력 최대화</p>
+          </div>
+          <div className="target-block">
+            <UnitInput label="Target Total Impulse" unit="N·s" step="100" value={form.target_impulse}
+                       onChange={setField('target_impulse')} disabled={running}
+                       helper={`시뮬레이션 결과가 ±${tolPct}% 이내여야 합격`}/>
+            <UnitInput label="Target Average Thrust" unit="N" step="10" value={form.target_thrust_avg}
+                       onChange={setField('target_thrust_avg')} disabled={running}
+                       helper={`시뮬레이션 결과가 ±${tolPct}% 이내여야 합격`}/>
+            <UnitInput label="허용 오차 (임펄스 · 평균 추력)" unit="± %" step="0.5" value={form.tolerance}
+                       onChange={setField('tolerance')} disabled={running}
+                       helper="목표 대비 이 범위 안이어야 합격. 줄이면 목표에 더 가깝지만 합격 형상 찾기가 어려워집니다"/>
+            <div className="target-derived">예상 연소 시간 (I / F̄)<strong>{burnEst ? `${fmt(burnEst, 2)} s` : '—'}</strong></div>
+            <div className="cds-form-item">
+              <label className="cds-label">Optimizer</label>
+              <div className="mode-switch">
+                <button className={form.mode === 'ga' ? 'active' : ''} disabled={running} onClick={() => setMode('ga')}><DnaIcon/> 기본 GA</button>
+                <button className={form.mode === 'ppo' ? 'active' : ''} disabled={running || !(meta?.ppo_models || []).length}
+                        title={(meta?.ppo_models || []).length ? '' : 'optimizer/rl/train_ppo.py 로 학습한 모델이 없습니다'}
+                        onClick={() => setMode('ppo')}><BoltIcon/> AI 제어 GA</button>
+                <button className={form.mode === 'direct' ? 'active' : ''} disabled={running || !directModels.length}
+                        title={directModels.length ? '' : 'optimizer/rl/train_direct.py 로 학습한 모델이 없습니다'}
+                        onClick={() => setMode('direct')}><BoltIcon/> AI 직접 설계</button>
+                <button className={form.mode === 'curve' ? 'active' : ''} disabled={running || !curveModels.length}
+                        title={curveModels.length ? '' : 'optimizer/rl/train_curve.py 로 학습한 모델이 없습니다 (학습 중이면 끝난 뒤 새로고침)'}
+                        onClick={() => setMode('curve')}><BoltIcon/> AI 곡선 판단</button>
+              </div>
+              <div className="cds-helper-text">
+                {form.mode === 'ppo'
+                  ? '학습된 PPO 정책이 세대마다 GA 전략(탐색/활용/제약 수리 등 8종)을 고릅니다. 평가는 기본 GA 와 같은 core 시뮬레이션.'
+                  : form.mode === 'curve'
+                  ? '개체마다 에이전트가 예측 연소 곡선(추력·챔버압·탱크압·유량·Isp(t)·O/F)을 어텐션으로 읽고, 어떤 변수를 어느 방향으로 얼마나(현재 값의 −33~+49%, 8단계) 바꿀지 한 걸음에 최대 2개 판단합니다. 교배·선택 없음.'
+                  : form.mode === 'direct'
+                  ? '개체마다 에이전트가 시계열 대리모델로 예측한 연소 곡선(추력·압력·유량)의 경향성을 보고 설계 변수와 파이프를 직접 조정합니다. 교배·선택 없음. Surrogate 평가는 시계열 대리모델을 씁니다.'
+                  : 'optimizer/GA.py 의 고정 하이퍼파라미터로 진행합니다.'}
+              </div>
+            </div>
+            <div className="cds-form-item">
+              <label className="cds-label">Evaluator</label>
+              <div className="mode-switch">
+                <button className={form.evaluator === 'core' ? 'active' : ''} disabled={running} onClick={() => setField('evaluator')('core')}><EngineIcon/> core 시뮬레이션</button>
+                <button className={form.evaluator === 'surrogate' ? 'active' : ''} disabled={running || !(usesTS ? meta?.ts_surrogate_available : meta?.surrogate_available)}
+                        title={(usesTS ? meta?.ts_surrogate_available : meta?.surrogate_available) ? '' : (usesTS ? 'optimizer/rl/ts_surrogate.pt 가 없습니다' : 'optimizer/rl/surrogate.pt 가 없습니다')}
+                        onClick={() => setField('evaluator')('surrogate')}><BoltIcon/> Surrogate</button>
+              </div>
+              <div className="cds-helper-text">
+                {form.evaluator === 'surrogate'
+                  ? `후보 평가를 대리모델 예측(수 ms)으로 대신합니다. 세대 수를 크게(100+) 잡아도 빠르며, 끝나면 상위 후보를 core 로 검증해 확정합니다.`
+                    + (meta?.defaults?.surrogate_margin ? ` 예측 오차 대비 안전 여유: 차압 하한 +${fmt(meta.defaults.surrogate_margin.dp_ratio * 100, 0)}%p, 목표 허용오차 −${fmt(meta.defaults.surrogate_margin.target_tolerance * 100, 0)}%p.` : '')
+                  : '모든 후보를 core 시뮬레이션으로 평가합니다 (후보당 수~수십 초).'}
+              </div>
+            </div>
+            {form.evaluator === 'surrogate' && (
+              <UnitInput label="Core 검증 후보 수" value={form.verify_top} onChange={setField('verify_top')} disabled={running} step="1"
+                         helper="대리모델 예측 상위 N개를 core 시뮬레이션으로 다시 평가 (0 = 검증 안 함)"/>
+            )}
+            {form.mode !== 'ga' && (
+              <div className="cds-form-item">
+                <label className="cds-label">{form.mode === 'ppo' ? 'PPO Model' : 'Agent Model'}</label>
+                <select className="cds-select" value={form.model} disabled={running} onChange={e => setField('model')(e.target.value)}>
+                  {ppoModels.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+                </select>
+                <div className="cds-helper-text">
+                  {selModel?.eval
+                    ? `${usesTS ? '시계열 ' : ''}대리모델 평가 (${fmtInt(selModel.steps)} 스텝): 성공 ${fmt(selModel.eval.success * 100, 0)}% · 평균 Isp ${fmt(selModel.eval.best_isp, 1)} s`
+                      + (selModel.eval.isp_gain != null ? ` · 기본 GA 대비 ${selModel.eval.isp_gain >= 0 ? '+' : ''}${fmt(selModel.eval.isp_gain, 2)} s (승률 ${fmt(selModel.eval.win_rate * 100, 0)}%)` : ` · 시뮬 ${fmt(selModel.eval.sims, 0)}회/실행`)
+                    : selModel ? `${selModel.id}` : ''}
+                </div>
+              </div>
+            )}
+            {form.mode === 'curve' && (
+              <div className="cds-form-item">
+                <label className="cds-label">판단 방식</label>
+                <div className="mode-switch">
+                  <button className={!form.argmax ? 'active' : ''} disabled={running} onClick={() => setField('argmax')(false)}>확률적</button>
+                  <button className={form.argmax ? 'active' : ''} disabled={running} onClick={() => setField('argmax')(true)}>최선 이동</button>
+                </div>
+                <div className="cds-helper-text">
+                  {form.argmax
+                    ? '정책이 가장 확률 높게 고른 이동을 씁니다 (학습 평가·core 검증과 같은 방식).'
+                    : '정책 분포에서 이동을 뽑습니다. 개체마다 다른 판단을 시도해 탐색이 넓어집니다.'}
+                </div>
+              </div>
+            )}
+            {form.mode === 'direct' && (
+              <div className="cds-form-item">
+                <label className="cds-label">행동 방식</label>
+                <div className="mode-switch">
+                  <button className={!form.argmax ? 'active' : ''} disabled={running} onClick={() => setField('argmax')(false)}>확률적</button>
+                  <button className={form.argmax ? 'active' : ''} disabled={running} onClick={() => setField('argmax')(true)}>평균 행동</button>
+                </div>
+                <div className="cds-helper-text">
+                  {form.argmax
+                    ? '정책의 평균 이동량을 그대로 씁니다 (같은 설계면 같은 이동, 학습 평가와 같은 방식).'
+                    : '정책 분포에서 이동량을 뽑습니다. 개체마다 조금씩 다르게 움직여 탐색이 넓어집니다.'}
+                </div>
+              </div>
+            )}
+            {form.mode === 'ppo' && (
+              <div className="cds-form-item">
+                <label className="cds-label">전략 선택 방식</label>
+                <div className="mode-switch">
+                  <button className={!form.argmax ? 'active' : ''} disabled={running} onClick={() => setField('argmax')(false)}>확률적</button>
+                  <button className={form.argmax ? 'active' : ''} disabled={running} onClick={() => setField('argmax')(true)}>argmax</button>
+                </div>
+                <div className="cds-helper-text">
+                  {form.argmax
+                    ? '세대마다 확률이 가장 높은 전략 하나만 고릅니다. 같은 상태면 늘 같은 전략 (대리모델 240쌍: 기본 GA 대비 +1.6 s).'
+                    : '정책의 확률 분포에서 전략을 뽑습니다. 여러 전략이 섞여 나오며, Random Seed 를 넣으면 재현됩니다 (대리모델 240쌍: +0.9 s).'}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="config-actions">
+            <button className="cds-btn cds-btn--primary cds-btn--compact" onClick={start} disabled={running || busy || !(I > 0 && F > 0) || !ppoReady || !(parseFloat(form.tolerance) > 0)}>
+              <PlayIcon/> Start MDO
+            </button>
+            {running && (
+              <button className="cds-btn cds-btn--danger cds-btn--compact" onClick={stop} disabled={job.stop_requested}>
+                <StopIcon/> {job.stop_requested ? 'Stopping…' : 'Stop'}
+              </button>
+            )}
+          </div>
+          <div className="cds-accordion">
+            <AccordionItem title="GA Settings" defaultOpen={form.feasible_parents || form.robust_pick}>
+              <UnitInput label="Population" value={form.pop_size} onChange={setField('pop_size')} disabled={running} step="1"/>
+              <UnitInput label="Generations" value={form.n_generations} onChange={setField('n_generations')} disabled={running} step="1"/>
+              <div className="full-width cds-form-item">
+                <label className="cds-label">부모 선택</label>
+                <label className="feas-check">
+                  <input type="checkbox" checked={!!form.feasible_parents} disabled={running}
+                         onChange={e => setField('feasible_parents')(e.target.checked)}/>
+                  합격 형상끼리만 교배
+                </label>
+                <div className="cds-helper-text">
+                  {form.feasible_parents
+                    ? `합격 형상이 ${meta?.defaults?.feasible_parent_min ?? 3}개 이상인 세대부터 부모를 합격 형상 안에서만 고릅니다. 수렴이 빨라지지만 다양성이 줄어 국소 최적에 갇힐 수 있습니다.`
+                    : '끔 (기본): 모든 개체가 부모 후보 — 합격 형상이 우선이고, 합격이 없으면 위반이 작은 쪽이 부모가 됩니다.'}
+                </div>
+              </div>
+              <div className="full-width cds-form-item">
+                <label className="cds-label">최종 형상 선택</label>
+                <label className="feas-check">
+                  <input type="checkbox" checked={!!form.robust_pick} disabled={running}
+                         onChange={e => setField('robust_pick')(e.target.checked)}/>
+                  평탄 구간에서 견고한 형상 선택
+                </label>
+                <div className="cds-helper-text">
+                  {form.robust_pick
+                    ? '최고 Isp 와 아래 폭 이내인 합격 형상은 사실상 같은 성능으로 보고, 그중 제약 경계(목표 ±5%, 차압 20%, 두께 강도)에서 가장 먼 형상을 고릅니다. core 검증 불합격과 제작 오차에 강해집니다.'
+                    : '끔 (기본): Isp 가 가장 높은 합격 형상을 고릅니다.'}
+                </div>
+              </div>
+              {form.robust_pick && (
+                <div className="full-width">
+                  <UnitInput label="같은 성능으로 볼 Isp 폭" unit="s" step="0.5" value={form.robust_band} onChange={setField('robust_band')}
+                             disabled={running} helper="대리모델 오차(평균 ±1.7 s)·제작 공차를 고려한 값. 클수록 Isp 를 더 내주고 여유를 얻음"/>
+                </div>
+              )}
+              <div className="full-width">
+                <UnitInput label="Random Seed" value={form.seed} onChange={setField('seed')} disabled={running} step="1"
+                           placeholder="비우면 매번 다른 결과" helper={meta ? `엘리트 ${meta.defaults.elite_count} · 병렬 워커 ${meta.defaults.n_workers} · 나머지 하이퍼파라미터는 optimizer/GA.py` : ''}/>
+              </div>
+            </AccordionItem>
+            <AccordionItem title={`Pipe Database${meta ? ` (${meta.pipes.length})` : ''}`} grid={false}>
+              <table className="cds-data-table">
+                <thead><tr><th>pipe_id</th><th style={{textAlign:'right'}}>OD/ID/t [mm]</th><th style={{textAlign:'right'}}>L [mm]</th></tr></thead>
+                <tbody>
+                  {(meta?.pipes || []).map(p => (
+                    <tr key={p.pipe_id}>
+                      <td style={{fontSize:11}}>{p.pipe_id}</td>
+                      <td className="num">{fmt(p.outer_diameter*1e3,1)}/{fmt(p.inner_diameter*1e3,1)}/{fmt(p.wall_thickness*1e3,2)}</td>
+                      <td className="num">{fmt(p.length*1e3,0)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="cds-helper-text">파이프 추가/삭제: optimizer/managepipedb.py</div>
+            </AccordionItem>
+            <AccordionItem title="Fixed Values" grid={false}>
+              <table className="cds-data-table">
+                <tbody>
+                  {Object.entries(meta?.fixed || {}).map(([k, v]) => (
+                    <tr key={k}><td className="label">{k}</td><td className="num">{String(v)}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="cds-helper-text">수정: optimizer/fixedvalue.json (다음 실행부터 반영)</div>
+            </AccordionItem>
+          </div>
+        </aside>
+
+        <main className="result-panel">
+          {error && (
+            <div className="cds-notification cds-notification--error">
+              <div><div className="cds-notification__title">오류</div><div className="cds-notification__subtitle">{error}</div></div>
+              <button className="cds-notification__close" onClick={()=>setError(null)}>✕</button>
+            </div>
+          )}
+          {notice && (
+            <div className={`cds-notification ${job?.best?.state === 'feasible' ? 'cds-notification--success' : 'cds-notification--warning'}`}>
+              <div><div className="cds-notification__title">MDO</div><div className="cds-notification__subtitle">{notice}</div></div>
+              <button className="cds-notification__close" onClick={()=>setNotice(null)}>✕</button>
+            </div>
+          )}
+
+          {!job ? <Hero/> : (
+            <div className="animate-fadeIn">
+              <RunStatus job={job}/>
+              <KpiRow job={job} colors={colors}/>
+              <PipelineFlow job={job} colors={colors}/>
+              {job.mode === 'ppo' && <StrategyTimeline job={job} meta={meta}/>}
+              {job.mode === 'direct' && <DirectPanel job={job} meta={meta} colors={colors}/>}
+              {job.mode === 'curve' && <CurvePanel job={job} colors={colors}/>}
+              {job.evaluator === 'surrogate' && <Verification job={job}/>}
+              <div className="grid-2">
+                <PopulationMatrix job={job}/>
+                <ObjectiveSpace job={job} points={points} colors={colors}/>
+              </div>
+              <BestDesign job={job} meta={meta} colors={colors} onDownload={downloadBest} onOpenSim={openInSimulator}/>
+              <FeasiblePanel job={job} colors={colors} onOpen={setOpenId}/>
+              <div className="grid-2">
+                <Convergence job={job} colors={colors}/>
+                <Bottleneck job={job} colors={colors}/>
+              </div>
+              <div className="chart-card">
+                <div className="chart-card__title">Event Log</div>
+                <div className="chart-card__subtitle">세대별 진행 기록</div>
+                <div className="sim-log" ref={logRef}>{(job.log || []).join('\n')}</div>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+      {openId && job && <DesignModal id={openId} job={job} meta={meta} colors={colors} onClose={() => setOpenId(null)}/>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

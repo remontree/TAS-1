@@ -1,0 +1,29 @@
+{
+  "event_name": "2026 AI·SW 페스티벌 · TAS-1 Launch League",
+  "host": "0.0.0.0",
+  "port": 28443,
+  "public_url": "https://localhost:28443",
+  "behind_proxy": false,
+  "hsts": false,
+  "admin_path": "/admin",
+  "target_alt": 3000,
+  "official_launches": 3,
+  "wind": {
+    "min": 1.5,
+    "max": 6.5
+  },
+  "wind_seed": "tas1-2026",
+  "threads": 16,
+  "security": {
+    "ip_req_per_min": 3000,
+    "ban_seconds": 3600,
+    "max_404_per_min": 30,
+    "register_per_ip_10min": 150,
+    "login_fail_per_id": 5,
+    "login_fail_per_ip": 40,
+    "login_lock_seconds": 900,
+    "admin_fail_per_ip": 5,
+    "engine_per_min": 300,
+    "launch_per_min": 15
+  }
+}

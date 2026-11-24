@@ -1,0 +1,14 @@
+numpy
+pandas
+requests
+matplotlib
+CoolProp
+rocketcea
+flask
+flask-cors
+gunicorn
+scikit-image
+scipy
+torch
+stable-baselines3
+tensorboard

@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TUSI — Surrogate</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="/vendor/react.production.min.js" crossorigin></script>
+  <script src="/vendor/react-dom.production.min.js" crossorigin></script>
+  <script src="/vendor/prop-types.min.js" crossorigin></script>
+  <script src="/vendor/babel.min.js"></script>
+  <script src="/vendor/Recharts.js"></script>
+  <style>
+    /* ======================================================
+       IBM Carbon Design System v11 — White Theme
+       ====================================================== */
+    :root, [data-theme="light"] {
+      --cds-background:              #ffffff;
+      --cds-layer-01:                #f4f4f4;
+      --cds-layer-02:                #ffffff;
+      --cds-layer-accent-01:         #e0e0e0;
+      --cds-field-01:                #f4f4f4;
+      --cds-border-subtle-00:        #e0e0e0;
+      --cds-border-subtle-01:        #c6c6c6;
+      --cds-border-strong-01:        #8d8d8d;
+      --cds-text-primary:            #161616;
+      --cds-text-secondary:          #525252;
+      --cds-text-placeholder:        #a8a8a8;
+      --cds-text-on-color:           #ffffff;
+      --cds-text-on-color-disabled:  #8d8d8d;
+      --cds-text-helper:             #6f6f6f;
+      --cds-text-inverse:            #ffffff;
+      --cds-text-warning:            #8e6a00;
+      --cds-background-inverse:      #393939;
+      --cds-link-primary:            #0f62fe;
+      --cds-interactive:             #0f62fe;
+      --cds-interactive-hover:       #0050e6;
+      --cds-button-secondary:        #393939;
+      --cds-button-secondary-hover:  #474747;
+      --cds-button-tertiary:         #0f62fe;
+      --cds-button-tertiary-hover:   #0050e6;
+      --cds-button-tertiary-hover-text: #ffffff;
+      --cds-button-disabled:         #c6c6c6;
+      --cds-button-danger:           #da1e28;
+      --cds-button-danger-hover:     #b81921;
+      --cds-support-error:           #da1e28;
+      --cds-support-success:         #24a148;
+      --cds-support-warning:         #f1c21b;
+      --cds-support-info:            #0043ce;
+      --cds-accent-gold:             #b28600;
+      --cds-focus:                   #0f62fe;
+      --cds-highlight:               #d0e2ff;
+      --cds-overlay:                 rgba(22,22,22,0.5);
+      --cds-hover-ui:                #e8e8e8;
+      --cds-hover-row:               #e8e8e8;
+      --cds-notif-error-bg:          #fff1f1;
+      --cds-notif-success-bg:        #defbe6;
+      --cds-notif-warning-bg:        #fcf4d6;
+      --cds-notif-info-bg:           #edf5ff;
+      --cds-tag-blue-bg:             #d0e2ff;
+      --cds-tag-blue-text:           #0043ce;
+      --cds-tag-green-bg:            #a7f0ba;
+      --cds-tag-green-text:          #0e6027;
+      --cds-tag-red-bg:              #ffd7d9;
+      --cds-tag-red-text:            #a2191f;
+      --cds-tag-gray-bg:             #e0e0e0;
+      --cds-tag-gray-text:           #161616;
+      --cds-drop-bg:                 #edf5ff;
+      --cds-drop-border:             #0f62fe;
+      --cds-log-bg:                  #161616;
+      --cds-log-text:                #6fdc8c;
+      --cds-log-border:              #24a148;
+      --cds-grain-bg:                #ffffff;
+      --cds-grain-grid:              #e0e0e0;
+      --cds-grain-casing:            #525252;
+    }
+
+    /* ======================================================
+       IBM Carbon Design System v11 — Gray 100 Theme
+       ====================================================== */
+    [data-theme="dark"] {
+      --cds-background:              #161616;
+      --cds-layer-01:                #262626;
+      --cds-layer-02:                #393939;
+      --cds-layer-accent-01:         #393939;
+      --cds-field-01:                #262626;
+      --cds-border-subtle-00:        #393939;
+      --cds-border-subtle-01:        #525252;
+      --cds-border-strong-01:        #6f6f6f;
+      --cds-text-primary:            #f4f4f4;
+      --cds-text-secondary:          #c6c6c6;
+      --cds-text-placeholder:        #6f6f6f;
+      --cds-text-on-color:           #ffffff;
+      --cds-text-on-color-disabled:  #8d8d8d;
+      --cds-text-helper:             #a8a8a8;
+      --cds-text-inverse:            #161616;
+      --cds-text-warning:            #f1c21b;
+      --cds-background-inverse:      #f4f4f4;
+      --cds-link-primary:            #78a9ff;
+      --cds-interactive:             #0f62fe;
+      --cds-interactive-hover:       #0050e6;
+      --cds-button-secondary:        #6f6f6f;
+      --cds-button-secondary-hover:  #5e5e5e;
+      --cds-button-tertiary:         #ffffff;
+      --cds-button-tertiary-hover:   #f4f4f4;
+      --cds-button-tertiary-hover-text: #161616;
+      --cds-button-disabled:         #6f6f6f;
+      --cds-button-danger:           #da1e28;
+      --cds-button-danger-hover:     #b81921;
+      --cds-support-error:           #fa4d56;
+      --cds-support-success:         #42be65;
+      --cds-support-warning:         #f1c21b;
+      --cds-support-info:            #4589ff;
+      --cds-accent-gold:             #d2a106;
+      --cds-focus:                   #ffffff;
+      --cds-highlight:               #001d6c;
+      --cds-overlay:                 rgba(0,0,0,0.65);
+      --cds-hover-ui:                #333333;
+      --cds-hover-row:               #333333;
+      --cds-notif-error-bg:          #262626;
+      --cds-notif-success-bg:        #262626;
+      --cds-notif-warning-bg:        #262626;
+      --cds-notif-info-bg:           #262626;
+      --cds-tag-blue-bg:             #0043ce;
+      --cds-tag-blue-text:           #d0e2ff;
+      --cds-tag-green-bg:            #198038;
+      --cds-tag-green-text:          #a7f0ba;
+      --cds-tag-red-bg:              #da1e28;
+      --cds-tag-red-text:            #ffd7d9;
+      --cds-tag-gray-bg:             #525252;
+      --cds-tag-gray-text:           #f4f4f4;
+      --cds-drop-bg:                 #262626;
+      --cds-drop-border:             #78a9ff;
+      --cds-log-bg:                  #262626;
+      --cds-log-text:                #6fdc8c;
+      --cds-log-border:              #42be65;
+      --cds-grain-bg:                #161616;
+      --cds-grain-grid:              #393939;
+      --cds-grain-casing:            #c6c6c6;
+    }
+
+    /* ── Smooth theme transition ────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      transition: background-color .2s ease, border-color .2s ease, color .15s ease;
+    }
+    .cds-accordion__arrow { transition: transform .25s cubic-bezier(.25,.46,.45,.94) !important; }
+
+    html { font-size:16px; -webkit-font-smoothing:antialiased; }
+    body {
+      font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+      background:var(--cds-background); color:var(--cds-text-primary);
+      line-height:1.5; overflow-x:hidden;
+    }
+
+    @keyframes fadeInUp  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn    { from{opacity:0} to{opacity:1} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .animate-fadeInUp { animation:fadeInUp .4s cubic-bezier(.25,.46,.45,.94) forwards; }
+    .animate-fadeIn   { animation:fadeIn .3s ease forwards; }
+
+    /* ======================================================
+       Carbon Header (always dark) — 시뮬레이터 페이지와 동일
+       ====================================================== */
+    .cds-header {
+      position:fixed;top:0;left:0;right:0;z-index:8000;
+      height:48px; background:#161616;
+      display:flex;align-items:center;padding:0 16px;
+      border-bottom:1px solid #393939;
+    }
+    .cds-header__name { color:#f4f4f4;font-size:14px;font-weight:600;letter-spacing:.16px;display:flex;align-items:center;gap:8px; }
+    .cds-header__divider { color:#6f6f6f;font-weight:300;margin:0 2px; }
+    .cds-header__page { color:#c6c6c6;font-weight:400; }
+    .cds-header__nav  { margin-left:auto;display:flex;align-items:center;gap:8px; }
+    .theme-toggle {
+      background:transparent;border:1px solid #6f6f6f;
+      height:32px;padding:0 12px;text-decoration:none;
+      font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;
+      letter-spacing:.32px;cursor:pointer;display:flex;align-items:center;gap:6px;
+      color:#c6c6c6;transition:background .15s,border-color .15s,color .15s;
+    }
+    .theme-toggle:hover { background:#2c2c2c;border-color:#c6c6c6;color:#f4f4f4; }
+    .theme-toggle--active { background:#0f62fe;border-color:#0f62fe;color:#ffffff; }
+    .theme-toggle--active:hover { background:#0050e6;border-color:#0050e6;color:#ffffff; }
+
+    /* ======================================================
+       Layout
+       ====================================================== */
+    .app-container { margin-top:48px;display:flex;min-height:calc(100vh - 48px); }
+    .config-panel {
+      width:400px;min-width:400px;background:var(--cds-layer-01);
+      border-right:1px solid var(--cds-border-subtle-00);
+      overflow-y:auto;height:calc(100vh - 48px);position:sticky;top:48px;
+    }
+    .config-panel::-webkit-scrollbar { width:4px; }
+    .config-panel::-webkit-scrollbar-thumb { background:var(--cds-border-subtle-01);border-radius:2px; }
+    .config-header { padding:24px 24px 16px;border-bottom:1px solid var(--cds-border-subtle-00); }
+    .config-header h2 { font-size:20px;font-weight:600;color:var(--cds-text-primary);margin-bottom:4px; }
+    .config-header p  { font-size:12px;color:var(--cds-text-helper);letter-spacing:.32px; }
+    .config-actions { padding:12px 24px;display:flex;gap:8px;border-bottom:1px solid var(--cds-border-subtle-00);flex-wrap:wrap; }
+    .result-panel  { flex:1;padding:32px;overflow-y:auto;min-width:0; }
+
+    /* ======================================================
+       Accordion
+       ====================================================== */
+    .cds-accordion { border-top:1px solid var(--cds-border-subtle-00); }
+    .cds-accordion__item { border-bottom:1px solid var(--cds-border-subtle-00); }
+    .cds-accordion__heading {
+      width:100%;background:transparent;border:none;
+      padding:10px 24px 10px 48px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;
+      color:var(--cds-text-primary);cursor:pointer;display:flex;align-items:center;
+      position:relative;text-align:left;min-height:40px;
+      transition:background .15s;letter-spacing:.16px;
+    }
+    .cds-accordion__heading:hover { background:var(--cds-hover-ui); }
+    .cds-accordion__arrow { position:absolute;left:16px;width:16px;height:16px;fill:var(--cds-text-primary); }
+    .cds-accordion__item--open .cds-accordion__arrow { transform:rotate(90deg); }
+    .cds-accordion__content { padding:0 24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px 16px; }
+    .full-width { grid-column:1/-1; }
+
+    /* ======================================================
+       Form / Input
+       ====================================================== */
+    .cds-form-item { display:flex;flex-direction:column; }
+    .cds-label { font-size:12px;color:var(--cds-text-secondary);letter-spacing:.32px;margin-bottom:6px;line-height:16px; }
+    .cds-text-input {
+      width:100%;height:40px;padding:0 16px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--cds-text-primary);
+      background:var(--cds-field-01);border:none;border-bottom:1px solid var(--cds-border-strong-01);
+      outline:none;transition:border-color .15s,box-shadow .15s,background .2s;
+    }
+    .cds-text-input:focus { border-bottom-color:var(--cds-focus);box-shadow:inset 0 -2px 0 0 var(--cds-focus); }
+    .cds-text-input:disabled { color:var(--cds-text-placeholder);cursor:not-allowed; }
+    .cds-helper-text { font-size:12px;color:var(--cds-text-helper);margin-top:4px;letter-spacing:.32px; }
+    .config-panel .cds-text-input { background:var(--cds-layer-02); }
+    .input-unit-wrap { position:relative; }
+    .input-unit-wrap .cds-text-input { padding-right:56px;font-family:'IBM Plex Mono',monospace; }
+    .input-unit { position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--cds-text-helper);font-family:'IBM Plex Mono',monospace;pointer-events:none; }
+    .target-block { padding:16px 24px;display:flex;flex-direction:column;gap:16px; }
+    .target-derived {
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 12px;background:var(--cds-layer-02);border-left:3px solid var(--cds-interactive);
+      font-size:12px;color:var(--cds-text-secondary);letter-spacing:.32px;
+    }
+    .target-derived strong { font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary);font-weight:500;font-size:13px; }
+
+    /* ======================================================
+       Buttons
+       ====================================================== */
+    .cds-btn {
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:400;letter-spacing:.16px;
+      border:none;cursor:pointer;padding:11px 64px 11px 16px;min-height:40px;white-space:nowrap;
+    }
+    .cds-btn svg { fill:currentColor;width:16px;height:16px; }
+    .cds-btn--primary  { background:var(--cds-interactive);color:#fff; }
+    .cds-btn--primary:hover  { background:var(--cds-interactive-hover); }
+    .cds-btn--primary:disabled { background:var(--cds-button-disabled);color:var(--cds-text-on-color-disabled);cursor:not-allowed; }
+    .cds-btn--danger { background:var(--cds-button-danger);color:#fff; }
+    .cds-btn--danger:hover { background:var(--cds-button-danger-hover); }
+    .cds-btn--danger:disabled { background:var(--cds-button-disabled);color:var(--cds-text-on-color-disabled);cursor:not-allowed; }
+    .cds-btn--tertiary {
+      background:transparent;color:var(--cds-button-tertiary);
+      border:1px solid var(--cds-button-tertiary);padding:10px 63px 10px 15px;
+    }
+    .cds-btn--tertiary:hover { background:var(--cds-button-tertiary-hover);color:var(--cds-button-tertiary-hover-text);border-color:var(--cds-button-tertiary-hover); }
+    .cds-btn--ghost { background:transparent;color:var(--cds-link-primary);padding:11px 16px; }
+    .cds-btn--ghost:hover { background:var(--cds-hover-ui); }
+    .cds-btn--compact { padding-right:16px; }
+
+    /* ======================================================
+       Data Table / Notifications / Tags
+       ====================================================== */
+    .cds-data-table { width:100%;border-collapse:collapse;font-size:13px; }
+    .cds-data-table th { padding:8px 12px;text-align:left;font-weight:600;font-size:12px;letter-spacing:.16px;color:var(--cds-text-primary);border-bottom:1px solid var(--cds-border-subtle-01);background:var(--cds-layer-accent-01); }
+    .cds-data-table td { padding:7px 12px;border-bottom:1px solid var(--cds-border-subtle-00);color:var(--cds-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:12px; }
+    .cds-data-table td.num { text-align:right;color:var(--cds-text-primary); }
+    .cds-data-table td.label { font-family:'IBM Plex Sans',sans-serif; }
+    .cds-data-table tbody tr:hover { background:var(--cds-hover-row); }
+
+    .cds-notification { display:flex;align-items:flex-start;gap:12px;padding:13px 16px;font-size:14px;border-left:3px solid;margin-bottom:16px;animation:fadeInUp .3s ease; }
+    .cds-notification--error   { background:var(--cds-notif-error-bg);border-color:var(--cds-support-error); }
+    .cds-notification--success { background:var(--cds-notif-success-bg);border-color:var(--cds-support-success); }
+    .cds-notification--warning { background:var(--cds-notif-warning-bg);border-color:var(--cds-support-warning); }
+    .cds-notification__title    { font-weight:600;margin-bottom:2px;color:var(--cds-text-primary); }
+    .cds-notification__subtitle { font-size:13px;color:var(--cds-text-secondary); }
+    .cds-notification__close    { margin-left:auto;background:none;border:none;cursor:pointer;padding:4px;color:var(--cds-text-secondary); }
+
+    .cds-tag { display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:12px;font-size:12px;font-weight:500;letter-spacing:.32px; }
+    .cds-tag--blue  { background:var(--cds-tag-blue-bg);color:var(--cds-tag-blue-text); }
+    .cds-tag--green { background:var(--cds-tag-green-bg);color:var(--cds-tag-green-text); }
+    .cds-tag--red   { background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text); }
+    .cds-tag--gray  { background:var(--cds-tag-gray-bg);color:var(--cds-tag-gray-text); }
+    .tag-dot { width:8px;height:8px;border-radius:50%;background:currentColor; }
+    .tag-dot--live { animation:livePulse 1.2s ease-in-out infinite; }
+    @keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.7)} }
+
+    /* ======================================================
+       Cards / sections
+       ====================================================== */
+    .chart-card { background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-00);padding:20px;min-width:0;animation:fadeInUp .4s ease both; }
+    .chart-card__title    { font-size:14px;font-weight:600;color:var(--cds-text-primary);margin-bottom:4px;letter-spacing:.16px;display:flex;align-items:center;gap:8px; }
+    .chart-card__subtitle { font-size:12px;color:var(--cds-text-helper);margin-bottom:16px;letter-spacing:.32px; }
+    .grid-2 { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px; }
+    .section-title    { font-size:20px;font-weight:600;color:var(--cds-text-primary);margin-bottom:8px; }
+    .section-subtitle { font-size:14px;color:var(--cds-text-secondary);margin-bottom:24px; }
+    .mono { font-family:'IBM Plex Mono',monospace; }
+    .recharts-tooltip-wrapper { z-index:100; }
+    .custom-tooltip { background:var(--cds-background-inverse);color:var(--cds-text-inverse);padding:10px 14px;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,.3); }
+    .custom-tooltip .label { font-weight:600;margin-bottom:4px; }
+    .custom-tooltip .value { font-family:'IBM Plex Mono',monospace; }
+
+    /* ======================================================
+       MDO — run status
+       ====================================================== */
+    .run-status { display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px; }
+    .run-status__gen { font-size:28px;font-weight:300;letter-spacing:-.4px;color:var(--cds-text-primary); }
+    .run-status__gen span { font-size:14px;color:var(--cds-text-helper);margin-left:4px;font-weight:400; }
+    .run-status__meta { margin-left:auto;display:flex;gap:24px;font-size:12px;color:var(--cds-text-helper);letter-spacing:.32px; }
+    .run-status__meta strong { display:block;font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary);font-size:16px;font-weight:400; }
+    .gen-track { display:flex;gap:2px;height:8px;margin-bottom:24px; }
+    .gen-seg { flex:1;background:var(--cds-layer-accent-01);position:relative;overflow:hidden; }
+    .gen-seg--done { background:var(--cds-interactive); }
+    .gen-seg--feasible { background:var(--cds-support-success); }
+    .gen-seg__fill { position:absolute;inset:0 auto 0 0;background:var(--cds-interactive);transition:width .4s ease; }
+    .gen-seg--active .gen-seg__fill {
+      background-image:repeating-linear-gradient(-45deg, rgba(255,255,255,.28) 0 6px, transparent 6px 12px);
+      background-size:17px 17px;animation:stripes .6s linear infinite;
+    }
+    @keyframes stripes { to { background-position:17px 0; } }
+
+    /* KPI tiles */
+    .kpi-row { display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--cds-border-subtle-00);border:1px solid var(--cds-border-subtle-00);margin-bottom:16px; }
+    .kpi { background:var(--cds-layer-01);padding:16px;min-width:0; }
+    .kpi__label { font-size:11px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;color:var(--cds-text-helper);margin-bottom:6px; }
+    .kpi__value { font-size:28px;font-weight:300;font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary);letter-spacing:-.6px;line-height:1.15;white-space:nowrap; }
+    .kpi__unit { font-size:13px;color:var(--cds-text-helper);margin-left:4px;letter-spacing:0; }
+    .kpi__sub { font-size:12px;color:var(--cds-text-helper);margin-top:6px;letter-spacing:.32px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+    .kpi__sub--ok { color:var(--cds-support-success); }
+    .kpi__sub--bad { color:var(--cds-support-error); }
+    .kpi--flash { animation:kpiFlash 1.4s ease; }
+    @keyframes kpiFlash { 0%{box-shadow:inset 0 -3px 0 var(--cds-support-success);background:var(--cds-notif-success-bg)} 100%{box-shadow:inset 0 -3px 0 transparent} }
+    .kpi-bar { height:4px;background:var(--cds-layer-accent-01);margin-top:8px;display:flex; }
+    .kpi-bar > div { height:100%;transition:width .4s ease; }
+
+    /* Pipeline flow */
+    .flow { display:flex;align-items:stretch;margin-bottom:16px;background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-00);padding:16px 12px; }
+    .flow-node { flex:1;min-width:0;padding:10px 12px;border:1px solid var(--cds-border-subtle-00);background:var(--cds-layer-02);position:relative; }
+    .flow-node--active { border-color:var(--cds-interactive);box-shadow:0 0 0 1px var(--cds-interactive), 0 0 16px -2px var(--cds-interactive); }
+    .flow-node__step { font-size:10px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;color:var(--cds-text-helper); }
+    .flow-node__name { font-size:13px;font-weight:600;color:var(--cds-text-primary);margin:2px 0 6px; }
+    .flow-node__nums { display:flex;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;flex-wrap:wrap; }
+    .flow-node__nums span { display:inline-flex;align-items:center;gap:4px;color:var(--cds-text-secondary); }
+    .flow-node__nums i { width:8px;height:8px;display:inline-block; }
+    .flow-arrow { width:36px;flex:0 0 36px;display:flex;align-items:center;justify-content:center; }
+    .flow-arrow svg { width:36px;height:12px;overflow:visible; }
+    .flow-arrow line { stroke:var(--cds-border-strong-01);stroke-width:2;stroke-dasharray:4 4; }
+    .flow-arrow--live line { stroke:var(--cds-interactive);animation:dash .5s linear infinite; }
+    .flow-arrow polygon { fill:var(--cds-border-strong-01); }
+    .flow-arrow--live polygon { fill:var(--cds-interactive); }
+    @keyframes dash { to { stroke-dashoffset:-8; } }
+
+    /* Population matrix */
+    .pop-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:4px; }
+    .pop-cell {
+      aspect-ratio:1;position:relative;cursor:default;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'IBM Plex Mono',monospace;font-size:11px;
+      border:1px solid transparent;user-select:none;
+    }
+    .pop-cell__rank { position:absolute;top:2px;left:4px;font-size:9px;opacity:.75; }
+    .pop-cell__star { position:absolute;top:1px;right:3px;font-size:10px; }
+    .pop-cell--pending { border:1px dashed var(--cds-border-subtle-01);color:var(--cds-text-placeholder); }
+    .pop-cell--simulating { background:var(--cds-interactive);color:#fff;animation:cellPulse 1.1s ease-in-out infinite; }
+    @keyframes cellPulse { 0%,100%{opacity:1} 50%{opacity:.45} }
+    .pop-cell--rejected {
+      color:var(--cds-text-helper);background-color:var(--cds-layer-accent-01);
+      background-image:repeating-linear-gradient(45deg, transparent 0 5px, var(--cds-border-subtle-01) 5px 6px);
+    }
+    .pop-cell--near { background:#ff832b;color:#161616; }
+    .pop-cell--far  { background:var(--cds-support-error);color:#fff; }
+    .pop-cell--feasible { background:var(--cds-support-success);color:#fff; }
+    [data-theme="dark"] .pop-cell--feasible { color:#161616; }
+    .pop-cell--elite { outline:2px solid var(--cds-accent-gold);outline-offset:1px; }
+    .pop-cell--hover { box-shadow:0 0 0 2px var(--cds-text-primary); }
+    .pop-cell .mini-spin { width:14px;height:14px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite; }
+    .pop-legend { display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11px;color:var(--cds-text-helper);letter-spacing:.32px; }
+    .pop-legend span { display:inline-flex;align-items:center;gap:6px; }
+    .pop-legend i { width:12px;height:12px;display:inline-block; }
+    .inspector { margin-top:12px;padding:10px 12px;background:var(--cds-layer-02);border-left:3px solid var(--cds-border-strong-01);font-size:12px;min-height:58px;color:var(--cds-text-secondary); }
+    .inspector strong { color:var(--cds-text-primary);font-weight:600; }
+    .inspector .mono { color:var(--cds-text-primary); }
+
+    /* Best design */
+    .best-layout { display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px; }
+    .grain-layout { display:flex;gap:24px;align-items:flex-start; }
+    .grain-svg-wrap {
+      flex:0 0 auto;
+      background:var(--cds-grain-bg);
+      border:1px solid var(--cds-border-subtle-00);
+    }
+    .grain-stats-panel { flex:1;min-width:200px; }
+    .grain-stat-card {
+      background:var(--cds-layer-01);
+      border:1px solid var(--cds-border-subtle-00);
+      padding:16px;margin-bottom:12px;
+    }
+    .grain-stat-card__label {
+      font-size:11px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;
+      color:var(--cds-text-helper);margin-bottom:6px;
+    }
+    .grain-stat-card__value {
+      font-size:24px;font-weight:300;font-family:'IBM Plex Mono',monospace;
+      color:var(--cds-text-primary);letter-spacing:-.48px;
+    }
+    .grain-stat-card__unit { font-size:13px;color:var(--cds-text-helper);margin-left:4px; }
+    .grain-stat-card__delta { font-size:12px;color:var(--cds-support-success);margin-top:4px;font-family:'IBM Plex Mono',monospace; }
+    .geom-grain { margin-top:16px; }
+    .geom-grain__title { font-size:11px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;color:var(--cds-text-helper);margin-bottom:8px; }
+    @media(max-width:900px){ .grain-layout{flex-direction:column;} .grain-svg-wrap svg{max-width:100%;height:auto;} }
+    .engine-svg { width:100%;height:auto;display:block;background:var(--cds-grain-bg);border:1px solid var(--cds-border-subtle-00); }
+    .best-actions { display:flex;gap:8px;flex-wrap:wrap;margin-top:12px; }
+    .perf-row { display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--cds-border-subtle-00);font-size:12px;color:var(--cds-text-secondary); }
+    .perf-row strong { font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:14px;color:var(--cds-text-primary); }
+    .perf-row em { font-style:normal;font-family:'IBM Plex Mono',monospace;font-size:11px;margin-left:6px; }
+
+    /* Log */
+    .sim-log { background:var(--cds-log-bg);color:var(--cds-log-text);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:16px;height:180px;overflow-y:auto;white-space:pre-wrap;border-left:3px solid var(--cds-log-border); }
+
+    /* Empty state pipeline */
+    .hero { max-width:880px;margin:24px auto 0;animation:fadeInUp .5s ease both; }
+    .hero h1 { font-size:32px;font-weight:300;letter-spacing:-.4px;margin-bottom:8px; }
+    @media(max-width:1400px){ .kpi-row{grid-template-columns:repeat(3,1fr);} }
+    @media(max-width:1200px){ .grid-2{grid-template-columns:1fr;} .best-layout{grid-template-columns:1fr;} .flow{flex-wrap:wrap;gap:8px;} .flow-arrow{display:none;} .flow-node{flex:1 1 30%;} }
+    @media(max-width:900px){ .app-container{flex-direction:column;} .config-panel{width:100%;min-width:unset;height:auto;position:static;} .kpi-row{grid-template-columns:repeat(2,1fr);} .result-panel{padding:16px;} }
+    /* ======================================================
+       Surrogate — page specific
+       ====================================================== */
+    .infer-bar { display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px; }
+    .infer-bar__meta { margin-left:auto;display:flex;gap:24px;font-size:12px;color:var(--cds-text-helper);letter-spacing:.32px; }
+    .infer-bar__meta strong { display:block;font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary);font-size:16px;font-weight:400; }
+    .infer-bar__title { font-size:28px;font-weight:300;letter-spacing:-.4px;color:var(--cds-text-primary); }
+    .kpi__pm { font-size:12px;color:var(--cds-text-helper);margin-left:6px;font-family:'IBM Plex Mono',monospace;letter-spacing:0; }
+    .key-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--cds-border-subtle-00);border:1px solid var(--cds-border-subtle-00);margin-bottom:16px; }
+    .key-cell { background:var(--cds-layer-01);padding:12px 16px;min-width:0; }
+    .key-cell__label { font-size:12px;color:var(--cds-text-helper);letter-spacing:.32px;margin-bottom:2px; }
+    .key-cell__value { font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--cds-text-primary);white-space:nowrap; }
+    .key-cell__value span { font-size:12px;color:var(--cds-text-helper);margin-left:4px; }
+    .key-cell__sub { font-size:11px;color:var(--cds-text-helper);margin-top:2px;font-family:'IBM Plex Mono',monospace; }
+    .cds-select {
+      width:100%;height:36px;padding:0 12px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--cds-text-primary);
+      background:var(--cds-field-01);border:none;border-bottom:1px solid var(--cds-border-strong-01);outline:none;cursor:pointer;
+    }
+    .chart-card .cds-select { background:var(--cds-layer-02); }
+    .chart-controls { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px; }
+    .domain-warn { font-size:12px;color:var(--cds-text-secondary);margin-top:4px; }
+    .input-out { box-shadow:inset 0 -2px 0 0 var(--cds-support-warning) !important; }
+    .model-metric { display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--cds-border-subtle-00);font-size:12px;color:var(--cds-text-secondary); }
+    .model-metric strong { font-family:'IBM Plex Mono',monospace;font-weight:400;color:var(--cds-text-primary); }
+    .file-btn { position:relative;overflow:hidden; }
+    .file-btn input { position:absolute;inset:0;opacity:0;cursor:pointer; }
+    @media(max-width:1400px){ .key-grid{grid-template-columns:repeat(2,1fr);} }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+const {
+  ResponsiveContainer, ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip,
+  ReferenceLine, ComposedChart, Line, Area, Bar, BarChart, Cell,
+} = Recharts;
+
+/* ===================================================================
+   CONSTANTS
+   =================================================================== */
+const HANDOFF_KEY = 'tusi-mdo-handoff';
+
+const PALETTE = {
+  light: { ok:'#24a148', bad:'#da1e28', near:'#ff832b', blue:'#0f62fe', gold:'#b28600', past:'#a8a8a8', purple:'#8a3ffc', tick:'#525252', grid:'#e0e0e0' },
+  dark:  { ok:'#42be65', bad:'#fa4d56', near:'#ff832b', blue:'#4589ff', gold:'#d2a106', past:'#6f6f6f', purple:'#a56eff', tick:'#c6c6c6', grid:'#393939' },
+};
+
+// 입력 정의: [키, 라벨, 표시 단위, SI→표시 배율, step]
+// optimizer/rl/surrogate.py 대리모델의 입력 = GA 설계 변수 14개 + 파생 값 (챔버 길이, 헬륨 질량) + 파이프
+// (탱크/챔버 반지름은 파이프 내경, 챔버 길이 = (연료 길이 + 2R) × 1.3, 헬륨 질량은 슈퍼차징 압력으로 정해진다)
+const INPUT_GROUPS = [
+  { title: 'Oxidizer Tank', open: true, pipe: true, items: [
+    ['oxidizer_M', '산화제 질량 (N₂O)', 'kg', 1, 0.1],
+    ['oxidizer_tank_length', '탱크 길이', 'mm', 1000, 10],
+    ['oxidizer_tank_tickness', '탱크/챔버 가공 두께', 'mm', 1000, 0.1],
+    ['supercharge_pressure', '헬륨 슈퍼차징 (탱크 초기 압력)', 'MPa', 1e-6, 0.1],
+    ['temperature', '초기 온도 (258 K = −15 °C, 303 K = 30 °C)', 'K', 1, 1],
+  ]},
+  { title: 'Combustion Chamber · Fuel Grain', open: true, items: [
+    ['outter_radius', '연료 외경 반지름', 'mm', 1000, 0.5],
+    ['fuel_length', '연료 길이', 'mm', 1000, 5],
+    ['port_num', '포트 개수', '', 1, 1],
+    ['inner_radius', '포트 반지름', 'mm', 1000, 0.1],
+    ['port_center_radius', '포트 배치 반지름', 'mm', 1000, 0.5],
+  ]},
+  { title: 'Injector', open: false, items: [
+    ['injector_oriffice_n', '오리피스 개수', '', 1, 1],
+    ['injector_oriffice_radius', '오리피스 반지름', 'mm', 1000, 0.01],
+    ['injector_oriffice_length', '오리피스 길이', 'mm', 1000, 0.5],
+  ]},
+  { title: 'Nozzle', open: false, items: [
+    ['nozzle_throat_radius', '노즐 목 반지름', 'mm', 1000, 0.1],
+    ['nozzle_exit_radius', '노즐 출구 반지름', 'mm', 1000, 0.1],
+  ]},
+];
+const INPUT_META = Object.fromEntries(INPUT_GROUPS.flatMap(g => g.items).map(([k, l, u, s, st]) => [k, { label:l, unit:u, scale:s, step:st }]));
+const DESIGN_KEYS = INPUT_GROUPS.flatMap(g => g.items).map(([k]) => k);
+
+// 출력 정의: [라벨, 단위, 배율, 소수점]  (burn_time 은 impulse / thrust_avg 파생값)
+const OUT_META = {
+  isp:                  ['비추력 Isp', 's', 1, 2],
+  impulse:              ['총 임펄스', 'N·s', 1, 0],
+  thrust_avg:           ['평균 추력', 'N', 1, 1],
+  burn_time:            ['연소 시간 (I / F̄)', 's', 1, 2],
+  max_tank_pressure:    ['최대 탱크압', 'MPa', 1e-6, 3],
+  max_chamber_pressure: ['최대 챔버압', 'MPa', 1e-6, 3],
+  dp_ratio_min:         ['최소 인젝터 차압 Δp/Pc', '%', 100, 1],
+};
+
+// constrain.py 클래스 이름 → 표시 이름 (mdo.html 과 같음)
+const CONSTRAINT_LABELS = {
+  ChamberThickness: '두께 < 구매 파이프 두께', ChamberEquality: '탱크 = 챔버 (반지름·두께)',
+  ChamberLength: '탱크/챔버 길이 < 파이프 길이', OxtFill: '산화제 충진 (ullage)', OxtPressure: '탱크 초기 압력 < 산화제 임계압',
+  InjectorArea: '인젝터 면적 < 챔버 면적', MaxOri: '오리피스 길이 상한', FuelArea: '연료 단면적',
+  FuelPort: '포트 배치', PortWeb: '포트 사이 웹 두께', PortResolution: '격자 해상도',
+  FuelLenght: '연료 길이 < 챔버 길이', FuelRadius: '연료 외경 < 챔버 내경', NozzleThroatSize: '노즐 목 < 챔버',
+  NozzleExpansion: '노즐 팽창비', NozzleExitSize: '노즐 출구 < 챔버 외경', Toxt: '탱크 두께 (압력 강도)',
+  Tcc: '챔버 두께 (압력 강도)', InjectorDP: '인젝터 차압 (Pt−Pc)/Pc ≥ 20%', OxtVolume: '산화제 탱크 부피', SimCompleted: '연소 정상 종료',
+  Impulse: '목표 임펄스 ±5%', ThrustAvg: '목표 평균 추력 ±5%',
+};
+
+// 기본 형상 (rocket.json 을 못 읽었을 때)
+const FALLBACK = {
+  oxidizer_M:4.18, port_num:2, outter_radius:0.03779, port_center_radius:0.02004, inner_radius:0.00833, fuel_length:0.3016,
+  oxidizer_tank_length:1.12096, oxidizer_tank_tickness:0.00391, supercharge_pressure:6.8e6, temperature:303, injector_oriffice_n:52,
+  injector_oriffice_radius:0.00061, injector_oriffice_length:0.02131, nozzle_throat_radius:0.0077, nozzle_exit_radius:0.01902,
+  oxidizer_tank_radius:0.045, combution_chamber_radius:0.045,
+};
+
+/* ===================================================================
+   SURROGATE INFERENCE  (서버: /api/surrogate/predict → optimizer/rl/surrogate.py 앙상블)
+   =================================================================== */
+const pipeOf = (model, cfg) => model.pipes.find(p => p.pipe_id === cfg.pipe_id) || model.pipes[0];
+
+// 설계(cfg) → core Rocket config 전체 (그림 / 시뮬레이터 전달용). GA.decode() 와 같은 규칙
+function fullConfig(model, cfg, base) {
+  const r = pipeOf(model, cfg).inner_diameter / 2;
+  const c = { ...(base || {}), ...model.fixed, ...cfg, oxidizer_tank_radius: r, combution_chamber_radius: r };
+  if (Math.round(c.port_num) === 1) c.port_center_radius = 0;
+  c.combution_chamber_length = chamberLength(c);
+  delete c.pipe_id;
+  return c;
+}
+
+// GA.trimmed_chamber_length 와 같은 규칙: (연료 길이 + 2R) × 1.3, 0.01 mm 단위 올림
+const chamberLength = (c) => Math.ceil(((c.fuel_length + 2 * c.outter_radius) * 1.3) / 1e-5 - 1e-6) * 1e-5;
+
+// rocket.json 설정 → 설계. 탱크 반지름에 가장 가까운 내경의 파이프를 고른다
+function designFromConfig(model, full) {
+  const r = Number(full.oxidizer_tank_radius ?? FALLBACK.oxidizer_tank_radius);
+  const pipe = full.pipe_id && model.pipes.find(p => p.pipe_id === full.pipe_id)
+    || model.pipes.reduce((a, p) => Math.abs(p.inner_diameter / 2 - r) < Math.abs(a.inner_diameter / 2 - r) ? p : a, model.pipes[0]);
+  const c = { pipe_id: pipe.pipe_id };
+  DESIGN_KEYS.forEach(k => { c[k] = full[k] != null ? Number(full[k]) : FALLBACK[k]; });
+  return c;
+}
+
+const designPayload = (cfg) => {
+  const d = { pipe_id: cfg.pipe_id };
+  DESIGN_KEYS.forEach(k => { d[k] = cfg[k]; });
+  if (Math.round(d.port_num) === 1) d.port_center_radius = 0;
+  return d;
+};
+
+function toPred(r) {
+  const mean = { ...r.mean }, std = { ...r.std };
+  mean.burn_time = mean.impulse / mean.thrust_avg;
+  std.burn_time = mean.burn_time * Math.hypot(std.impulse / mean.impulse, std.thrust_avg / mean.thrust_avg);
+  return { mean, std, pOk: r.p_ok, dpEstimated: !!r.dp_estimated };
+}
+
+async function apiPredict(designs, opts = {}) {
+  const r = await fetch('/api/surrogate/predict', {
+    method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ designs: designs.map(designPayload), ...opts }),
+  });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || '예측 실패');
+  return { preds: data.results.map(toPred), derived: data.results.map(r => r.derived), constraints: data.constraints, ms: data.ms };
+}
+
+// designs 가 바뀌면 (디바운스 후) 서버에서 일괄 예측. 늦게 도착한 옛 응답은 버린다
+function usePredictions(designs, opts) {
+  const [state, setState] = useState({ data: null, error: null });
+  const key = useMemo(() => JSON.stringify([designs, opts]), [designs, opts]);
+  useEffect(() => {
+    if (!designs || !designs.length) { setState({ data: null, error: null }); return; }
+    let alive = true;
+    const t = setTimeout(() => {
+      apiPredict(designs, opts)
+        .then(data => alive && setState({ data, error: null }))
+        .catch(e => alive && setState(s => ({ data: s.data, error: e.message })));
+    }, 80);
+    return () => { alive = false; clearTimeout(t); };
+  }, [key]);
+  return state;
+}
+
+/* ===================================================================
+   HELPERS / ICONS
+   =================================================================== */
+const fmt = (v, d=2) => (v == null || !isFinite(v)) ? '—' : Number(v).toFixed(d);
+const fmtInt = (v) => (v == null || !isFinite(v)) ? '—' : Math.round(v).toLocaleString('en-US');
+const mm = (v) => fmt(v * 1000, 2);
+const outVal = (o, v) => { const [, , s, d] = OUT_META[o]; return d === 0 ? fmtInt(v * s) : fmt(v * s, d); };
+const tooltipStyle = { contentStyle:{background:'var(--cds-background-inverse)',border:'none',fontSize:12},
+                       labelStyle:{color:'var(--cds-text-inverse)'}, itemStyle:{color:'var(--cds-text-inverse)'} };
+
+const ChevronRight = () => <svg viewBox="0 0 16 16" className="cds-accordion__arrow"><path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"/></svg>;
+const UploadIcon   = () => <svg viewBox="0 0 16 16"><path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM8.5 1.6l3.7 3.7-.7.7L9 3.4V12H8V3.4L5.5 6 4.8 5.3l3.7-3.7z"/></svg>;
+const ResetIcon    = () => <svg viewBox="0 0 32 32"><path d="M18 28A12 12 0 106 16v6.2l-3.6-3.6L1 20l6 6 6-6-1.4-1.4L8 22.2V16a10 10 0 1110 10z"/></svg>;
+const LaunchIcon   = () => <svg viewBox="0 0 32 32"><path d="M26 28H6a2 2 0 01-2-2V6a2 2 0 012-2h10v2H6v20h20V16h2v10a2 2 0 01-2 2z"/><path d="M20 2v2h6.59L18 12.59 19.41 14 28 5.41V12h2V2H20z"/></svg>;
+const MoonIcon     = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M13.502 5.414a15.075 15.075 0 000 21.17C17.275 30.357 22.497 32 27.502 32c1.252 0 2.5-.108 3.726-.321-6.827.674-13.019-1.49-17.488-5.96a15.065 15.065 0 010-21.305z"/></svg>;
+const SunIcon      = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M16 8a8 8 0 100 16A8 8 0 0016 8zm0-6a1 1 0 010 2 1 1 0 010-2zm0 24a1 1 0 010 2 1 1 0 010-2zM4 16a1 1 0 01-2 0 1 1 0 012 0zm24 0a1 1 0 01-2 0 1 1 0 012 0z"/></svg>;
+const EngineIcon   = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M4 11h14v10H4zM18 13l4-2v10l-4-2zM22 11l6-3v16l-6-3z" fill="none" stroke="currentColor" strokeWidth="2"/></svg>;
+const DnaIcon      = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 3c0 9 14 9 14 18s-14 4-14 8M23 3c0 9-14 9-14 18M23 29c0-3-3-5-6-6"/><path d="M11 8h10M11 24h10M13 13h6"/></svg>;
+const ChartIcon    = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M4 2H2v26a2 2 0 002 2h26v-2H4z"/><path d="M30 9h-7v2h3.59L19 18.59l-4.29-4.3a1 1 0 00-1.42 0L6 21.59 7.41 23 14 16.41l4.29 4.3a1 1 0 001.42 0l8.29-8.3V16h2z"/></svg>;
+const RulerIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M29.4 9.6 22.4 2.6a2 2 0 0 0-2.8 0L2.6 19.6a2 2 0 0 0 0 2.8l7 7a2 2 0 0 0 2.8 0l17-17a2 2 0 0 0 0-2.8zM11 28l-7-7 3-3 3.5 3.5 1.4-1.4L8.4 16.6l2.6-2.6 2 2 1.4-1.4-2-2 2.6-2.6 3.5 3.5 1.4-1.4L16.4 8.6l2.6-2.6 2 2 1.4-1.4-2-2L21 4l7 7z"/></svg>;
+const BoltIcon     = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M11.61 29.92a1 1 0 01-.6-1.07L12.83 17H8a1 1 0 01-1-1.23l3-13A1 1 0 0111 2h10a1 1 0 01.78.37 1 1 0 01.2.85L20.25 11H25a1 1 0 01.83 1.55l-12 17a1 1 0 01-1.22.37z"/></svg>;
+
+/* ===================================================================
+   SMALL COMPONENTS
+   =================================================================== */
+function AccordionItem({ title, defaultOpen, children, grid=true }) {
+  const [open, setOpen] = useState(!!defaultOpen);
+  return (
+    <div className={`cds-accordion__item ${open?'cds-accordion__item--open':''}`}>
+      <button className="cds-accordion__heading" onClick={()=>setOpen(o=>!o)}><ChevronRight/>{title}</button>
+      <div style={open?{}:{display:'none'}}>
+        {grid ? <div className="cds-accordion__content">{children}</div> : <div style={{padding:'0 24px 16px'}}>{children}</div>}
+      </div>
+    </div>
+  );
+}
+
+function ParamInput({ k, value, onChange, range }) {
+  const m = INPUT_META[k];
+  const [text, setText] = useState(fmtShow(value, m));
+  useEffect(() => { setText(t => Math.abs(parseFloat(t) / m.scale - value) <= Math.abs(value) * 1e-9 ? t : fmtShow(value, m)); }, [value]);
+  const out = range && (value < range[0] - 1e-12 || value > range[1] + 1e-12);
+  return (
+    <div className="cds-form-item">
+      <label className="cds-label">{m.label}</label>
+      <div className="input-unit-wrap">
+        <input className={`cds-text-input ${out ? 'input-out' : ''}`} type="number" step={m.step} value={text}
+               onChange={e => { setText(e.target.value); const v = parseFloat(e.target.value); if (isFinite(v)) onChange(k, v / m.scale); }}/>
+        {m.unit && <span className="input-unit">{m.unit}</span>}
+      </div>
+      {range && <div className="cds-helper-text">{fmtShow(range[0], m)} – {fmtShow(range[1], m)}</div>}
+    </div>
+  );
+}
+function fmtShow(v, m) {
+  if (v == null || !isFinite(v)) return '';
+  const x = v * m.scale;
+  return String(+x.toFixed(m.step >= 1 ? 0 : m.step >= 0.1 ? 2 : 4));
+}
+
+/* ===================================================================
+   RESULT PANELS
+   =================================================================== */
+function InferenceBar({ pred, ms, model, nOut, cons }) {
+  const okTag = cons && cons.feasible && pred.pOk >= 0.8 ? ['cds-tag--green', cons.with_targets ? 'MDO FEASIBLE' : 'CONSTRAINTS OK']
+              : pred.pOk < 0.5 ? ['cds-tag--red', 'INCOMPLETE BURN LIKELY']
+              : cons && !cons.feasible ? ['cds-tag--red', 'CONSTRAINT VIOLATION'] : ['cds-tag--gray', 'MARGINAL'];
+  return (
+    <div className="infer-bar">
+      <span className={`cds-tag ${okTag[0]}`}><i className="tag-dot"/>{okTag[1]}</span>
+      <div className="infer-bar__title">Predicted Performance</div>
+      <div className="infer-bar__meta">
+        <div>Inference (서버)<strong>{fmt(ms, 2)} ms</strong></div>
+        <div>앙상블<strong>{model.n_models} × MLP</strong></div>
+        <div>정상 종료 확률<strong>{fmt(pred.pOk * 100, 1)}%</strong></div>
+        <div>학습 범위 밖 입력<strong style={{color: nOut ? 'var(--cds-text-warning)' : undefined}}>{nOut}</strong></div>
+      </div>
+    </div>
+  );
+}
+
+function Kpi({ o, pred, sub }) {
+  const [label, unit] = OUT_META[o];
+  return (
+    <div className="kpi">
+      <div className="kpi__label">{label}</div>
+      <div className="kpi__value">{outVal(o, pred.mean[o])}<span className="kpi__unit">{unit}</span></div>
+      <div className="kpi__sub">± {outVal(o, 2 * pred.std[o])} {unit} (앙상블 2σ){sub ? ` · ${sub}` : ''}</div>
+    </div>
+  );
+}
+
+// 인젝터 차압: 하한(기본 20%) 미만이면 빨간색
+function DpKpi({ pred, limit }) {
+  const v = pred.mean.dp_ratio_min, ok = v != null && v >= limit;
+  return (
+    <div className="kpi">
+      <div className="kpi__label">최소 인젝터 차압 Δp/Pc</div>
+      <div className="kpi__value" style={{color: v == null ? undefined : ok ? 'var(--cds-support-success)' : 'var(--cds-support-error)'}}>
+        {v == null ? '—' : fmt(v * 100, 1)}<span className="kpi__unit">%</span>
+      </div>
+      <div className="kpi__sub">
+        {pred.dpEstimated ? '최대 압력 비 근사 (모델 재학습 전)' : `± ${fmt(2 * pred.std.dp_ratio_min * 100, 1)} % (앙상블 2σ)`} · 기준 ≥ {fmt(limit * 100, 0)}%
+      </div>
+    </div>
+  );
+}
+
+function KpiRow({ pred, targets, limit }) {
+  const err = (o, t) => t > 0 ? `목표 대비 ${pred.mean[o] >= t ? '+' : ''}${fmt((pred.mean[o] / t - 1) * 100, 1)}%` : '';
+  return (
+    <div className="kpi-row">
+      <Kpi o="isp" pred={pred}/>
+      <Kpi o="impulse" pred={pred} sub={err('impulse', targets.impulse)}/>
+      <Kpi o="thrust_avg" pred={pred} sub={err('thrust_avg', targets.thrust_avg)}/>
+      <Kpi o="burn_time" pred={pred}/>
+      <Kpi o="max_chamber_pressure" pred={pred} sub={`탱크 ${outVal('max_tank_pressure', pred.mean.max_tank_pressure)} MPa`}/>
+      <DpKpi pred={pred} limit={limit}/>
+    </div>
+  );
+}
+
+// MDO 와 같은 제약 검사 (시뮬레이션 결과 자리에 대리모델 예측을 넣음)
+function ConstraintPanel({ cons, targets, setTargets }) {
+  const failed = cons ? cons.items.filter(i => i.violation > 0) : [];
+  return (
+    <div className="chart-card" style={{marginBottom:16}}>
+      <div className="chart-card__title">MDO Constraint Check</div>
+      <div className="chart-card__subtitle">optimizer/constrain.py 의 형상·압력 제약을 예측값으로 검사 · 목표를 넣으면 임펄스/평균 추력 ±5% 조건까지 확인</div>
+      <div className="chart-controls">
+        <div className="input-unit-wrap">
+          <input className="cds-text-input" type="number" step="100" placeholder="목표 총 임펄스 (선택)" value={targets.impulse || ''}
+                 onChange={e => setTargets(t => ({ ...t, impulse: parseFloat(e.target.value) || 0 }))}/>
+          <span className="input-unit">N·s</span>
+        </div>
+        <div className="input-unit-wrap">
+          <input className="cds-text-input" type="number" step="10" placeholder="목표 평균 추력 (선택)" value={targets.thrust_avg || ''}
+                 onChange={e => setTargets(t => ({ ...t, thrust_avg: parseFloat(e.target.value) || 0 }))}/>
+          <span className="input-unit">N</span>
+        </div>
+      </div>
+      {!cons ? <div className="cds-helper-text">검사 중…</div> : (
+        <div className="key-grid">
+          {cons.items.map(i => (
+            <div className="key-cell" key={i.name}>
+              <div className="key-cell__label">{i.stage === 'pre' ? '형상' : '결과'} · {i.name}</div>
+              <div className="key-cell__value" style={{fontSize:14, color: i.violation > 0 ? 'var(--cds-support-error)' : 'var(--cds-support-success)'}}>
+                {i.violation > 0 ? `✕ 위반 ${fmt(i.violation, 3)}` : '✓ 만족'}
+              </div>
+              <div className="key-cell__sub">{CONSTRAINT_LABELS[i.name] || ''}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {cons && <div className="cds-helper-text">{failed.length ? `위반 ${failed.length}개` : '모든 제약 만족'}{cons.with_targets ? '' : ' · 목표 미입력 (임펄스/추력 조건 제외)'}</div>}
+    </div>
+  );
+}
+
+function computeGrainPreview(cfg) {
+  const gs = Math.max(2, parseInt(cfg.grid_size) || 300);
+  const outerR = Math.max(+cfg.outter_radius || 0.05, 1e-6);
+  const innerR = Math.max(+cfg.inner_radius  || 0,    0);
+  const grainType = String(cfg.grain_type||'PORT').toUpperCase();
+
+  const dx    = (2 * outerR) / (gs - 1);
+  const coord = i => -outerR + i * dx;
+  const idx   = (row, col) => row * gs + col;
+
+  const solid = new Uint8Array(gs * gs).fill(1); // 1=solid, 0=gas
+
+  const carveCircle = (cx, cy, r) => {
+    if (r <= 0) return;
+    for (let row = 0; row < gs; row++) {
+      const y = coord(row);
+      const dy2 = (y - cy) ** 2;
+      if (dy2 > r * r) continue;
+      for (let col = 0; col < gs; col++) {
+        const x = coord(col);
+        if ((x - cx) ** 2 + dy2 <= r * r) solid[idx(row, col)] = 0;
+      }
+    }
+  };
+
+  let portCenters = [[0, 0]];
+
+  if (grainType === 'FIN' || grainType === 'FINOCYL') {
+    carveCircle(0, 0, innerR);
+    const finNum = Math.max(1, parseInt(cfg.fin_num) || 6);
+    const finLen = Math.max(+cfg.fin_length || 0, 1e-9);
+    const rootW  = Math.max(+cfg.fin_width || 0, 0);
+    const tipRaw = cfg.fin_tip_width;
+    const tipW   = (tipRaw === null || tipRaw === undefined || tipRaw === '') ? rootW : Math.max(+tipRaw, 0);
+    const halfRoot = rootW / 2, halfTip = tipW / 2;
+    const isFinocyl = grainType === 'FINOCYL';
+    const straightLen = isFinocyl ? Math.max(finLen - halfTip, 0) : finLen;
+    const rectEnd = innerR + straightLen;
+
+    for (let k = 0; k < finNum; k++) {
+      const ang = 2 * Math.PI * k / finNum;
+      const ca = Math.cos(ang), sa = Math.sin(ang);
+      for (let row = 0; row < gs; row++) {
+        const y = coord(row);
+        for (let col = 0; col < gs; col++) {
+          const x = coord(col);
+          const xr =  x * ca + y * sa;
+          const yr = -x * sa + y * ca;
+          if (xr < innerR) continue;
+          if (!isFinocyl) {
+            if (xr > innerR + finLen) continue;
+            const frac  = Math.min(Math.max((xr - innerR) / finLen, 0), 1);
+            const halfW = halfRoot + (halfTip - halfRoot) * frac;
+            if (Math.abs(yr) <= halfW) solid[idx(row, col)] = 0;
+          } else if (xr <= rectEnd) {
+            const frac  = straightLen > 1e-12 ? Math.min(Math.max((xr - innerR) / straightLen, 0), 1) : 1;
+            const halfW = halfRoot + (halfTip - halfRoot) * frac;
+            if (Math.abs(yr) <= halfW) solid[idx(row, col)] = 0;
+          } else {
+            const ddx = xr - rectEnd;
+            if (ddx * ddx + yr * yr <= halfTip * halfTip) solid[idx(row, col)] = 0;
+          }
+        }
+      }
+    }
+  } else {
+    // PORT: 단일 또는 원형 배치 다중 포트
+    const portNum = Math.max(1, parseInt(cfg.port_num) || 1);
+    if (portNum === 1) {
+      portCenters = [[0, 0]];
+    } else {
+      const pcrRaw = cfg.port_center_radius;
+      const rc = (pcrRaw === null || pcrRaw === undefined || pcrRaw === '') ? outerR * 0.5 : +pcrRaw;
+      portCenters = Array.from({ length: portNum }, (_, k) => {
+        const a = 2 * Math.PI * k / portNum;
+        return [rc * Math.cos(a), rc * Math.sin(a)];
+      });
+    }
+    portCenters.forEach(([cx, cy]) => carveCircle(cx, cy, innerR));
+  }
+
+  // ── Marching squares (binary, edge-midpoint) → 독립 선분 목록 ─────────
+  const EDGE_TABLE = {
+    1: [['L', 'B']],  2: [['B', 'R']],  3: [['L', 'R']],
+    4: [['T', 'R']],  5: [['L', 'T'], ['B', 'R']],  6: [['T', 'B']],
+    7: [['L', 'T']],  8: [['T', 'L']],  9: [['T', 'B']],
+    10: [['T', 'R'], ['L', 'B']], 11: [['T', 'R']],
+    12: [['L', 'R']], 13: [['B', 'R']], 14: [['L', 'B']],
+  };
+  const segments = [];
+  for (let row = 0; row < gs - 1; row++) {
+    const y0 = coord(row), y1 = coord(row + 1);
+    for (let col = 0; col < gs - 1; col++) {
+      const tl = solid[idx(row, col)],     tr = solid[idx(row, col + 1)];
+      const bl = solid[idx(row + 1, col)], br = solid[idx(row + 1, col + 1)];
+      const c = tl * 8 + tr * 4 + br * 2 + bl * 1;
+      if (c === 0 || c === 15) continue;
+      const x0 = coord(col), x1 = coord(col + 1);
+      const mid = { T: [(x0 + x1) / 2, y0], B: [(x0 + x1) / 2, y1], L: [x0, (y0 + y1) / 2], R: [x1, (y0 + y1) / 2] };
+      for (const [a, b] of EDGE_TABLE[c]) segments.push([mid[a], mid[b]]);
+    }
+  }
+
+  let gasCells = 0;
+  for (let i = 0; i < solid.length; i++) if (solid[i] === 0) gasCells++;
+  const portArea  = gasCells * dx * dx;
+  const perimeter = segments.reduce((acc, [[x1, y1], [x2, y2]]) => acc + Math.hypot(x2 - x1, y2 - y1), 0);
+
+  return { extent: outerR, portCenters, segments, portArea, perimeter };
+}
+
+function GrainLivePreview({ config }) {
+  const preview = useMemo(() => {
+    try { return computeGrainPreview(config); }
+    catch { return null; }
+  }, [
+    config.grain_type, config.inner_radius, config.outter_radius,
+    config.port_num, config.port_center_radius,
+    config.fin_num, config.fin_length, config.fin_width, config.fin_tip_width,
+    config.grid_size,
+  ]);
+
+  if (!preview) return null;
+
+  const SVG_W = 320, SVG_H = 320, PAD = 24;
+  const PLOT = SVG_W - 2 * PAD, CX = PAD + PLOT / 2, CY = PAD + PLOT / 2, R_OUT = PLOT / 2;
+  const { extent, portCenters, segments, portArea, perimeter } = preview;
+  const sx = x => PAD + (x / extent + 1) * 0.5 * PLOT;
+  const sy = y => PAD + (1 - y / extent) * 0.5 * PLOT;
+
+  const pathD = segments.map(([[x1, y1], [x2, y2]]) => `M${sx(x1).toFixed(1)},${sy(y1).toFixed(1)} L${sx(x2).toFixed(1)},${sy(y2).toFixed(1)}`).join(' ');
+
+  return (
+    <div className="grain-layout">
+      <div className="grain-svg-wrap">
+        <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}>
+          <defs>
+            <clipPath id="gp-clip"><circle cx={CX} cy={CY} r={R_OUT} /></clipPath>
+          </defs>
+          <rect x={PAD} y={PAD} width={PLOT} height={PLOT} fill="var(--cds-grain-bg)" />
+          <circle cx={CX} cy={CY} r={R_OUT - 1} fill="var(--cds-layer-accent-01)" opacity="0.25" clipPath="url(#gp-clip)" />
+          <g clipPath="url(#gp-clip)">
+            <path d={pathD} fill="none" stroke="var(--cds-support-error)" strokeWidth="1.8" strokeLinejoin="round" />
+          </g>
+          {portCenters.map(([px, py], i) => (
+            <g key={i}>
+              <line x1={sx(px) - 5} y1={sy(py)} x2={sx(px) + 5} y2={sy(py)} stroke="var(--cds-text-helper)" strokeWidth="1" opacity="0.6" />
+              <line x1={sx(px)} y1={sy(py) - 5} x2={sx(px)} y2={sy(py) + 5} stroke="var(--cds-text-helper)" strokeWidth="1" opacity="0.6" />
+            </g>
+          ))}
+          <circle cx={CX} cy={CY} r={R_OUT - 1} fill="none" stroke="var(--cds-grain-casing)" strokeWidth="2" strokeDasharray="6 4" />
+        </svg>
+      </div>
+      <div className="grain-stats-panel">
+        <div className="grain-stat-card">
+          <div className="grain-stat-card__label">Port Area (t=0)</div>
+          <div className="grain-stat-card__value">{(portArea * 1e4).toFixed(3)}<span className="grain-stat-card__unit">cm²</span></div>
+        </div>
+        <div className="grain-stat-card">
+          <div className="grain-stat-card__label">Burn Perimeter (t=0)</div>
+          <div className="grain-stat-card__value">{(perimeter * 1000).toFixed(2)}<span className="grain-stat-card__unit">mm</span></div>
+        </div>
+        <div style={{ fontSize: 12, color: 'var(--cds-text-helper)', lineHeight: 1.6 }}>
+          core 시뮬레이션과 동일한 해상도({config.grid_size||300}×{config.grid_size||300})로 계산한 초기 그레인 단면입니다. 연소 진행 애니메이션은 Open in Simulator 로 확인하세요.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EngineSection({ config }) {
+  const SVG_W = 860, SVG_H = 290;
+  const CY = SVG_H / 2;
+  const PAD_X = 12, PAD_Y = 36;
+
+  const Rc  = +(config.combution_chamber_radius) || 0.06;
+  const Ro  = +(config.outter_radius)            || 0.05;
+  const Ri  = +(config.inner_radius)             || 0.01;
+  const Rth = +(config.nozzle_throat_radius)     || 0.009;
+  const Re  = +(config.nozzle_exit_radius)       || 0.02;
+  const Lf  = +(config.fuel_length)              || 0.15;
+
+  const Lpre  = 0.5 * Ro;
+  const Lpost = 1.5 * Ro;
+  const Lcon  = Math.max((Rc - Rth) / Math.tan(40 * Math.PI / 180), 0.005);
+  const Ldiv  = Math.max((Re - Rth) / Math.tan(15 * Math.PI / 180), 0.010);
+  const Lnoz  = Lcon + Ldiv;
+
+  const L_total = Lpre + Lf + Lpost + Lnoz;
+  const R_max   = Math.max(Rc, Ro, Re);
+  const avail_w = SVG_W - 2 * PAD_X - 80; // 80px right margin for R labels
+  const avail_h = CY - PAD_Y - 4;
+  const sl = avail_w / L_total;
+  const sr = avail_h / (R_max * 1.1);
+
+  const x0 = PAD_X;
+  const x1 = x0 + Lpre  * sl;
+  const x2 = x1 + Lf    * sl;
+  const x3 = x2 + Lpost * sl;
+  const x4 = x3 + Lcon  * sl;
+  const x5 = x4 + Ldiv  * sl;
+
+  const ry = r => CY - r * sr;
+  const ly = r => CY + r * sr;
+
+  const stroke  = 'var(--cds-border-strong-01)';
+  const mono    = "'IBM Plex Mono',monospace";
+  const sans    = "'IBM Plex Sans',sans-serif";
+  const textCol = 'var(--cds-text-secondary)';
+
+  // Nozzle paths
+  const nozPath = `M${x3},${ry(Rc)} L${x4},${ry(Rth)} L${x5},${ry(Re)} L${x5},${ly(Re)} L${x4},${ly(Rth)} L${x3},${ly(Rc)} Z`;
+
+  // Section vertical guides
+  const guides = [x1, x2, x3];
+
+  return (
+    <div style={{ marginTop:24, background:'var(--cds-layer-01)', border:'1px solid var(--cds-border-subtle-00)', padding:'8px 4px 4px' }}>
+      <div style={{ fontSize:11, fontWeight:600, letterSpacing:'.64px', textTransform:'uppercase', color:'var(--cds-text-helper)', padding:'0 12px 8px' }}>
+        Engine Longitudinal Cross-Section (Axial Half-Section · Not to scale)
+      </div>
+      <svg width="100%" viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ display:'block' }}>
+
+        {/* Nozzle (draw first) */}
+        <path d={nozPath} fill="var(--cds-layer-accent-01)" stroke={stroke} strokeWidth="1.5"/>
+
+        {/* Chamber outer wall (spans pre + post, same radius Rc) */}
+        <rect x={x0} y={ry(Rc)} width={x3-x0} height={Rc*2*sr}
+          fill="var(--cds-layer-02)" stroke={stroke} strokeWidth="1.5"/>
+
+        {/* Pre-combustion chamber gas fill */}
+        <rect x={x0} y={ry(Rc)} width={x1-x0} height={Rc*2*sr}
+          fill="var(--cds-notif-info-bg)" stroke="none"/>
+
+        {/* Grain outer casing fill */}
+        <rect x={x1} y={ry(Rc)} width={x2-x1} height={Rc*2*sr}
+          fill="var(--cds-layer-02)" stroke="none"/>
+
+        {/* Grain fuel annulus */}
+        <rect x={x1} y={ry(Ro)} width={x2-x1} height={Ro*2*sr}
+          fill="var(--cds-accent-gold)" fillOpacity="0.13" stroke="none"/>
+
+        {/* Port (gas void) */}
+        <rect x={x1} y={ry(Ri)} width={x2-x1} height={Ri*2*sr}
+          fill="var(--cds-background)" stroke="none"/>
+
+        {/* Grain outer wall dashed boundary */}
+        <rect x={x1} y={ry(Ro)} width={x2-x1} height={Ro*2*sr}
+          fill="none" stroke={stroke} strokeWidth="1.2" strokeDasharray="5 3"/>
+
+        {/* Burn surface (port perimeter) */}
+        <rect x={x1} y={ry(Ri)} width={x2-x1} height={Ri*2*sr}
+          fill="none" stroke="var(--cds-interactive)" strokeWidth="1.5" strokeDasharray="4 2"/>
+
+        {/* Post-combustion gas fill */}
+        <rect x={x2} y={ry(Rc)} width={x3-x2} height={Rc*2*sr}
+          fill="var(--cds-notif-success-bg)" stroke="none"/>
+
+        {/* Chamber bore lines */}
+        <line x1={x0} y1={ry(Rc)} x2={x3} y2={ry(Rc)} stroke={stroke} strokeWidth="1.5"/>
+        <line x1={x0} y1={ly(Rc)} x2={x3} y2={ly(Rc)} stroke={stroke} strokeWidth="1.5"/>
+
+        {/* Centerline */}
+        <line x1={x0-8} y1={CY} x2={x5+12} y2={CY}
+          stroke="var(--cds-support-error)" strokeWidth="1" strokeDasharray="8 4" opacity="0.65"/>
+
+        {/* Throat */}
+        <line x1={x4} y1={ry(Rth)} x2={x4} y2={ly(Rth)}
+          stroke="var(--cds-support-error)" strokeWidth="1" strokeDasharray="4 2" opacity="0.5"/>
+
+        {/* Section dividers */}
+        {guides.map((x,i) => (
+          <line key={i} x1={x} y1={PAD_Y-22} x2={x} y2={SVG_H-10}
+            stroke="var(--cds-border-subtle-01)" strokeWidth="1" strokeDasharray="4 3" opacity="0.7"/>
+        ))}
+
+        {/* Section labels */}
+        {[
+          [x0, x1, 'Pre-Combustion', `L=${(Lpre*1e3).toFixed(0)} mm`, 'var(--cds-support-info)'],
+          [x1, x2, 'Fuel Grain',     `L=${(Lf*1e3).toFixed(0)} mm`,   'var(--cds-accent-gold)'],
+          [x2, x3, 'Post-Combustion',`L=${(Lpost*1e3).toFixed(0)} mm`,'var(--cds-support-success)'],
+          [x3, x5, 'Nozzle',         `L=${(Lnoz*1e3).toFixed(0)} mm`, 'var(--cds-text-helper)'],
+        ].map(([xa, xb, lbl, dim, col]) => (
+          <g key={lbl}>
+            <text x={(xa+xb)/2} y={PAD_Y-14} textAnchor="middle" fontSize="9" fontWeight="600"
+              fill={col} fontFamily={sans}>{lbl}</text>
+            <text x={(xa+xb)/2} y={PAD_Y-4} textAnchor="middle" fontSize="8"
+              fill="var(--cds-text-helper)" fontFamily={mono}>{dim}</text>
+          </g>
+        ))}
+
+        {/* Radius dimension lines on right */}
+        {[
+          [Rc, `Rc=${(Rc*1e3).toFixed(1)}`, 'var(--cds-interactive)'],
+          [Ro, `Ro=${(Ro*1e3).toFixed(1)}`, 'var(--cds-accent-gold)'],
+          [Ri, `Ri=${(Ri*1e3).toFixed(1)}`, 'var(--cds-support-error)'],
+        ].map(([r, lbl, col]) => (
+          <g key={lbl}>
+            <line x1={x5+8} y1={CY} x2={x5+28} y2={CY - r*sr}
+              stroke={col} strokeWidth="0.75" opacity="0.7"/>
+            <text x={x5+30} y={CY - r*sr + 3} fontSize="9" fill={col} fontFamily={mono}>{lbl}</text>
+          </g>
+        ))}
+        {/* Throat */}
+        <text x={x4} y={ly(Rth)+16} textAnchor="middle" fontSize="8"
+          fill="var(--cds-text-helper)" fontFamily={mono}>Rth={( Rth*1e3).toFixed(1)}</text>
+        {/* Exit */}
+        <text x={x5+2} y={ly(Re)+14} textAnchor="start" fontSize="8"
+          fill="var(--cds-text-helper)" fontFamily={mono}>Re={( Re*1e3).toFixed(1)}</text>
+
+        {/* Legend */}
+        {[
+          ['var(--cds-interactive)', 'Port (burn surface)', x0+4, SVG_H-8],
+          ['var(--cds-accent-gold)', 'Solid fuel',          x0+130, SVG_H-8],
+          ['var(--cds-border-strong-01)', 'Chamber wall', x0+240, SVG_H-8],
+        ].map(([col, lbl, lx, ly2]) => (
+          <g key={lbl}>
+            <rect x={lx} y={ly2-7} width={10} height={6} fill={col} opacity="0.7"/>
+            <text x={lx+14} y={ly2-1} fontSize="8" fill="var(--cds-text-helper)" fontFamily={sans}>{lbl}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+function PipeSelect({ model, value, onChange }) {
+  const p = model.pipes.find(q => q.pipe_id === value);
+  return (
+    <div className="cds-form-item full-width">
+      <label className="cds-label">파이프 (탱크·챔버 공용)</label>
+      <select className="cds-select" value={value} onChange={e => onChange('pipe_id', e.target.value)}>
+        {model.pipes.map(q => <option key={q.pipe_id} value={q.pipe_id}>{q.pipe_id}</option>)}
+      </select>
+      {p && <div className="cds-helper-text">내경 반지름 {fmt(p.inner_diameter * 500, 1)} mm · 벽 {fmt(p.wall_thickness * 1e3, 2)} mm · 길이 {fmt(p.length * 1e3, 0)} mm</div>}
+    </div>
+  );
+}
+
+const outputKeys = (model) => [...new Set([...model.targets.slice(0, 3), 'burn_time', ...model.targets.slice(3), 'dp_ratio_min'])];
+
+function Sensitivity({ model, cfg, colors }) {
+  const [xKey, setXKey] = useState('nozzle_throat_radius');
+  const [yKey, setYKey] = useState('isp');
+  const m = INPUT_META[xKey], r = model.bounds[xKey], [ylab, yunit, ys] = OUT_META[yKey];
+  const xs = useMemo(() => {
+    const n = 41, isInt = model.int_vars.includes(xKey), out = [];
+    for (let i = 0; i < n; i++) {
+      let x = r[0] + (r[1] - r[0]) * i / (n - 1);
+      if (isInt) x = Math.round(x);
+      if (!out.length || out[out.length - 1] !== x) out.push(x);
+    }
+    return out;
+  }, [model, xKey]);
+  const designs = useMemo(() => xs.map(x => ({ ...cfg, [xKey]: x })), [xs, cfg, xKey]);
+  const { data: res } = usePredictions(designs);
+  const data = useMemo(() => !res || res.preds.length !== xs.length ? [] : xs.map((x, i) => {
+    const p = res.preds[i], v = p.mean[yKey] * ys, s = 2 * p.std[yKey] * ys;
+    return { x: +(x * m.scale).toFixed(4), y: v, band: [v - s, v + s] };
+  }), [res, xs, yKey]);
+  const cur = cfg[xKey] * m.scale;
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">Sensitivity Sweep</div>
+      <div className="chart-card__subtitle">입력 하나를 GA 탐색 범위 전체로 움직였을 때의 예측 (음영 = 앙상블 2σ, 점선 = 현재 값)</div>
+      <div className="chart-controls">
+        <select className="cds-select" value={xKey} onChange={e => setXKey(e.target.value)}>
+          {INPUT_GROUPS.flatMap(g => g.items).map(([k, l, u]) => <option key={k} value={k}>{l}{u ? ` [${u}]` : ''}</option>)}
+        </select>
+        <select className="cds-select" value={yKey} onChange={e => setYKey(e.target.value)}>
+          {outputKeys(model).map(o => <option key={o} value={o}>{OUT_META[o][0]}{OUT_META[o][1] ? ` [${OUT_META[o][1]}]` : ''}</option>)}
+        </select>
+      </div>
+      <ResponsiveContainer width="100%" height={240}>
+        <ComposedChart data={data} margin={{top:8,right:8,bottom:4,left:0}}>
+          <CartesianGrid stroke={colors.grid} strokeDasharray="3 3"/>
+          <XAxis type="number" dataKey="x" domain={['dataMin','dataMax']} tick={{fontSize:11,fill:colors.tick}} stroke={colors.grid}/>
+          <YAxis domain={['auto','auto']} tick={{fontSize:11,fill:colors.tick}} stroke={colors.grid} width={52} tickFormatter={v => fmt(v, OUT_META[yKey][3] > 1 ? 1 : 0)}/>
+          <Tooltip {...tooltipStyle} formatter={(v, n) => n === 'band' ? [`${fmt(v[0],2)} – ${fmt(v[1],2)}`, '2σ'] : [fmt(v, 2) + ' ' + yunit, ylab]} labelFormatter={x => `${m.label} ${x} ${m.unit}`}/>
+          <Area dataKey="band" stroke="none" fill={colors.blue} fillOpacity={0.18} isAnimationActive={false}/>
+          <Line dataKey="y" stroke={colors.blue} strokeWidth={2} dot={false} isAnimationActive={false}/>
+          <ReferenceLine x={+cur.toFixed(4)} stroke={colors.gold} strokeDasharray="4 3"/>
+        </ComposedChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function Tornado({ model, cfg, colors }) {
+  const [yKey, setYKey] = useState('isp');
+  const items = INPUT_GROUPS.flatMap(g => g.items);
+  const designs = useMemo(() => {
+    const out = [cfg];
+    items.forEach(([k]) => {
+      const isInt = model.int_vars.includes(k);
+      const step = isInt ? 1 : Math.abs(cfg[k]) * 0.1 || (model.bounds[k][1] - model.bounds[k][0]) * 0.05;
+      out.push({ ...cfg, [k]: Math.max(cfg[k] - step, isInt ? 1 : 0) }, { ...cfg, [k]: cfg[k] + step });
+    });
+    return out;
+  }, [model, cfg]);
+  const { data: res } = usePredictions(designs);
+  const data = useMemo(() => {
+    if (!res || res.preds.length !== designs.length) return [];
+    const b = res.preds[0].mean[yKey];
+    return items.map(([k, l], i) => ({
+      name: l, lo: (res.preds[1 + 2 * i].mean[yKey] / b - 1) * 100, hi: (res.preds[2 + 2 * i].mean[yKey] / b - 1) * 100,
+    })).map(d => ({ ...d, mag: Math.max(Math.abs(d.lo), Math.abs(d.hi)) }))
+      .sort((a, b) => b.mag - a.mag).slice(0, 10);
+  }, [res, yKey]);
+  return (
+    <div className="chart-card">
+      <div className="chart-card__title">Input Influence</div>
+      <div className="chart-card__subtitle">각 입력을 ±10% (정수는 ±1) 바꿨을 때 출력 변화율 상위 10개 · 파랑 = 증가, 주황 = 감소</div>
+      <div className="chart-controls" style={{gridTemplateColumns:'1fr'}}>
+        <select className="cds-select" value={yKey} onChange={e => setYKey(e.target.value)}>
+          {outputKeys(model).map(o => <option key={o} value={o}>{OUT_META[o][0]}</option>)}
+        </select>
+      </div>
+      <ResponsiveContainer width="100%" height={240}>
+        <BarChart data={data} layout="vertical" stackOffset="sign" margin={{top:4,right:16,bottom:4,left:8}}>
+          <CartesianGrid stroke={colors.grid} strokeDasharray="3 3" horizontal={false}/>
+          <XAxis type="number" tick={{fontSize:11,fill:colors.tick}} stroke={colors.grid} tickFormatter={v => `${fmt(v, 1)}%`}/>
+          <YAxis type="category" dataKey="name" tick={{fontSize:11,fill:colors.tick}} stroke={colors.grid} width={110}/>
+          <ReferenceLine x={0} stroke={colors.tick}/>
+          <Tooltip {...tooltipStyle} formatter={(v, n) => [`${v >= 0 ? '+' : ''}${fmt(v, 2)}%`, n === 'hi' ? '+10%' : '−10%']}/>
+          <Bar dataKey="hi" stackId="a" isAnimationActive={false}>{data.map((d, i) => <Cell key={i} fill={d.hi >= 0 ? colors.blue : colors.near}/>)}</Bar>
+          <Bar dataKey="lo" stackId="a" isAnimationActive={false}>{data.map((d, i) => <Cell key={i} fill={d.lo >= 0 ? colors.blue : colors.near}/>)}</Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function ModelAccuracy({ model, colors }) {
+  const [o, setO] = useState('isp');
+  const [, unit, s] = OUT_META[o];
+  const pts = model.parity[o].map(([a, p]) => ({ a: a * s, p: p * s }));
+  const lo = Math.min(...pts.map(q => Math.min(q.a, q.p))), hi = Math.max(...pts.map(q => Math.max(q.a, q.p)));
+  return (
+    <div className="grid-2">
+      <div className="chart-card">
+        <div className="chart-card__title">Prediction vs core Simulation</div>
+        <div className="chart-card__subtitle">학습에 쓰지 않은 검증 세트 {fmtInt(model.n_test)}건 중 {pts.length}건 · R² {fmt(model.metrics[o].r2, 4)}</div>
+        <div className="chart-controls" style={{gridTemplateColumns:'1fr'}}>
+          <select className="cds-select" value={o} onChange={e => setO(e.target.value)}>
+            {model.targets.filter(k => model.parity[k]?.length).map(k => <option key={k} value={k}>{OUT_META[k]?.[0] || k}</option>)}
+          </select>
+        </div>
+        <ResponsiveContainer width="100%" height={240}>
+          <ScatterChart margin={{top:8,right:8,bottom:4,left:0}}>
+            <CartesianGrid stroke={colors.grid} strokeDasharray="3 3"/>
+            <XAxis type="number" dataKey="a" name="core" domain={[lo, hi]} tick={{fontSize:11,fill:colors.tick}} stroke={colors.grid} tickFormatter={v => fmt(v, hi > 100 ? 0 : 2)}/>
+            <YAxis type="number" dataKey="p" name="surrogate" domain={[lo, hi]} tick={{fontSize:11,fill:colors.tick}} stroke={colors.grid} width={52} tickFormatter={v => fmt(v, hi > 100 ? 0 : 2)}/>
+            <ZAxis range={[14,14]}/>
+            <ReferenceLine segment={[{x:lo,y:lo},{x:hi,y:hi}]} stroke={colors.tick} strokeDasharray="4 4"/>
+            <Scatter data={pts} fill={colors.blue} fillOpacity={0.55} isAnimationActive={false}/>
+            <Tooltip {...tooltipStyle} formatter={(v, n) => [`${fmt(v, 3)} ${unit}`, n]}/>
+          </ScatterChart>
+        </ResponsiveContainer>
+      </div>
+      <div className="chart-card">
+        <div className="chart-card__title">Model Card</div>
+        <div className="chart-card__subtitle">
+          PyTorch MLP {model.features.length}→{model.hidden}×3→(정상 종료 1 + 수치 {model.targets.length}) · 부트스트랩 앙상블 {model.n_models}개 · 학습 {fmtInt(model.n_train)}건 · {model.trained_at}
+        </div>
+        <table className="cds-data-table">
+          <thead><tr><th>출력</th><th style={{textAlign:'right'}}>R²</th><th style={{textAlign:'right'}}>MAPE</th></tr></thead>
+          <tbody>
+            {model.targets.filter(k => model.metrics[k]).map(k => (
+              <tr key={k}><td className="label">{OUT_META[k]?.[0] || k}</td><td className="num">{fmt(model.metrics[k].r2, 4)}</td><td className="num">{fmt(model.metrics[k].mape, 2)}%</td></tr>
+            ))}
+            <tr><td className="label">정상 종료 판정 정확도</td><td className="num" colSpan={2}>{fmt(model.metrics.acc_completed * 100, 2)}%</td></tr>
+          </tbody>
+        </table>
+        <div className="cds-helper-text" style={{marginTop:8}}>학습 데이터: MDO(GA) 실행 중 수행한 core 시뮬레이션 {fmtInt(model.n_samples)}회 (optimizer/results) · 재학습: optimizer 폴더에서 python -m rl.surrogate</div>
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   MAIN APP
+   =================================================================== */
+function App() {
+  const [theme, setTheme] = useState(() => { try { return localStorage.getItem('tusi-theme') || 'light'; } catch { return 'light'; } });
+  const [model, setModel] = useState(null);
+  const [baseCfg, setBaseCfg] = useState(null);   // 불러온 원본 설정 (시뮬레이터 전달용)
+  const [cfg, setCfg] = useState(null);
+  const [targets, setTargets] = useState({ impulse: 0, thrust_avg: 0 });
+  const [error, setError] = useState(null);
+  const [notice, setNotice] = useState(null);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem('tusi-theme', theme); } catch {}
+  }, [theme]);
+  const colors = PALETTE[theme] || PALETTE.light;
+
+  useEffect(() => {
+    fetch('/api/surrogate/meta', { credentials:'same-origin' })
+      .then(r => r.json())
+      .then(m => {
+        if (m.error) throw new Error(m.error);
+        setModel(m);
+        const fallback = { ...m.fixed, ...FALLBACK };
+        fetch('/api/default-config', { credentials:'same-origin' })
+          .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+          .then(data => { const full = { ...fallback, ...data[Object.keys(data)[0]] }; setBaseCfg(full); setCfg(designFromConfig(m, full)); })
+          .catch(() => { setBaseCfg(fallback); setCfg(designFromConfig(m, fallback)); });
+      })
+      .catch(e => setError(e.message || '대리모델을 불러오지 못했습니다.'));
+  }, []);
+
+  const onChange = useCallback((k, v) => setCfg(c => {
+    const n = { ...c, [k]: v };
+    if (k === 'port_num' && Math.round(v) === 1) n.port_center_radius = 0;
+    if (model?.int_vars.includes(k)) n[k] = Math.max(1, Math.round(v));
+    return n;
+  }), [model]);
+
+  const mainDesigns = useMemo(() => cfg ? [cfg] : null, [cfg]);
+  const predOpts = useMemo(() => ({ check: true, targets }), [targets]);
+  const { data: res, error: predError } = usePredictions(mainDesigns, predOpts);
+  const result = res ? { pred: res.preds[0], ms: res.ms, cons: res.constraints } : null;
+  // 헬륨 질량은 서버(GA.helium_mass)가 계산해 돌려준다 → 시뮬레이터로 넘길 설정에 포함
+  const derived = res?.derived?.[0];
+  const full = useMemo(() => model && cfg ? { ...fullConfig(model, cfg, baseCfg), ...(derived || {}) } : null,
+                       [model, cfg, baseCfg, derived]);
+
+  const outOfRange = useMemo(() => !model || !cfg ? [] :
+    DESIGN_KEYS.filter(k => !(k === 'port_center_radius' && Math.round(cfg.port_num) === 1)   // 단일 포트면 0 고정
+                         && (cfg[k] < model.bounds[k][0] - 1e-12 || cfg[k] > model.bounds[k][1] + 1e-12)), [model, cfg]);
+
+  const loadFile = (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        // {"TAS-I": {...}} 형식과 설정만 있는 평면 JSON 모두 허용
+        const inner = data && typeof data === 'object' && !Array.isArray(data)
+          ? (Object.values(data).find(v => v && typeof v === 'object' && !Array.isArray(v) && 'oxidizer_M' in v) || data) : null;
+        if (!inner || !DESIGN_KEYS.some(k => k in inner)) throw new Error('no engine keys');
+        const fullIn = { ...model.fixed, ...FALLBACK, ...inner };
+        const d = designFromConfig(model, fullIn);
+        setBaseCfg(fullIn); setCfg(d);
+        const r = Number(fullIn.oxidizer_tank_radius), pr = pipeOf(model, d).inner_diameter / 2;
+        setNotice(`${f.name} 을(를) 불러왔습니다` + (Math.abs(r - pr) > 1e-6 ? ` · 탱크 반지름 ${fmt(r*1e3,1)} mm → 가장 가까운 파이프 ${d.pipe_id} (${fmt(pr*1e3,1)} mm)` : ''));
+        setError(null);
+      } catch { setError('JSON 형식이 올바르지 않습니다.'); }
+    };
+    rd.readAsText(f); e.target.value = '';
+  };
+  const reset = () => { if (baseCfg) setCfg(designFromConfig(model, baseCfg)); };
+  const openInSimulator = () => {
+    try { localStorage.setItem(HANDOFF_KEY, JSON.stringify({ 'TAS-I': full })); } catch {}
+    window.location.href = '/';
+  };
+
+  return (
+    <>
+      <header className="cds-header">
+        <div className="cds-header__name">
+          <img src="/static/logo.png" alt="" style={{height:24,opacity:0.9}}/>
+          TUSI Hybrid Rocket Engine Simulator
+          <span className="cds-header__divider">/</span>
+          <span className="cds-header__page">Surrogate</span>
+        </div>
+        <nav className="cds-header__nav">
+          <a className="theme-toggle" href="/"><EngineIcon/> Simulator</a>
+          <a className="theme-toggle" href="/mdo"><DnaIcon/> MDO</a>
+          <a className="theme-toggle theme-toggle--active" href="/surrogate"><BoltIcon/> Surrogate</a>
+          <a className="theme-toggle" href="/training"><ChartIcon/> Training</a>
+          <a className="theme-toggle" href="/drawing"><RulerIcon/> Drawing</a>
+          <button className="theme-toggle" onClick={()=>setTheme(t=>t==='light'?'dark':'light')}>
+            {theme==='dark'?<SunIcon/>:<MoonIcon/>}
+            {theme==='dark'?'Light':'Dark'}
+          </button>
+        </nav>
+      </header>
+
+      <div className="app-container">
+        <aside className="config-panel">
+          <div className="config-header">
+            <h2>Surrogate Model</h2>
+            <p>MDO 설계 변수 → 핵심 성능 지표 즉시 예측 · 값을 바꾸면 바로 갱신됩니다</p>
+          </div>
+          <div className="config-actions">
+            <label className="cds-btn cds-btn--tertiary cds-btn--compact file-btn"><UploadIcon/> Load JSON<input type="file" accept=".json" onChange={loadFile} disabled={!model}/></label>
+            <button className="cds-btn cds-btn--ghost" onClick={reset} disabled={!baseCfg}><ResetIcon/> Reset</button>
+          </div>
+          {model && cfg && (
+            <div className="cds-accordion">
+              {INPUT_GROUPS.map(g => (
+                <AccordionItem key={g.title} title={g.title} defaultOpen={g.open}>
+                  {g.pipe && <PipeSelect model={model} value={cfg.pipe_id} onChange={onChange}/>}
+                  {g.items.map(([k]) => <ParamInput key={k} k={k} value={cfg[k]} onChange={onChange} range={model.bounds[k]}/>)}
+                </AccordionItem>
+              ))}
+              <AccordionItem title="Fixed Conditions" grid={false}>
+                <table className="cds-data-table">
+                  <tbody>
+                    {Object.entries(model.fixed).map(([k, v]) => (
+                      <tr key={k}><td className="label">{k}</td><td className="num">{String(v)}</td></tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="cds-helper-text">대리모델 학습 조건 (optimizer/fixedvalue.json) · 이 값을 바꾸면 모델을 다시 학습해야 합니다</div>
+              </AccordionItem>
+            </div>
+          )}
+        </aside>
+
+        <main className="result-panel">
+          {(error || predError) && (
+            <div className="cds-notification cds-notification--error">
+              <div><div className="cds-notification__title">오류</div><div className="cds-notification__subtitle">{error || predError}</div></div>
+              <button className="cds-notification__close" onClick={()=>setError(null)}>✕</button>
+            </div>
+          )}
+          {notice && (
+            <div className="cds-notification cds-notification--success">
+              <div><div className="cds-notification__title">Surrogate</div><div className="cds-notification__subtitle">{notice}</div></div>
+              <button className="cds-notification__close" onClick={()=>setNotice(null)}>✕</button>
+            </div>
+          )}
+          {outOfRange.length > 0 && (
+            <div className="cds-notification cds-notification--warning">
+              <div>
+                <div className="cds-notification__title">학습 범위 밖 입력 {outOfRange.length}개</div>
+                <div className="cds-notification__subtitle">{outOfRange.map(k => INPUT_META[k].label).join(', ')} — 예측 신뢰도가 낮아질 수 있습니다</div>
+              </div>
+            </div>
+          )}
+
+          {!result ? (model && cfg ? <div className="hero"><h1>예측 중…</h1></div> : null) : (
+            <div className="animate-fadeIn">
+              <InferenceBar pred={result.pred} ms={result.ms} model={model} nOut={outOfRange.length} cons={result.cons}/>
+              <KpiRow pred={result.pred} targets={targets} limit={model.min_dp_ratio ?? 0.2}/>
+              <ConstraintPanel cons={result.cons} targets={targets} setTargets={setTargets}/>
+              <div className="chart-card" style={{marginBottom:16}}>
+                <div className="chart-card__title"><EngineIcon/> Engine Geometry</div>
+                <div className="chart-card__subtitle">현재 입력 형상 · Open in Simulator 로 같은 입력의 core 시뮬레이션 시계열을 확인할 수 있습니다</div>
+                <EngineSection config={full}/>
+                <div className="geom-grain">
+                  <div className="geom-grain__title">Grain Cross-Section (t=0) · {(full.grain_type||'PORT')}</div>
+                  <GrainLivePreview config={full}/>
+                </div>
+                <div className="best-actions">
+                  <button className="cds-btn cds-btn--primary cds-btn--compact" onClick={openInSimulator}><LaunchIcon/> Open in Simulator</button>
+                </div>
+              </div>
+              <div className="grid-2">
+                <Sensitivity model={model} cfg={cfg} colors={colors}/>
+                <Tornado model={model} cfg={cfg} colors={colors}/>
+              </div>
+              <h3 className="section-title" style={{marginTop:24}}>Model Validation</h3>
+              <p className="section-subtitle">대리모델 예측과 core 시뮬레이션 결과 비교 (optimizer/rl/surrogate_meta.json)</p>
+              <ModelAccuracy model={model} colors={colors}/>
+            </div>
+          )}
+        </main>
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

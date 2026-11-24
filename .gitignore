@@ -1,0 +1,57 @@
+# Local environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.log
+*.pid
+.DS_Store
+.bak*/
+*.bak
+*.bak_*
+*.tar.gz
+
+# Generated simulation / experiment outputs
+/result.csv
+/results/
+/sim_workspace/*
+!/sim_workspace/simulation.py
+/surrogate/dataset.csv
+/optimizer/results/*
+!/optimizer/results/20261019_031737/
+/optimizer/results/20261019_031737/*
+!/optimizer/results/20261019_031737/best_rocket.json
+/optimizer/results_surrogate/
+/optimizer/rl/logs/
+/optimizer/rl/ts_data/
+/optimizer/rl/ts_exp/
+/optimizer/rl/*.csv
+
+# Only current inference weights and companion metadata
+/optimizer/rl/*.pt
+!/optimizer/rl/surrogate.pt
+!/optimizer/rl/ts_surrogate.pt
+/optimizer/rl/*meta*.json
+!/optimizer/rl/surrogate_meta.json
+!/optimizer/rl/ts_surrogate_meta.json
+/optimizer/rl/ts_surrogate_v2_mdo.json
+/optimizer/rl/*.zip
+/optimizer/rl/runs/*
+!/optimizer/rl/runs/curve_T303_20261021_0759/
+/optimizer/rl/runs/curve_T303_20261021_0759/*
+!/optimizer/rl/runs/curve_T303_20261021_0759/config.json
+!/optimizer/rl/runs/curve_T303_20261021_0759/best_model.zip
+
+# Local operation, participant records, generated game tables and certificates
+/game/data/*
+!/game/data/ai_baseline.json
+/game/certs/
+/game/server_config.json
+
+# Presentation drafts, experiments, videos and old reports
+/docs/*
+!/docs/screenshots/
+!/docs/MODELS.md

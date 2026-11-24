@@ -1,0 +1,23 @@
+{
+    "oxidizer": "NitrousOxide",
+    "oxidizer_MW": 0.044013,
+    "pressurant": "Helium",
+    "pressurant_MW": 0.0040026,
+    "fuel": "HDPE",
+    "fuel_a": 1e-05,
+    "fuel_n": 0.83,
+    "fuel_rho": 950,
+    "grain_type": "PORT",
+    "grid_size": 300,
+    "Pa": 101325,
+    "temperature": 303,
+    "cstar_eta": 0.9,
+    "cstar_tau": 1e-06,
+    "cstar_startup_deficit": 0,
+    "oxidizer_tank_material_rho": 2700,
+    "injector_cd": 0.65,
+    "combution_chamber_pressure": 3000000,
+    "dt": 0.01,
+    "simt": 600,
+    "thrust_coeff": 0.9
+}

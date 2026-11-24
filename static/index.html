@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TUSI Hybrid Rocket Engine Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="/vendor/react.production.min.js" crossorigin></script>
+  <script src="/vendor/react-dom.production.min.js" crossorigin></script>
+  <script src="/vendor/prop-types.min.js" crossorigin></script>
+  <script src="/vendor/babel.min.js"></script>
+  <script src="/vendor/Recharts.js"></script>
+  <style>
+    /* ======================================================
+       IBM Carbon Design System v11 — White Theme
+       ====================================================== */
+    :root, [data-theme="light"] {
+      --cds-background:              #ffffff;
+      --cds-layer-01:                #f4f4f4;
+      --cds-layer-02:                #ffffff;
+      --cds-layer-accent-01:         #e0e0e0;
+      --cds-field-01:                #f4f4f4;
+      --cds-border-subtle-00:        #e0e0e0;
+      --cds-border-subtle-01:        #c6c6c6;
+      --cds-border-strong-01:        #8d8d8d;
+      --cds-text-primary:            #161616;
+      --cds-text-secondary:          #525252;
+      --cds-text-placeholder:        #a8a8a8;
+      --cds-text-on-color:           #ffffff;
+      --cds-text-on-color-disabled:  #8d8d8d;
+      --cds-text-helper:             #6f6f6f;
+      --cds-text-inverse:            #ffffff;
+      --cds-text-warning:            #8e6a00;
+      --cds-background-inverse:      #393939;
+      --cds-link-primary:            #0f62fe;
+      --cds-interactive:             #0f62fe;
+      --cds-interactive-hover:       #0050e6;
+      --cds-button-secondary:        #393939;
+      --cds-button-secondary-hover:  #474747;
+      --cds-button-tertiary:         #0f62fe;
+      --cds-button-tertiary-hover:   #0050e6;
+      --cds-button-tertiary-hover-text: #ffffff;
+      --cds-button-disabled:         #c6c6c6;
+      --cds-button-danger:           #da1e28;
+      --cds-button-danger-hover:     #b81921;
+      --cds-support-error:           #da1e28;
+      --cds-support-success:         #24a148;
+      --cds-support-warning:         #f1c21b;
+      --cds-support-info:            #0043ce;
+      --cds-accent-gold:             #b28600;
+      --cds-focus:                   #0f62fe;
+      --cds-highlight:               #d0e2ff;
+      --cds-overlay:                 rgba(22,22,22,0.5);
+      --cds-hover-ui:                #e8e8e8;
+      --cds-hover-row:               #e8e8e8;
+      --cds-notif-error-bg:          #fff1f1;
+      --cds-notif-success-bg:        #defbe6;
+      --cds-notif-warning-bg:        #fcf4d6;
+      --cds-notif-info-bg:           #edf5ff;
+      --cds-tag-blue-bg:             #d0e2ff;
+      --cds-tag-blue-text:           #0043ce;
+      --cds-tag-green-bg:            #a7f0ba;
+      --cds-tag-green-text:          #0e6027;
+      --cds-tag-red-bg:              #ffd7d9;
+      --cds-tag-red-text:            #a2191f;
+      --cds-tag-gray-bg:             #e0e0e0;
+      --cds-tag-gray-text:           #161616;
+      --cds-drop-bg:                 #edf5ff;
+      --cds-drop-border:             #0f62fe;
+      --cds-log-bg:                  #161616;
+      --cds-log-text:                #6fdc8c;
+      --cds-log-border:              #24a148;
+      --cds-grain-bg:                #ffffff;
+      --cds-grain-grid:              #e0e0e0;
+      --cds-grain-casing:            #525252;
+    }
+
+    /* ======================================================
+       IBM Carbon Design System v11 — Gray 100 Theme
+       ====================================================== */
+    [data-theme="dark"] {
+      --cds-background:              #161616;
+      --cds-layer-01:                #262626;
+      --cds-layer-02:                #393939;
+      --cds-layer-accent-01:         #393939;
+      --cds-field-01:                #262626;
+      --cds-border-subtle-00:        #393939;
+      --cds-border-subtle-01:        #525252;
+      --cds-border-strong-01:        #6f6f6f;
+      --cds-text-primary:            #f4f4f4;
+      --cds-text-secondary:          #c6c6c6;
+      --cds-text-placeholder:        #6f6f6f;
+      --cds-text-on-color:           #ffffff;
+      --cds-text-on-color-disabled:  #8d8d8d;
+      --cds-text-helper:             #a8a8a8;
+      --cds-text-inverse:            #161616;
+      --cds-text-warning:            #f1c21b;
+      --cds-background-inverse:      #f4f4f4;
+      --cds-link-primary:            #78a9ff;
+      --cds-interactive:             #0f62fe;
+      --cds-interactive-hover:       #0050e6;
+      --cds-button-secondary:        #6f6f6f;
+      --cds-button-secondary-hover:  #5e5e5e;
+      --cds-button-tertiary:         #ffffff;
+      --cds-button-tertiary-hover:   #f4f4f4;
+      --cds-button-tertiary-hover-text: #161616;
+      --cds-button-disabled:         #6f6f6f;
+      --cds-button-danger:           #da1e28;
+      --cds-button-danger-hover:     #b81921;
+      --cds-support-error:           #fa4d56;
+      --cds-support-success:         #42be65;
+      --cds-support-warning:         #f1c21b;
+      --cds-support-info:            #4589ff;
+      --cds-accent-gold:             #d2a106;
+      --cds-focus:                   #ffffff;
+      --cds-highlight:               #001d6c;
+      --cds-overlay:                 rgba(0,0,0,0.65);
+      --cds-hover-ui:                #333333;
+      --cds-hover-row:               #333333;
+      --cds-notif-error-bg:          #262626;
+      --cds-notif-success-bg:        #262626;
+      --cds-notif-warning-bg:        #262626;
+      --cds-notif-info-bg:           #262626;
+      --cds-tag-blue-bg:             #0043ce;
+      --cds-tag-blue-text:           #d0e2ff;
+      --cds-tag-green-bg:            #198038;
+      --cds-tag-green-text:          #a7f0ba;
+      --cds-tag-red-bg:              #da1e28;
+      --cds-tag-red-text:            #ffd7d9;
+      --cds-tag-gray-bg:             #525252;
+      --cds-tag-gray-text:           #f4f4f4;
+      --cds-drop-bg:                 #262626;
+      --cds-drop-border:             #78a9ff;
+      --cds-log-bg:                  #262626;
+      --cds-log-text:                #6fdc8c;
+      --cds-log-border:              #42be65;
+      --cds-grain-bg:                #161616;
+      --cds-grain-grid:              #393939;
+      --cds-grain-casing:            #c6c6c6;
+    }
+    [data-theme="dark"] .cds-btn--primary,
+    [data-theme="dark"] .cds-btn--secondary,
+    [data-theme="dark"] .cds-btn--danger { color: #ffffff; }
+
+    /* ── Smooth theme transition ────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box; margin: 0; padding: 0;
+      transition: background-color .2s ease, border-color .2s ease, color .15s ease;
+    }
+    .cds-accordion__arrow { transition: transform .25s cubic-bezier(.25,.46,.45,.94) !important; }
+
+    /* ======================================================
+       Base
+       ====================================================== */
+    html { font-size:16px; -webkit-font-smoothing:antialiased; }
+    body {
+      font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+      background:var(--cds-background); color:var(--cds-text-primary);
+      line-height:1.5; overflow-x:hidden;
+    }
+
+    /* ======================================================
+       Animations
+       ====================================================== */
+    @keyframes fadeInUp  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn    { from{opacity:0} to{opacity:1} }
+    @keyframes progressBar { 0%{width:0%} 50%{width:70%} 90%{width:95%} 100%{width:100%} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .animate-fadeInUp { animation:fadeInUp .4s cubic-bezier(.25,.46,.45,.94) forwards; }
+    .animate-fadeIn   { animation:fadeIn .3s ease forwards; }
+
+    /* ======================================================
+       Carbon Header (always dark)
+       ====================================================== */
+    .cds-header {
+      position:fixed;top:0;left:0;right:0;z-index:8000;
+      height:48px; background:#161616;
+      display:flex;align-items:center;padding:0 16px;
+      border-bottom:1px solid #393939;
+    }
+    .cds-header__name { color:#f4f4f4;font-size:14px;font-weight:600;letter-spacing:.16px;display:flex;align-items:center;gap:8px; }
+    .cds-header__nav  { margin-left:auto;display:flex;align-items:center;gap:4px; }
+    .cds-header__action {
+      background:transparent;border:none;color:#c6c6c6;
+      height:48px;padding:0 16px;font-family:'IBM Plex Sans',sans-serif;
+      font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px;
+      transition:background .15s,color .15s;
+    }
+    .cds-header__action:hover { background:#2c2c2c;color:#f4f4f4; }
+    .theme-toggle {
+      background:transparent;border:1px solid #6f6f6f;
+      height:32px;padding:0 12px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;
+      letter-spacing:.32px;cursor:pointer;display:flex;align-items:center;gap:6px;
+      color:#c6c6c6;transition:background .15s,border-color .15s,color .15s;
+    }
+    .theme-toggle:hover { background:#2c2c2c;border-color:#c6c6c6;color:#f4f4f4; }
+
+    /* ======================================================
+       Layout
+       ====================================================== */
+    .app-container { margin-top:48px;display:flex;min-height:calc(100vh - 48px); }
+    .config-panel {
+      width:400px;min-width:400px;background:var(--cds-layer-01);
+      border-right:1px solid var(--cds-border-subtle-00);
+      overflow-y:auto;height:calc(100vh - 48px);position:sticky;top:48px;
+    }
+    .config-panel::-webkit-scrollbar { width:4px; }
+    .config-panel::-webkit-scrollbar-thumb { background:var(--cds-border-subtle-01);border-radius:2px; }
+    .config-header { padding:24px 24px 16px;border-bottom:1px solid var(--cds-border-subtle-00); }
+    .config-header h2 { font-size:20px;font-weight:600;color:var(--cds-text-primary);margin-bottom:4px; }
+    .config-header p  { font-size:12px;color:var(--cds-text-helper);letter-spacing:.32px; }
+    .config-actions { padding:12px 24px;display:flex;gap:8px;border-bottom:1px solid var(--cds-border-subtle-00);flex-wrap:wrap; }
+    .result-panel  { flex:1;padding:32px;overflow-y:auto;min-width:0; }
+
+    /* ======================================================
+       Accordion
+       ====================================================== */
+    .cds-accordion { border-top:1px solid var(--cds-border-subtle-00); }
+    .cds-accordion__item { border-bottom:1px solid var(--cds-border-subtle-00); }
+    .cds-accordion__heading {
+      width:100%;background:transparent;border:none;
+      padding:10px 24px 10px 48px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;
+      color:var(--cds-text-primary);cursor:pointer;display:flex;align-items:center;
+      position:relative;text-align:left;min-height:40px;
+      transition:background .15s;letter-spacing:.16px;
+    }
+    .cds-accordion__heading:hover { background:var(--cds-hover-ui); }
+    .cds-accordion__arrow { position:absolute;left:16px;width:16px;height:16px;fill:var(--cds-text-primary); }
+    .cds-accordion__item--open .cds-accordion__arrow { transform:rotate(90deg); }
+    .cds-accordion__content { padding:0 24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:12px 16px; }
+    .cds-accordion__content--hidden { display:none; }
+    .full-width { grid-column:1/-1; }
+    .field-section-label {
+      grid-column:1/-1;font-size:11px;font-weight:600;letter-spacing:.64px;
+      text-transform:uppercase;color:var(--cds-text-helper);
+      padding-top:8px;padding-bottom:2px;
+      border-top:1px solid var(--cds-border-subtle-00);
+    }
+
+    /* ======================================================
+       Form / Input
+       ====================================================== */
+    .cds-form-item { display:flex;flex-direction:column; }
+    .cds-label { font-size:12px;color:var(--cds-text-secondary);letter-spacing:.32px;margin-bottom:6px;line-height:16px; }
+    .cds-text-input {
+      width:100%;height:40px;padding:0 16px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--cds-text-primary);
+      background:var(--cds-field-01);border:none;border-bottom:1px solid var(--cds-border-strong-01);
+      outline:none;transition:border-color .15s,box-shadow .15s,background .2s;
+    }
+    .cds-text-input:focus { border-bottom-color:var(--cds-focus);box-shadow:inset 0 -2px 0 0 var(--cds-focus); }
+    .cds-text-input::placeholder { color:var(--cds-text-placeholder); }
+    .cds-helper-text { font-size:12px;color:var(--cds-text-helper);margin-top:4px;letter-spacing:.32px; }
+
+    /* ======================================================
+       Buttons
+       ====================================================== */
+    .cds-btn {
+      display:inline-flex;align-items:center;gap:8px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:400;letter-spacing:.16px;
+      border:none;cursor:pointer;padding:11px 64px 11px 16px;min-height:40px;white-space:nowrap;
+    }
+    .cds-btn svg { fill:currentColor;width:16px;height:16px; }
+    .cds-btn--primary  { background:var(--cds-interactive);color:#fff; }
+    .cds-btn--primary:hover  { background:var(--cds-interactive-hover); }
+    .cds-btn--primary:disabled { background:var(--cds-button-disabled);color:var(--cds-text-on-color-disabled);cursor:not-allowed; }
+    .cds-btn--secondary { background:var(--cds-button-secondary);color:#fff; }
+    .cds-btn--secondary:hover { background:var(--cds-button-secondary-hover); }
+    .cds-btn--tertiary {
+      background:transparent;color:var(--cds-button-tertiary);
+      border:1px solid var(--cds-button-tertiary);padding:10px 63px 10px 15px;
+    }
+    .cds-btn--tertiary:hover { background:var(--cds-button-tertiary-hover);color:var(--cds-button-tertiary-hover-text);border-color:var(--cds-button-tertiary-hover); }
+    .cds-btn--ghost { background:transparent;color:var(--cds-link-primary);padding:11px 16px; }
+    .cds-btn--ghost:hover { background:var(--cds-hover-ui); }
+    .cds-btn--compact { padding-right:16px; }
+    .cds-btn--icon-only {
+      padding:8px;min-height:32px;width:32px;
+      background:transparent;border:1px solid var(--cds-border-subtle-01);
+      color:var(--cds-text-secondary);cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+      transition:background .15s,color .15s;
+    }
+    .cds-btn--icon-only:hover { background:var(--cds-hover-ui);color:var(--cds-text-primary); }
+    .cds-btn--icon-only.active { background:var(--cds-interactive);border-color:var(--cds-interactive);color:#fff; }
+
+    /* ======================================================
+       Data Table
+       ====================================================== */
+    .cds-data-table-container { background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-00); }
+    .cds-data-table { width:100%;border-collapse:collapse;font-size:14px; }
+    .cds-data-table thead tr { background:var(--cds-layer-accent-01); }
+    .cds-data-table th { padding:12px 16px;text-align:left;font-weight:600;font-size:14px;letter-spacing:.16px;color:var(--cds-text-primary);border-bottom:1px solid var(--cds-border-subtle-01); }
+    .cds-data-table td { padding:12px 16px;border-bottom:1px solid var(--cds-border-subtle-00);color:var(--cds-text-secondary);font-family:'IBM Plex Mono',monospace;font-size:13px; }
+    .cds-data-table tbody tr:hover { background:var(--cds-hover-row); }
+
+    /* ======================================================
+       Notifications
+       ====================================================== */
+    .cds-notification { display:flex;align-items:flex-start;gap:12px;padding:13px 16px;font-size:14px;border-left:3px solid;margin-bottom:16px;animation:fadeInUp .3s ease; }
+    .cds-notification--error   { background:var(--cds-notif-error-bg);border-color:var(--cds-support-error); }
+    .cds-notification--success { background:var(--cds-notif-success-bg);border-color:var(--cds-support-success); }
+    .cds-notification--warning { background:var(--cds-notif-info-bg);border-color:var(--cds-support-warning); }
+    .cds-notification__title    { font-weight:600;margin-bottom:2px;color:var(--cds-text-primary); }
+    .cds-notification__subtitle { font-size:13px;color:var(--cds-text-secondary); }
+    .cds-notification__close    { margin-left:auto;background:none;border:none;cursor:pointer;padding:4px;color:var(--cds-text-secondary); }
+
+    /* ======================================================
+       Loading
+       ====================================================== */
+    .cds-loading-overlay { position:fixed;inset:0;z-index:9000;background:var(--cds-overlay);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeIn .2s ease; }
+    .cds-loading-bar-container { width:320px;height:4px;background:#393939;overflow:hidden;margin-top:16px; }
+    .cds-loading-bar { height:100%;background:var(--cds-interactive);animation:progressBar 8s ease-out forwards; }
+    .cds-loading-text { color:#f4f4f4;font-size:14px;letter-spacing:.16px;margin-top:12px; }
+    .cds-loading-spinner { width:48px;height:48px;border:3px solid transparent;border-top-color:var(--cds-interactive);border-radius:50%;animation:spin .8s linear infinite; }
+
+    /* ======================================================
+       Tabs
+       ====================================================== */
+    .cds-tabs { display:flex;border-bottom:1px solid var(--cds-border-subtle-00);margin-bottom:24px; }
+    .cds-tab {
+      padding:12px 16px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:400;
+      color:var(--cds-text-secondary);background:transparent;border:none;cursor:pointer;
+      border-bottom:2px solid transparent;letter-spacing:.16px;transition:color .15s,border-color .15s;
+    }
+    .cds-tab:hover { color:var(--cds-text-primary); }
+    .cds-tab--selected { color:var(--cds-text-primary);font-weight:600;border-bottom-color:var(--cds-interactive); }
+
+    /* ======================================================
+       Chart Cards
+       ====================================================== */
+    .chart-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:32px; }
+    .chart-card { background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-00);padding:20px;animation:fadeInUp .4s ease forwards;opacity:0; }
+    .chart-card__title    { font-size:14px;font-weight:600;color:var(--cds-text-primary);margin-bottom:4px;letter-spacing:.16px; }
+    .chart-card__subtitle { font-size:12px;color:var(--cds-text-helper);margin-bottom:16px;letter-spacing:.32px; }
+    .chart-card__stats    { display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--cds-border-subtle-00); }
+    .chart-card__stat     { display:flex;flex-direction:column; }
+    .chart-card__stat-label { font-size:11px;color:var(--cds-text-helper);letter-spacing:.32px;text-transform:uppercase; }
+    .chart-card__stat-value { font-size:14px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary); }
+
+    /* ======================================================
+       Grain Visualization
+       ====================================================== */
+    .grain-layout { display:flex;gap:24px;align-items:flex-start; }
+    .grain-svg-wrap {
+      flex:0 0 auto;
+      background:var(--cds-grain-bg);
+      border:1px solid var(--cds-border-subtle-00);
+    }
+    .grain-controls {
+      display:flex;align-items:center;gap:10px;
+      padding:12px 16px;
+      border-top:1px solid var(--cds-border-subtle-00);
+      background:var(--cds-layer-01);
+    }
+    /* Carbon-style range slider */
+    .grain-slider {
+      flex:1;-webkit-appearance:none;appearance:none;
+      height:4px;background:var(--cds-layer-accent-01);
+      outline:none;cursor:pointer;
+      transition:background .2s;
+    }
+    .grain-slider::-webkit-slider-thumb {
+      -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+      background:var(--cds-interactive);cursor:pointer;
+      box-shadow:0 0 0 3px var(--cds-layer-01);
+      transition:background .15s,box-shadow .15s;
+    }
+    .grain-slider::-webkit-slider-thumb:hover {
+      background:var(--cds-interactive-hover);
+      box-shadow:0 0 0 4px var(--cds-highlight);
+    }
+    .grain-slider::-moz-range-thumb {
+      width:16px;height:16px;border:none;border-radius:50%;
+      background:var(--cds-interactive);cursor:pointer;
+    }
+    .grain-stats-panel { flex:1;min-width:200px; }
+    .grain-stat-card {
+      background:var(--cds-layer-01);
+      border:1px solid var(--cds-border-subtle-00);
+      padding:16px;margin-bottom:12px;
+    }
+    .grain-stat-card__label {
+      font-size:11px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;
+      color:var(--cds-text-helper);margin-bottom:6px;
+    }
+    .grain-stat-card__value {
+      font-size:24px;font-weight:300;font-family:'IBM Plex Mono',monospace;
+      color:var(--cds-text-primary);letter-spacing:-.48px;
+    }
+    .grain-stat-card__unit { font-size:13px;color:var(--cds-text-helper);margin-left:4px; }
+    .grain-stat-card__delta { font-size:12px;color:var(--cds-support-success);margin-top:4px;font-family:'IBM Plex Mono',monospace; }
+    .grain-legend {
+      background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-00);
+      padding:14px 16px;margin-bottom:12px;
+    }
+    .grain-legend__title { font-size:11px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;color:var(--cds-text-helper);margin-bottom:10px; }
+    .grain-legend__bar {
+      height:8px;border-radius:0;
+      background:linear-gradient(90deg, #f1c21b 0%, #ff832b 33%, #da1e28 66%, #750e13 100%);
+      margin-bottom:4px;
+    }
+    .grain-legend__labels { display:flex;justify-content:space-between;font-size:11px;color:var(--cds-text-helper);font-family:'IBM Plex Mono',monospace; }
+    .grain-toggle-row { display:flex;gap:8px;margin-bottom:12px; }
+    .grain-toggle-btn {
+      flex:1;height:32px;background:var(--cds-layer-01);
+      border:1px solid var(--cds-border-subtle-01);
+      font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;
+      color:var(--cds-text-secondary);cursor:pointer;letter-spacing:.32px;
+      transition:background .15s,color .15s,border-color .15s;
+    }
+    .grain-toggle-btn:hover { background:var(--cds-hover-ui);color:var(--cds-text-primary); }
+    .grain-toggle-btn.active {
+      background:var(--cds-interactive);border-color:var(--cds-interactive);
+      color:#fff;
+    }
+    /* No-grain placeholder */
+    .grain-no-data {
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:60px 40px;text-align:center;color:var(--cds-text-secondary);
+      border:1px dashed var(--cds-border-subtle-01);
+    }
+    .grain-no-data__title { font-size:16px;font-weight:500;margin-bottom:8px;color:var(--cds-text-primary); }
+    .grain-no-data__desc  { font-size:13px;line-height:1.6; }
+
+    /* ======================================================
+       Tank Designer
+       ====================================================== */
+    select.cds-text-input {
+      cursor:pointer;
+      appearance:auto;
+      padding-right:8px;
+    }
+    .td-card {
+      background:var(--cds-layer-01);
+      border:1px solid var(--cds-border-subtle-00);
+      padding:14px 16px;
+      margin-bottom:12px;
+    }
+    .td-section-hdr {
+      font-size:11px;font-weight:600;letter-spacing:.64px;
+      text-transform:uppercase;color:var(--cds-text-helper);
+      margin-bottom:10px;
+    }
+    .td-sep {
+      font-size:11px;font-weight:600;letter-spacing:.64px;
+      text-transform:uppercase;color:var(--cds-text-helper);
+      margin:14px 0 8px;padding-top:12px;
+      border-top:1px solid var(--cds-border-subtle-00);
+    }
+    .td-result-table { width:100%;border-collapse:collapse; }
+    .td-result-table th {
+      padding:7px 12px;font-weight:600;font-size:11px;
+      color:var(--cds-text-primary);
+      border-bottom:1px solid var(--cds-border-subtle-01);
+      background:var(--cds-layer-accent-01);
+      letter-spacing:.16px;
+    }
+    .td-result-table td {
+      padding:7px 12px;font-size:11px;
+      border-bottom:1px solid var(--cds-border-subtle-00);
+    }
+    .td-result-table td:first-child { color:var(--cds-text-secondary);font-family:'IBM Plex Sans',sans-serif;font-size:12px; }
+    .td-result-table td:not(:first-child) { text-align:right;font-family:'IBM Plex Mono',monospace;color:var(--cds-text-primary); }
+    .td-err { color:var(--cds-support-error) !important; }
+
+    /* ======================================================
+       Misc
+       ====================================================== */
+    .recharts-tooltip-wrapper { z-index:100; }
+    .custom-tooltip { background:var(--cds-background-inverse)!important;color:var(--cds-text-inverse);padding:10px 14px;font-size:12px;font-family:'IBM Plex Sans',sans-serif;border:none;box-shadow:0 2px 6px rgba(0,0,0,.3); }
+    .custom-tooltip .label { font-weight:600;margin-bottom:4px; }
+    .custom-tooltip .value { font-family:'IBM Plex Mono',monospace; }
+    .sim-log { background:var(--cds-log-bg);color:var(--cds-log-text);font-family:'IBM Plex Mono',monospace;font-size:12px;padding:16px;max-height:120px;overflow-y:auto;white-space:pre-wrap;margin-bottom:16px;border-left:3px solid var(--cds-log-border); }
+    .empty-state { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0px 0px;text-align:center;animation:fadeIn .5s ease; }
+    .empty-state__title { font-size:20px;font-weight:600;color:var(--cds-text-primary);margin-bottom:0px; }
+    .empty-state__desc  { font-size:14px;color:var(--cds-text-secondary);max-width:380px;line-height:1.5; }
+    .section-title    { font-size:20px;font-weight:600;color:var(--cds-text-primary);margin-bottom:8px; }
+    .section-subtitle { font-size:14px;color:var(--cds-text-secondary);margin-bottom:24px; }
+    .file-input-hidden { display:none; }
+
+    @media(max-width:1200px){ .chart-grid{grid-template-columns:1fr;} .grain-layout{flex-direction:column;} }
+    @media(max-width:1100px){ .td-designer-grid{grid-template-columns:1fr!important;} }
+    @media(max-width:900px){ .app-container{flex-direction:column;} .config-panel{width:100%;min-width:unset;height:auto;position:static;} }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback, useRef, useMemo } = React;
+const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea } = Recharts;
+
+/* ===================================================================
+   FIELD GROUPS
+   =================================================================== */
+const FIELD_GROUPS = [
+  {
+    id:'oxidizer', label:'Oxidizer', icon:'⬡',
+    fields:[
+      { key:'oxidizer',    label:'Oxidizer Type',    type:'text', helper:'CoolProp fluid name', fullWidth:true },
+      { key:'oxidizer_MW', label:'Molecular Weight', unit:'kg/mol', step:0.000001 },
+      { key:'oxidizer_M',  label:'Mass',             unit:'kg', step:0.1 },
+    ]
+  },
+  {
+    id:'pressurant', label:'Pressurant', icon:'◈',
+    fields:[
+      { key:'pressurant',    label:'Pressurant Type',  type:'text', helper:'CoolProp fluid name', fullWidth:true },
+      { key:'pressurant_MW', label:'Molecular Weight', unit:'kg/mol', step:0.000001 },
+      { key:'pressurant_M',  label:'Mass',             unit:'kg', step:0.1 },
+    ]
+  },
+  {
+    id:'fuel', label:'Solid Fuel', icon:'◉',
+    fields:[
+      { key:'fuel',        label:'Fuel Type',             type:'text', fullWidth:true, helper:'CEA card: PARAFFIN · HTPB · HDPE · ABS' },
+      { key:'fuel_a',      label:'Regression Coeff a',    step:0.000001 },
+      { key:'fuel_n',      label:'Regression Exponent n', step:0.0001 },
+      { key:'fuel_rho',    label:'Fuel Density',          unit:'kg/m³', step:1 },
+      { key:'fuel_length', label:'Fuel Length',           unit:'m', step:0.001 },
+    ]
+  },
+  {
+    id:'grain', label:'Grain Geometry', icon:'◎',
+    fields:[
+      { key:'inner_radius',  label:'Port Radius (inner)',  unit:'m', step:0.001, helper:'FIN/FINOCYL 타입에서는 중앙 보어 반지름' },
+      { key:'outter_radius', label:'Grain Radius (outer)', unit:'m', step:0.001 },
+      { key:'grain_type', label:'Grain Type', type:'select', fullWidth:true,
+        options:[
+          { value:'PORT',    label:'Circular Multi-Port' },
+          { value:'FIN',     label:'Multi-Fin (Wagon-Wheel)' },
+          { value:'FINOCYL', label:'Finocyl (Fin-on-Cylinder)' },
+        ],
+        helper:'PORT = 원형 다공 포트 · FIN = 멀티핀(wagon-wheel) · FINOCYL = 슬롯 끝이 둥근 피노실', divider:'Level-Set Options' },
+      { key:'port_num',            label:'Port Count',         type:'integer', step:1, helper:'PORT 타입, 1 = single centred port' },
+      { key:'port_center_radius',  label:'Port Centre Radius', unit:'m', step:0.001, helper:'PORT 타입, 0 when port_num = 1' },
+      { key:'fin_num',    label:'Fin Count',   type:'integer', step:1, helper:'FIN/FINOCYL 타입 핀 개수', divider:'Multi-Fin / Finocyl Options' },
+      { key:'fin_length', label:'Fin Length',  unit:'m', step:0.001, helper:'핀의 반경 방향 길이' },
+      { key:'fin_width',  label:'Fin Root Width', unit:'m', step:0.001, helper:'핀 밑동(보어 쪽) 폭' },
+      { key:'fin_tip_width', label:'Fin Tip Width', unit:'m', step:0.001,
+        helper:'핀 끝단(바깥쪽) 폭. Root Width와 같으면 테이퍼 없음, 0에 가까울수록 뾰족한 star-point 형태 — 점화 직후 얇은 끝이 먼저 타버려 연소면적이 초반에 피크를 찍고 급락하는 곡선이 됨' },
+      { key:'grid_size',           label:'Grid Resolution',    type:'integer', step:10, helper:'200–400 recommended' },
+    ]
+  },
+  {
+    id:'environment', label:'Environment', icon:'◇',
+    fields:[
+      { key:'Pa',          label:'Ambient Pressure', unit:'Pa', step:1 },
+      { key:'temperature', label:'Temperature',      unit:'K',  step:0.01 },
+      { key:'cstar_eta',   label:'C* Efficiency',              step:0.01 },
+      { key:'cstar_tau',              label:'C* Startup Time Constant', unit:'s', step:0.01,
+        helper:'점화 후 C*가 정상상태에 도달하는 지연 시간상수 τ (Cstar(t)=Cstar_ss·(1-deficit·e^(-t/τ)))',
+        divider:'C* Ignition Transient' },
+      { key:'cstar_startup_deficit',   label:'C* Startup Deficit',       step:0.01,
+        helper:'t=0 시점의 초기 결손 비율 (0~1)' },
+    ]
+  },
+  {
+    id:'tank', label:'Oxidizer Tank', icon:'▣',
+    fields:[
+      { key:'oxidizer_tank_radius',       label:'Tank Radius',      unit:'m',    step:0.001 },
+      { key:'oxidizer_tank_length',       label:'Tank Length',      unit:'m',    step:0.001 },
+      { key:'oxidizer_tank_material_rho', label:'Material Density', unit:'kg/m³',step:1 },
+      { key:'oxidizer_tank_tickness',     label:'Wall Thickness',   unit:'m',    step:0.00001 },
+    ]
+  },
+  {
+    id:'injector', label:'Injector', icon:'⊕',
+    fields:[
+      { key:'injector_oriffice_radius', label:'Orifice Radius', unit:'m',  step:0.0001 },
+      { key:'injector_oriffice_length', label:'Orifice Length', unit:'m',  step:0.0001 },
+      { key:'injector_oriffice_n',      label:'Orifice Count',  type:'integer', step:1 },
+      { key:'injector_cd',              label:'Discharge Cd',             step:0.01 },
+    ]
+  },
+  {
+    id:'chamber', label:'Combustion Chamber', icon:'⬢',
+    fields:[
+      { key:'combution_chamber_pressure', label:'Target Pressure', unit:'Pa', step:1000 },
+      { key:'combution_chamber_length',   label:'Chamber Length',  unit:'m',  step:0.001 },
+      { key:'combution_chamber_radius',   label:'Chamber Radius',  unit:'m',  step:0.001 },
+    ]
+  },
+  {
+    id:'nozzle', label:'Nozzle', icon:'⧫',
+    fields:[
+      { key:'nozzle_throat_radius', label:'Throat Radius', unit:'m', step:0.0001 },
+      { key:'nozzle_exit_radius',   label:'Exit Radius',   unit:'m', step:0.0001 },
+    ]
+  },
+  {
+    id:'simulation', label:'Simulation Settings', icon:'⚙',
+    fields:[
+      { key:'dt',           label:'Time Step (dt)',      unit:'s', step:0.001 },
+      { key:'simt',         label:'Simulation Time',     unit:'s', step:1 },
+      { key:'thrust_coeff', label:'Thrust Coefficient',            step:0.01 },
+    ]
+  }
+];
+
+// Carbon data-visualization categorical palettes (14 colors)
+const CHART_COLORS_LIGHT = ['#6929c4','#1192e8','#005d5d','#9f1853','#fa4d56','#570408','#198038','#002d9c','#ee538b','#b28600','#009d9a','#012749','#8a3800','#a56eff'];
+const CHART_COLORS_DARK  = ['#8a3ffc','#33b1ff','#007d79','#ff7eb6','#fa4d56','#fff1f1','#6fdc8c','#4589ff','#d12771','#d2a106','#08bdba','#bae6ff','#ba4e00','#d4bbff'];
+
+const DEFAULT_CONFIG = {
+  oxidizer:'NitrousOxide', oxidizer_MW:0.044013, oxidizer_M:6.5,
+  pressurant:'Helium', pressurant_MW:0.0040026, pressurant_M:0,
+  fuel:'HDPE', fuel_a:0.000269122, fuel_n:0.5215, fuel_rho:900,
+  inner_radius:0.01, outter_radius:0.05,
+  grain_type:'PORT',
+  port_num:1, port_center_radius:0.0,
+  fin_num:6, fin_length:0.024, fin_width:0.006, fin_tip_width:0,
+  grid_size:300,
+  Pa:101325, temperature:298.65, cstar_eta:0.85,
+  cstar_tau:0.35, cstar_startup_deficit:0.9,
+  oxidizer_tank_radius:0.05, oxidizer_tank_length:1.31529,
+  oxidizer_tank_material_rho:2700, oxidizer_tank_tickness:0.00464,
+  injector_oriffice_radius:0.001, injector_oriffice_length:0.005,
+  injector_oriffice_n:8, injector_cd:0.4,
+  combution_chamber_pressure:3000000, combution_chamber_length:0.25,
+  combution_chamber_radius:0.06, fuel_length:0.15,
+  nozzle_throat_radius:0.00892, nozzle_exit_radius:0.02011,
+  dt:0.01, simt:20, thrust_coeff:0.8
+};
+
+/* ===================================================================
+   ICONS
+   =================================================================== */
+const ChevronRight = () => <svg viewBox="0 0 16 16" className="cds-accordion__arrow"><path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"/></svg>;
+const DownloadIcon = () => <svg width="16" height="16" viewBox="0 0 16 16"><path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM7.5 11.4l-3.7-3.7.7-.7L7 9.6V1h1v8.6l2.5-2.6.7.7-3.7 3.7z"/></svg>;
+const UploadIcon  = () => <svg width="16" height="16" viewBox="0 0 16 16"><path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM8.5 1.6l3.7 3.7-.7.7L9 3.4V12H8V3.4L5.5 6 4.8 5.3l3.7-3.7z"/></svg>;
+const PlayIcon    = () => <svg width="16" height="16" viewBox="0 0 32 32"><path d="M7 28V4l22 12z"/></svg>;
+const TableIcon   = () => <svg width="16" height="16" viewBox="0 0 16 16"><path d="M14 1H2c-.6 0-1 .4-1 1v12c0 .6.4 1 1 1h12c.6 0 1-.4 1-1V2c0-.6-.4-1-1-1zM6 14H3v-3h3v3zm0-4H3V7h3v3zm0-4H3V3h3v3zm7 8H7v-3h6v3zm0-4H7V7h6v3zm0-4H7V3h6v3z"/></svg>;
+const ChartIcon   = () => <svg width="16" height="16" viewBox="0 0 16 16"><path d="M15 14H2V1H1v13c0 .6.4 1 1 1h13v-1zm-3-9v7h2V5h-2zm-4 3v4h2V8H8zm-4 1v3h2v-3H4z"/></svg>;
+const ReportIcon  = () => <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M10 18h8v2h-8zM10 13h12v2H10zM10 23h5v2h-5z"/><path d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zM12 4h8v4h-8zm13 24H7V7h3v3h12V7h3z"/></svg>;
+const RulerIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M29.4 9.6 22.4 2.6a2 2 0 0 0-2.8 0L2.6 19.6a2 2 0 0 0 0 2.8l7 7a2 2 0 0 0 2.8 0l17-17a2 2 0 0 0 0-2.8zM11 28l-7-7 3-3 3.5 3.5 1.4-1.4L8.4 16.6l2.6-2.6 2 2 1.4-1.4-2-2 2.6-2.6 3.5 3.5 1.4-1.4L16.4 8.6l2.6-2.6 2 2 1.4-1.4-2-2L21 4l7 7z"/></svg>;
+const GrainIcon   = () => <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" strokeWidth="1.5"/><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" strokeWidth="1.5"/></svg>;
+const TankIcon    = () => <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><rect x="2" y="5" width="12" height="6" rx="3" ry="3" fill="none" stroke="currentColor" strokeWidth="1.5"/><line x1="5" y1="5" x2="5" y2="11" stroke="currentColor" strokeWidth="1"/><line x1="11" y1="5" x2="11" y2="11" stroke="currentColor" strokeWidth="1"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 1"/></svg>;
+const WrenchIcon  = () => <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M29.41 26.59l-14-14A8 8 0 004 4a1 1 0 00-.66 1.75L8 10.34V14a2 2 0 002 2h3.66l4.59 4.59A6 6 0 0019 21a6 6 0 106 6 6 6 0 00-4.41-1.41zM19 24a4 4 0 110-8 4 4 0 010 8z"/></svg>;
+const MoonIcon    = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M13.502 5.414a15.075 15.075 0 000 21.17C17.275 30.357 22.497 32 27.502 32c1.252 0 2.5-.108 3.726-.321-6.827.674-13.019-1.49-17.488-5.96a15.065 15.065 0 010-21.305z"/></svg>;
+const DnaIcon     = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 3c0 9 14 9 14 18s-14 4-14 8M23 3c0 9-14 9-14 18M23 29c0-3-3-5-6-6"/><path d="M11 8h10M11 24h10M13 13h6"/></svg>;
+const BoltIcon    = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M11.61 29.92a1 1 0 01-.6-1.07L12.83 17H8a1 1 0 01-1-1.23l3-13A1 1 0 0111 2h10a1 1 0 01.78.37 1 1 0 01.2.85L20.25 11H25a1 1 0 01.83 1.55l-12 17a1 1 0 01-1.22.37z"/></svg>;
+const SunIcon     = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M16 8a8 8 0 100 16A8 8 0 0016 8zm0-6a1 1 0 010 2 1 1 0 010-2zm0 24a1 1 0 010 2 1 1 0 010-2zM4 16a1 1 0 01-2 0 1 1 0 012 0zm24 0a1 1 0 01-2 0 1 1 0 012 0z"/></svg>;
+
+/* ===================================================================
+   GRAIN VISUALIZATION COMPONENT
+   =================================================================== */
+function GrainVisualizer({ grainData }) {
+  const { snapshots, extent, port_centers } = grainData;
+  const [snapIdx,   setSnapIdx]   = useState(snapshots.length - 1);
+  const [showTrail, setShowTrail] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const timerRef = useRef(null);
+
+  // Cleanup on unmount
+  useEffect(() => () => clearInterval(timerRef.current), []);
+
+  // Auto-play
+  useEffect(() => {
+    clearInterval(timerRef.current);
+    if (!isPlaying) return;
+    timerRef.current = setInterval(() => {
+      setSnapIdx(prev => {
+        if (prev >= snapshots.length - 1) { setIsPlaying(false); return prev; }
+        return prev + 1;
+      });
+    }, 350);
+  }, [isPlaying, snapshots.length]);
+
+  if (!snapshots || snapshots.length === 0) {
+    return (
+      <div className="grain-no-data">
+        <div className="grain-no-data__title">No grain visualization data</div>
+        <div className="grain-no-data__desc">
+          Ensure your <code>Rocket</code> class exposes a <code>self.fuel</code> attribute
+          with the level-set <code>Fuel</code> instance. Grain snapshots are collected
+          automatically during <code>burn()</code> calls.
+        </div>
+      </div>
+    );
+  }
+
+  // SVG coordinate system
+  const SVG_W   = 400;
+  const SVG_H   = 400;
+  const PAD     = 28;
+  const PLOT    = SVG_W - 2 * PAD;
+  const CX      = PAD + PLOT / 2;
+  const CY      = PAD + PLOT / 2;
+  const R_OUT   = PLOT / 2;
+
+  const sx = x  => PAD + (x / extent + 1) * 0.5 * PLOT;
+  const sy = y  => PAD + (1 - y / extent) * 0.5 * PLOT;
+
+  // Build SVG path from physical [[x,y],...] contour
+  const toPath = contour => {
+    if (!contour || contour.length < 2) return '';
+    return contour.map(([x, y], i) =>
+      `${i === 0 ? 'M' : 'L'}${sx(x).toFixed(1)},${sy(y).toFixed(1)}`
+    ).join(' ') + ' Z';
+  };
+
+  // Thermal sequential (Carbon palette): Yellow 30 → Orange 40 → Red 60 → Red 80
+  const STOPS = [[241,194,27],[255,131,43],[218,30,40],[117,14,19]];
+  const getColor = idx => {
+    const t = idx / Math.max(1, snapshots.length - 1);
+    const seg = t * (STOPS.length - 1);
+    const i   = Math.min(Math.floor(seg), STOPS.length - 2);
+    const f   = seg - i;
+    const interp = (a, b) => Math.round(a + f * (b - a));
+    const [r1,g1,b1] = STOPS[i];
+    const [r2,g2,b2] = STOPS[i+1];
+    return `rgb(${interp(r1,r2)},${interp(g1,g2)},${interp(b1,b2)})`;
+  };
+
+  const current  = snapshots[snapIdx];
+  const initial  = snapshots[0];
+  const totalGrainArea = Math.PI * extent ** 2;
+  const burnedArea     = current.port_area - initial.port_area;
+  const maxBurnable    = totalGrainArea - initial.port_area;
+  const burnPct        = maxBurnable > 0 ? Math.min(100, (burnedArea / maxBurnable) * 100) : 0;
+
+  const fmt = (v, dec=4) => v.toFixed(dec);
+
+  return (
+    <div className="grain-layout">
+      {/* ── Left: SVG + controls ────────────────────────────── */}
+      <div>
+        <div className="grain-svg-wrap">
+          <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}>
+            <defs>
+              <pattern id="gg" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="0" cy="0" r="1" fill="var(--cds-grain-grid)" opacity="0.8"/>
+              </pattern>
+              <clipPath id="grain-clip">
+                <circle cx={CX} cy={CY} r={R_OUT}/>
+              </clipPath>
+            </defs>
+
+            {/* Filled background */}
+            <rect x={PAD} y={PAD} width={PLOT} height={PLOT} fill="var(--cds-grain-bg)"/>
+
+            {/* Grid pattern, clipped to casing circle */}
+            <g clipPath="url(#grain-clip)">
+              <rect x={PAD} y={PAD} width={PLOT} height={PLOT} fill="url(#gg)"/>
+            </g>
+
+            {/* Solid fuel fill (phi > 0 region approximated as ring) — visual background */}
+            <circle cx={CX} cy={CY} r={R_OUT - 1}
+              fill="var(--cds-layer-accent-01)" opacity="0.25"
+              clipPath="url(#grain-clip)"/>
+
+            {/* Trail contours */}
+            {showTrail && snapshots.slice(0, snapIdx).map((snap, i) => (
+              <g key={`t${i}`} clipPath="url(#grain-clip)">
+                {snap.contours.map((c, ci) => (
+                  <path key={ci} d={toPath(c)}
+                    fill="none"
+                    stroke={getColor(i)}
+                    strokeWidth="1"
+                    opacity={0.15 + (i / snapshots.length) * 0.45}
+                    strokeLinejoin="round"
+                  />
+                ))}
+              </g>
+            ))}
+
+            {/* Current contour — highlighted */}
+            <g clipPath="url(#grain-clip)">
+              {current.contours.map((c, ci) => (
+                <path key={ci} d={toPath(c)}
+                  fill="none"
+                  stroke={getColor(snapIdx)}
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                  opacity="1"
+                />
+              ))}
+            </g>
+
+            {/* Port center markers */}
+            {(port_centers || []).map(([px, py], i) => (
+              <g key={`pc${i}`}>
+                <line x1={sx(px)-5} y1={sy(py)} x2={sx(px)+5} y2={sy(py)} stroke="var(--cds-text-helper)" strokeWidth="1" opacity="0.6"/>
+                <line x1={sx(px)} y1={sy(py)-5} x2={sx(px)} y2={sy(py)+5} stroke="var(--cds-text-helper)" strokeWidth="1" opacity="0.6"/>
+              </g>
+            ))}
+
+            {/* Outer casing */}
+            <circle cx={CX} cy={CY} r={R_OUT - 1}
+              fill="none"
+              stroke="var(--cds-grain-casing)"
+              strokeWidth="2"
+              strokeDasharray="6 4"
+            />
+
+            {/* Scale bar: 10mm */}
+            {(() => {
+              const scaleM  = 0.01;
+              const scalePx = (scaleM / extent) * (PLOT / 2);
+              const bx      = PAD + 8;
+              const by      = SVG_H - PAD + 8;
+              return (
+                <g>
+                  <line x1={bx} y1={by} x2={bx + scalePx} y2={by} stroke="var(--cds-text-helper)" strokeWidth="1.5"/>
+                  <line x1={bx} y1={by-3} x2={bx} y2={by+3} stroke="var(--cds-text-helper)" strokeWidth="1.5"/>
+                  <line x1={bx+scalePx} y1={by-3} x2={bx+scalePx} y2={by+3} stroke="var(--cds-text-helper)" strokeWidth="1.5"/>
+                  <text x={bx + scalePx/2} y={by - 5}
+                    textAnchor="middle"
+                    fontFamily="'IBM Plex Mono',monospace"
+                    fontSize="10"
+                    fill="var(--cds-text-helper)">10mm</text>
+                </g>
+              );
+            })()}
+
+            {/* Time label top-right */}
+            <text x={SVG_W - PAD - 2} y={PAD - 8}
+              textAnchor="end"
+              fontFamily="'IBM Plex Mono',monospace"
+              fontSize="11"
+              fill="var(--cds-text-helper)">
+              t = {current.t.toFixed(2)} s
+            </text>
+          </svg>
+
+          {/* Playback bar */}
+          <div className="grain-controls">
+            {/* Rewind */}
+            <button className="cds-btn--icon-only" title="Rewind"
+              onClick={() => { setIsPlaying(false); setSnapIdx(0); }}>
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M1 8l6-6v4h8v4H7v4z"/>
+              </svg>
+            </button>
+            {/* Play/Pause */}
+            <button className={`cds-btn--icon-only ${isPlaying ? 'active' : ''}`}
+              title={isPlaying ? 'Pause' : 'Play'}
+              onClick={() => {
+                if (snapIdx >= snapshots.length - 1) setSnapIdx(0);
+                setIsPlaying(p => !p);
+              }}>
+              {isPlaying
+                ? <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2h3v12H4zm5 0h3v12H9z"/></svg>
+                : <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M3 14V2l11 6z"/></svg>
+              }
+            </button>
+
+            <input
+              className="grain-slider"
+              type="range"
+              min="0"
+              max={snapshots.length - 1}
+              value={snapIdx}
+              onChange={e => { setIsPlaying(false); setSnapIdx(+e.target.value); }}
+            />
+
+            <span style={{ fontSize:11, fontFamily:"'IBM Plex Mono',monospace", color:'var(--cds-text-helper)', whiteSpace:'nowrap', minWidth:50 }}>
+              {snapIdx + 1} / {snapshots.length}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Right: stats panel ─────────────────────────────── */}
+      <div className="grain-stats-panel">
+        {/* Trail / Single toggle */}
+        <div className="grain-toggle-row">
+          <button
+            className={`grain-toggle-btn ${showTrail ? 'active' : ''}`}
+            onClick={() => setShowTrail(true)}>
+            Trail
+          </button>
+          <button
+            className={`grain-toggle-btn ${!showTrail ? 'active' : ''}`}
+            onClick={() => setShowTrail(false)}>
+            Single
+          </button>
+        </div>
+
+        {/* Stat cards */}
+        <div className="grain-stat-card">
+          <div className="grain-stat-card__label">Simulation Time</div>
+          <div className="grain-stat-card__value">
+            {current.t.toFixed(2)}<span className="grain-stat-card__unit">s</span>
+          </div>
+          <div style={{ fontSize:12, color:'var(--cds-text-helper)', marginTop:4, fontFamily:"'IBM Plex Mono'" }}>
+            Step {snapIdx + 1} of {snapshots.length}
+          </div>
+        </div>
+
+        <div className="grain-stat-card">
+          <div className="grain-stat-card__label">Port Area</div>
+          <div className="grain-stat-card__value">
+            {(current.port_area * 1e4).toFixed(3)}<span className="grain-stat-card__unit">cm²</span>
+          </div>
+          <div className="grain-stat-card__delta">
+            +{((current.port_area - initial.port_area) * 1e4).toFixed(3)} cm² from start
+          </div>
+        </div>
+
+        <div className="grain-stat-card">
+          <div className="grain-stat-card__label">Burn Perimeter</div>
+          <div className="grain-stat-card__value">
+            {(current.perimeter * 1000).toFixed(2)}<span className="grain-stat-card__unit">mm</span>
+          </div>
+          <div style={{ fontSize:12, color:'var(--cds-text-helper)', marginTop:4, fontFamily:"'IBM Plex Mono'" }}>
+            Burn area = {(current.perimeter * 1000).toFixed(2)} mm × L
+          </div>
+        </div>
+
+        <div className="grain-stat-card">
+          <div className="grain-stat-card__label">Burn Progression</div>
+          <div className="grain-stat-card__value">
+            {burnPct.toFixed(1)}<span className="grain-stat-card__unit">%</span>
+          </div>
+          {/* Progress bar */}
+          <div style={{ height:6, background:'var(--cds-layer-accent-01)', marginTop:8, position:'relative', overflow:'hidden' }}>
+            <div style={{
+              position:'absolute', top:0, left:0, bottom:0,
+              width:`${burnPct}%`,
+              background: `linear-gradient(90deg, #f1c21b, ${getColor(snapIdx)})`,
+              transition:'width .3s ease',
+            }}/>
+          </div>
+        </div>
+
+        {/* Color Legend */}
+        <div className="grain-legend">
+          <div className="grain-legend__title">Time Gradient</div>
+          <div className="grain-legend__bar"/>
+          <div className="grain-legend__labels">
+            <span>t = {snapshots[0].t.toFixed(1)}s</span>
+            <span>t = {snapshots[snapshots.length-1].t.toFixed(1)}s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   GRAIN LIVE PREVIEW — client-side t=0 cross-section (no server call)
+
+   core/fuel.py의 _build_port_mask / _build_fin_mask / _build_finocyl_mask와
+   동일한 기하 규칙을 marching squares로 재현하여, 파라미터 변경 시 서버
+   왕복 없이 즉시(React useMemo) 단면을 그린다. 격자 해상도는 실제
+   시뮬레이션(config.grid_size, 기본 300)과 동일하게 맞춘다.
+   =================================================================== */
+function computeGrainPreview(cfg) {
+  const gs = Math.max(2, parseInt(cfg.grid_size) || 300);
+  const outerR = Math.max(+cfg.outter_radius || 0.05, 1e-6);
+  const innerR = Math.max(+cfg.inner_radius  || 0,    0);
+  const grainType = String(cfg.grain_type||'PORT').toUpperCase();
+
+  const dx    = (2 * outerR) / (gs - 1);
+  const coord = i => -outerR + i * dx;
+  const idx   = (row, col) => row * gs + col;
+
+  const solid = new Uint8Array(gs * gs).fill(1); // 1=solid, 0=gas
+
+  const carveCircle = (cx, cy, r) => {
+    if (r <= 0) return;
+    for (let row = 0; row < gs; row++) {
+      const y = coord(row);
+      const dy2 = (y - cy) ** 2;
+      if (dy2 > r * r) continue;
+      for (let col = 0; col < gs; col++) {
+        const x = coord(col);
+        if ((x - cx) ** 2 + dy2 <= r * r) solid[idx(row, col)] = 0;
+      }
+    }
+  };
+
+  let portCenters = [[0, 0]];
+
+  if (grainType === 'FIN' || grainType === 'FINOCYL') {
+    carveCircle(0, 0, innerR);
+    const finNum = Math.max(1, parseInt(cfg.fin_num) || 6);
+    const finLen = Math.max(+cfg.fin_length || 0, 1e-9);
+    const rootW  = Math.max(+cfg.fin_width || 0, 0);
+    const tipRaw = cfg.fin_tip_width;
+    const tipW   = (tipRaw === null || tipRaw === undefined || tipRaw === '') ? rootW : Math.max(+tipRaw, 0);
+    const halfRoot = rootW / 2, halfTip = tipW / 2;
+    const isFinocyl = grainType === 'FINOCYL';
+    const straightLen = isFinocyl ? Math.max(finLen - halfTip, 0) : finLen;
+    const rectEnd = innerR + straightLen;
+
+    for (let k = 0; k < finNum; k++) {
+      const ang = 2 * Math.PI * k / finNum;
+      const ca = Math.cos(ang), sa = Math.sin(ang);
+      for (let row = 0; row < gs; row++) {
+        const y = coord(row);
+        for (let col = 0; col < gs; col++) {
+          const x = coord(col);
+          const xr =  x * ca + y * sa;
+          const yr = -x * sa + y * ca;
+          if (xr < innerR) continue;
+          if (!isFinocyl) {
+            if (xr > innerR + finLen) continue;
+            const frac  = Math.min(Math.max((xr - innerR) / finLen, 0), 1);
+            const halfW = halfRoot + (halfTip - halfRoot) * frac;
+            if (Math.abs(yr) <= halfW) solid[idx(row, col)] = 0;
+          } else if (xr <= rectEnd) {
+            const frac  = straightLen > 1e-12 ? Math.min(Math.max((xr - innerR) / straightLen, 0), 1) : 1;
+            const halfW = halfRoot + (halfTip - halfRoot) * frac;
+            if (Math.abs(yr) <= halfW) solid[idx(row, col)] = 0;
+          } else {
+            const ddx = xr - rectEnd;
+            if (ddx * ddx + yr * yr <= halfTip * halfTip) solid[idx(row, col)] = 0;
+          }
+        }
+      }
+    }
+  } else {
+    // PORT: 단일 또는 원형 배치 다중 포트
+    const portNum = Math.max(1, parseInt(cfg.port_num) || 1);
+    if (portNum === 1) {
+      portCenters = [[0, 0]];
+    } else {
+      const pcrRaw = cfg.port_center_radius;
+      const rc = (pcrRaw === null || pcrRaw === undefined || pcrRaw === '') ? outerR * 0.5 : +pcrRaw;
+      portCenters = Array.from({ length: portNum }, (_, k) => {
+        const a = 2 * Math.PI * k / portNum;
+        return [rc * Math.cos(a), rc * Math.sin(a)];
+      });
+    }
+    portCenters.forEach(([cx, cy]) => carveCircle(cx, cy, innerR));
+  }
+
+  // ── Marching squares (binary, edge-midpoint) → 독립 선분 목록 ─────────
+  const EDGE_TABLE = {
+    1: [['L', 'B']],  2: [['B', 'R']],  3: [['L', 'R']],
+    4: [['T', 'R']],  5: [['L', 'T'], ['B', 'R']],  6: [['T', 'B']],
+    7: [['L', 'T']],  8: [['T', 'L']],  9: [['T', 'B']],
+    10: [['T', 'R'], ['L', 'B']], 11: [['T', 'R']],
+    12: [['L', 'R']], 13: [['B', 'R']], 14: [['L', 'B']],
+  };
+  const segments = [];
+  for (let row = 0; row < gs - 1; row++) {
+    const y0 = coord(row), y1 = coord(row + 1);
+    for (let col = 0; col < gs - 1; col++) {
+      const tl = solid[idx(row, col)],     tr = solid[idx(row, col + 1)];
+      const bl = solid[idx(row + 1, col)], br = solid[idx(row + 1, col + 1)];
+      const c = tl * 8 + tr * 4 + br * 2 + bl * 1;
+      if (c === 0 || c === 15) continue;
+      const x0 = coord(col), x1 = coord(col + 1);
+      const mid = { T: [(x0 + x1) / 2, y0], B: [(x0 + x1) / 2, y1], L: [x0, (y0 + y1) / 2], R: [x1, (y0 + y1) / 2] };
+      for (const [a, b] of EDGE_TABLE[c]) segments.push([mid[a], mid[b]]);
+    }
+  }
+
+  let gasCells = 0;
+  for (let i = 0; i < solid.length; i++) if (solid[i] === 0) gasCells++;
+  const portArea  = gasCells * dx * dx;
+  const perimeter = segments.reduce((acc, [[x1, y1], [x2, y2]]) => acc + Math.hypot(x2 - x1, y2 - y1), 0);
+
+  return { extent: outerR, portCenters, segments, portArea, perimeter };
+}
+
+function GrainLivePreview({ config }) {
+  const preview = useMemo(() => {
+    try { return computeGrainPreview(config); }
+    catch { return null; }
+  }, [
+    config.grain_type, config.inner_radius, config.outter_radius,
+    config.port_num, config.port_center_radius,
+    config.fin_num, config.fin_length, config.fin_width, config.fin_tip_width,
+    config.grid_size,
+  ]);
+
+  if (!preview) return null;
+
+  const SVG_W = 320, SVG_H = 320, PAD = 24;
+  const PLOT = SVG_W - 2 * PAD, CX = PAD + PLOT / 2, CY = PAD + PLOT / 2, R_OUT = PLOT / 2;
+  const { extent, portCenters, segments, portArea, perimeter } = preview;
+  const sx = x => PAD + (x / extent + 1) * 0.5 * PLOT;
+  const sy = y => PAD + (1 - y / extent) * 0.5 * PLOT;
+
+  const pathD = segments.map(([[x1, y1], [x2, y2]]) => `M${sx(x1).toFixed(1)},${sy(y1).toFixed(1)} L${sx(x2).toFixed(1)},${sy(y2).toFixed(1)}`).join(' ');
+
+  return (
+    <div className="grain-layout">
+      <div className="grain-svg-wrap">
+        <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}>
+          <defs>
+            <clipPath id="gp-clip"><circle cx={CX} cy={CY} r={R_OUT} /></clipPath>
+          </defs>
+          <rect x={PAD} y={PAD} width={PLOT} height={PLOT} fill="var(--cds-grain-bg)" />
+          <circle cx={CX} cy={CY} r={R_OUT - 1} fill="var(--cds-layer-accent-01)" opacity="0.25" clipPath="url(#gp-clip)" />
+          <g clipPath="url(#gp-clip)">
+            <path d={pathD} fill="none" stroke="var(--cds-support-error)" strokeWidth="1.8" strokeLinejoin="round" />
+          </g>
+          {portCenters.map(([px, py], i) => (
+            <g key={i}>
+              <line x1={sx(px) - 5} y1={sy(py)} x2={sx(px) + 5} y2={sy(py)} stroke="var(--cds-text-helper)" strokeWidth="1" opacity="0.6" />
+              <line x1={sx(px)} y1={sy(py) - 5} x2={sx(px)} y2={sy(py) + 5} stroke="var(--cds-text-helper)" strokeWidth="1" opacity="0.6" />
+            </g>
+          ))}
+          <circle cx={CX} cy={CY} r={R_OUT - 1} fill="none" stroke="var(--cds-grain-casing)" strokeWidth="2" strokeDasharray="6 4" />
+        </svg>
+      </div>
+      <div className="grain-stats-panel">
+        <div className="grain-stat-card">
+          <div className="grain-stat-card__label">Port Area (t=0)</div>
+          <div className="grain-stat-card__value">{(portArea * 1e4).toFixed(3)}<span className="grain-stat-card__unit">cm²</span></div>
+        </div>
+        <div className="grain-stat-card">
+          <div className="grain-stat-card__label">Burn Perimeter (t=0)</div>
+          <div className="grain-stat-card__value">{(perimeter * 1000).toFixed(2)}<span className="grain-stat-card__unit">mm</span></div>
+        </div>
+        <div style={{ fontSize: 12, color: 'var(--cds-text-helper)', lineHeight: 1.6 }}>
+          클라이언트에서 실제 시뮬레이션과 동일한 해상도({config.grid_size||300}×{config.grid_size||300})로 즉시 계산한 값입니다. 연소 진행 애니메이션은 시뮬레이션 실행 후 Grain Visualization 탭에서 확인하세요.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   STRUCTURAL DESIGN – DATABASES
+   =================================================================== */
+const MATERIALS_DB = {
+  'Al 6061-T6':  { Sy:276e6,  Su:310e6,  rho:2700, E:69e9,  nu:0.33 },
+  'Al 7075-T6':  { Sy:503e6,  Su:572e6,  rho:2810, E:72e9,  nu:0.33 },
+  'SS 304':      { Sy:215e6,  Su:505e6,  rho:8000, E:193e9, nu:0.29 },
+  'SS 316':      { Sy:170e6,  Su:485e6,  rho:7980, E:193e9, nu:0.29 },
+  'Ti-6Al-4V':   { Sy:880e6,  Su:950e6,  rho:4430, E:114e9, nu:0.34 },
+  'Inconel 718': { Sy:1034e6, Su:1241e6, rho:8220, E:200e9, nu:0.29 },
+  '4130 Steel':  { Sy:435e6,  Su:670e6,  rho:7850, E:205e9, nu:0.29 },
+};
+
+const BOLT_DB = {
+  'M6 · 8.8':        { Sy:640e6,  Sp:580e6, As:20.1e-6, d:0.006 },
+  'M8 · 8.8':        { Sy:640e6,  Sp:580e6, As:36.6e-6, d:0.008 },
+  'M10 · 8.8':       { Sy:640e6,  Sp:580e6, As:58.0e-6, d:0.010 },
+  'M6 · 10.9':       { Sy:940e6,  Sp:830e6, As:20.1e-6, d:0.006 },
+  'M8 · 10.9':       { Sy:940e6,  Sp:830e6, As:36.6e-6, d:0.008 },
+  'M10 · 10.9':      { Sy:940e6,  Sp:830e6, As:58.0e-6, d:0.010 },
+  'M12 · 10.9':      { Sy:940e6,  Sp:830e6, As:84.3e-6, d:0.012 },
+  'M6 · 12.9':       { Sy:1100e6, Sp:970e6, As:20.1e-6, d:0.006 },
+  'M8 · 12.9':       { Sy:1100e6, Sp:970e6, As:36.6e-6, d:0.008 },
+  'M10 · 12.9':      { Sy:1100e6, Sp:970e6, As:58.0e-6, d:0.010 },
+  'M12 · 12.9':      { Sy:1100e6, Sp:970e6, As:84.3e-6, d:0.012 },
+  'M8 · A286':       { Sy:827e6,  Sp:690e6, As:36.6e-6, d:0.008 },
+  'M10 · A286':      { Sy:827e6,  Sp:690e6, As:58.0e-6, d:0.010 },
+  'M8 · Ti-6Al-4V':  { Sy:1100e6, Sp:930e6, As:36.6e-6, d:0.008 },
+  'M10 · Ti-6Al-4V': { Sy:1100e6, Sp:930e6, As:58.0e-6, d:0.010 },
+};
+
+/* ===================================================================
+   ENGINE CROSS-SECTION SVG
+   =================================================================== */
+function EngineSection({ config }) {
+  const SVG_W = 860, SVG_H = 290;
+  const CY = SVG_H / 2;
+  const PAD_X = 12, PAD_Y = 36;
+
+  const Rc  = +(config.combution_chamber_radius) || 0.06;
+  const Ro  = +(config.outter_radius)            || 0.05;
+  const Ri  = +(config.inner_radius)             || 0.01;
+  const Rth = +(config.nozzle_throat_radius)     || 0.009;
+  const Re  = +(config.nozzle_exit_radius)       || 0.02;
+  const Lf  = +(config.fuel_length)              || 0.15;
+
+  const Lpre  = 0.5 * Ro;
+  const Lpost = 1.5 * Ro;
+  const Lcon  = Math.max((Rc - Rth) / Math.tan(40 * Math.PI / 180), 0.005);
+  const Ldiv  = Math.max((Re - Rth) / Math.tan(15 * Math.PI / 180), 0.010);
+  const Lnoz  = Lcon + Ldiv;
+
+  const L_total = Lpre + Lf + Lpost + Lnoz;
+  const R_max   = Math.max(Rc, Ro, Re);
+  const avail_w = SVG_W - 2 * PAD_X - 80; // 80px right margin for R labels
+  const avail_h = CY - PAD_Y - 4;
+  const sl = avail_w / L_total;
+  const sr = avail_h / (R_max * 1.1);
+
+  const x0 = PAD_X;
+  const x1 = x0 + Lpre  * sl;
+  const x2 = x1 + Lf    * sl;
+  const x3 = x2 + Lpost * sl;
+  const x4 = x3 + Lcon  * sl;
+  const x5 = x4 + Ldiv  * sl;
+
+  const ry = r => CY - r * sr;
+  const ly = r => CY + r * sr;
+
+  const stroke  = 'var(--cds-border-strong-01)';
+  const mono    = "'IBM Plex Mono',monospace";
+  const sans    = "'IBM Plex Sans',sans-serif";
+  const textCol = 'var(--cds-text-secondary)';
+
+  // Nozzle paths
+  const nozPath = `M${x3},${ry(Rc)} L${x4},${ry(Rth)} L${x5},${ry(Re)} L${x5},${ly(Re)} L${x4},${ly(Rth)} L${x3},${ly(Rc)} Z`;
+
+  // Section vertical guides
+  const guides = [x1, x2, x3];
+
+  return (
+    <div style={{ marginTop:24, background:'var(--cds-layer-01)', border:'1px solid var(--cds-border-subtle-00)', padding:'8px 4px 4px' }}>
+      <div style={{ fontSize:11, fontWeight:600, letterSpacing:'.64px', textTransform:'uppercase', color:'var(--cds-text-helper)', padding:'0 12px 8px' }}>
+        Engine Longitudinal Cross-Section (Axial Half-Section · Not to scale)
+      </div>
+      <svg width="100%" viewBox={`0 0 ${SVG_W} ${SVG_H}`} style={{ display:'block' }}>
+
+        {/* Nozzle (draw first) */}
+        <path d={nozPath} fill="var(--cds-layer-accent-01)" stroke={stroke} strokeWidth="1.5"/>
+
+        {/* Chamber outer wall (spans pre + post, same radius Rc) */}
+        <rect x={x0} y={ry(Rc)} width={x3-x0} height={Rc*2*sr}
+          fill="var(--cds-layer-02)" stroke={stroke} strokeWidth="1.5"/>
+
+        {/* Pre-combustion chamber gas fill */}
+        <rect x={x0} y={ry(Rc)} width={x1-x0} height={Rc*2*sr}
+          fill="var(--cds-notif-info-bg)" stroke="none"/>
+
+        {/* Grain outer casing fill */}
+        <rect x={x1} y={ry(Rc)} width={x2-x1} height={Rc*2*sr}
+          fill="var(--cds-layer-02)" stroke="none"/>
+
+        {/* Grain fuel annulus */}
+        <rect x={x1} y={ry(Ro)} width={x2-x1} height={Ro*2*sr}
+          fill="var(--cds-accent-gold)" fillOpacity="0.13" stroke="none"/>
+
+        {/* Port (gas void) */}
+        <rect x={x1} y={ry(Ri)} width={x2-x1} height={Ri*2*sr}
+          fill="var(--cds-background)" stroke="none"/>
+
+        {/* Grain outer wall dashed boundary */}
+        <rect x={x1} y={ry(Ro)} width={x2-x1} height={Ro*2*sr}
+          fill="none" stroke={stroke} strokeWidth="1.2" strokeDasharray="5 3"/>
+
+        {/* Burn surface (port perimeter) */}
+        <rect x={x1} y={ry(Ri)} width={x2-x1} height={Ri*2*sr}
+          fill="none" stroke="var(--cds-interactive)" strokeWidth="1.5" strokeDasharray="4 2"/>
+
+        {/* Post-combustion gas fill */}
+        <rect x={x2} y={ry(Rc)} width={x3-x2} height={Rc*2*sr}
+          fill="var(--cds-notif-success-bg)" stroke="none"/>
+
+        {/* Chamber bore lines */}
+        <line x1={x0} y1={ry(Rc)} x2={x3} y2={ry(Rc)} stroke={stroke} strokeWidth="1.5"/>
+        <line x1={x0} y1={ly(Rc)} x2={x3} y2={ly(Rc)} stroke={stroke} strokeWidth="1.5"/>
+
+        {/* Centerline */}
+        <line x1={x0-8} y1={CY} x2={x5+12} y2={CY}
+          stroke="var(--cds-support-error)" strokeWidth="1" strokeDasharray="8 4" opacity="0.65"/>
+
+        {/* Throat */}
+        <line x1={x4} y1={ry(Rth)} x2={x4} y2={ly(Rth)}
+          stroke="var(--cds-support-error)" strokeWidth="1" strokeDasharray="4 2" opacity="0.5"/>
+
+        {/* Section dividers */}
+        {guides.map((x,i) => (
+          <line key={i} x1={x} y1={PAD_Y-22} x2={x} y2={SVG_H-10}
+            stroke="var(--cds-border-subtle-01)" strokeWidth="1" strokeDasharray="4 3" opacity="0.7"/>
+        ))}
+
+        {/* Section labels */}
+        {[
+          [x0, x1, 'Pre-Combustion', `L=${(Lpre*1e3).toFixed(0)} mm`, 'var(--cds-support-info)'],
+          [x1, x2, 'Fuel Grain',     `L=${(Lf*1e3).toFixed(0)} mm`,   'var(--cds-accent-gold)'],
+          [x2, x3, 'Post-Combustion',`L=${(Lpost*1e3).toFixed(0)} mm`,'var(--cds-support-success)'],
+          [x3, x5, 'Nozzle',         `L=${(Lnoz*1e3).toFixed(0)} mm`, 'var(--cds-text-helper)'],
+        ].map(([xa, xb, lbl, dim, col]) => (
+          <g key={lbl}>
+            <text x={(xa+xb)/2} y={PAD_Y-14} textAnchor="middle" fontSize="9" fontWeight="600"
+              fill={col} fontFamily={sans}>{lbl}</text>
+            <text x={(xa+xb)/2} y={PAD_Y-4} textAnchor="middle" fontSize="8"
+              fill="var(--cds-text-helper)" fontFamily={mono}>{dim}</text>
+          </g>
+        ))}
+
+        {/* Radius dimension lines on right */}
+        {[
+          [Rc, `Rc=${(Rc*1e3).toFixed(1)}`, 'var(--cds-interactive)'],
+          [Ro, `Ro=${(Ro*1e3).toFixed(1)}`, 'var(--cds-accent-gold)'],
+          [Ri, `Ri=${(Ri*1e3).toFixed(1)}`, 'var(--cds-support-error)'],
+        ].map(([r, lbl, col]) => (
+          <g key={lbl}>
+            <line x1={x5+8} y1={CY} x2={x5+28} y2={CY - r*sr}
+              stroke={col} strokeWidth="0.75" opacity="0.7"/>
+            <text x={x5+30} y={CY - r*sr + 3} fontSize="9" fill={col} fontFamily={mono}>{lbl}</text>
+          </g>
+        ))}
+        {/* Throat */}
+        <text x={x4} y={ly(Rth)+16} textAnchor="middle" fontSize="8"
+          fill="var(--cds-text-helper)" fontFamily={mono}>Rth={( Rth*1e3).toFixed(1)}</text>
+        {/* Exit */}
+        <text x={x5+2} y={ly(Re)+14} textAnchor="start" fontSize="8"
+          fill="var(--cds-text-helper)" fontFamily={mono}>Re={( Re*1e3).toFixed(1)}</text>
+
+        {/* Legend */}
+        {[
+          ['var(--cds-interactive)', 'Port (burn surface)', x0+4, SVG_H-8],
+          ['var(--cds-accent-gold)', 'Solid fuel',          x0+130, SVG_H-8],
+          ['var(--cds-border-strong-01)', 'Chamber wall', x0+240, SVG_H-8],
+        ].map(([col, lbl, lx, ly2]) => (
+          <g key={lbl}>
+            <rect x={lx} y={ly2-7} width={10} height={6} fill={col} opacity="0.7"/>
+            <text x={lx+14} y={ly2-1} fontSize="8" fill="var(--cds-text-helper)" fontFamily={sans}>{lbl}</text>
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ===================================================================
+   DESIGN TAB (Tank / Pressure Vessel Designer)
+   =================================================================== */
+function DesignTab({ config, simResults }) {
+  // Find peak combustion pressure from simulation stats
+  const statKeys  = simResults?.stats ? Object.keys(simResults.stats) : [];
+  const pressKey  = statKeys.find(k => k.toLowerCase().includes('combustion') && k.toLowerCase().includes('pressure'));
+  const simMaxP   = pressKey ? simResults.stats[pressKey].max : null;
+
+  const [comp,      setComp]      = useState('chamber');
+  const [useSimP,   setUseSimP]   = useState(true);
+  const [manualP,   setManualP]   = useState(String(+(config.combution_chamber_pressure) || 3e6));
+  const [material,  setMaterial]  = useState('Al 6061-T6');
+  const [sf,        setSf]        = useState('2.0');
+  const [headType,  setHeadType]  = useState('hemispherical');
+  const [boltKey,   setBoltKey]   = useState('M8 · 10.9');
+  const [manualBCD, setManualBCD] = useState('');
+  const [manualN,   setManualN]   = useState('');
+
+  const P   = useSimP && simMaxP ? simMaxP : (parseFloat(manualP) || 0);
+  const SF  = Math.max(parseFloat(sf) || 1.5, 1.0);
+  const mat = MATERIALS_DB[material] || MATERIALS_DB['Al 6061-T6'];
+  const blt = BOLT_DB[boltKey]       || BOLT_DB['M8 · 10.9'];
+
+  let r_inner, L_cyl, t_config, compLabel;
+  if (comp === 'chamber') {
+    r_inner    = +(config.combution_chamber_radius) || 0.06;
+    L_cyl      = +(config.combution_chamber_length) || 0.25;
+    t_config   = null;
+    compLabel  = 'Combustion Chamber';
+  } else {
+    r_inner    = +(config.oxidizer_tank_radius)     || 0.05;
+    L_cyl      = +(config.oxidizer_tank_length)     || 1.3;
+    t_config   = +(config.oxidizer_tank_tickness)   || 0.005;
+    compLabel  = 'Oxidizer Tank';
+  }
+
+  const sigma_allow = mat.Sy / SF;
+
+  // Thin-wall minimum hoop thickness
+  const t_thin  = P * r_inner / sigma_allow;
+  // Thick-wall Lamé (when t_thin > D/20 → r_inner/10)
+  const needThick = t_thin > r_inner / 10;
+  const t_thick = needThick ? r_inner * (Math.sqrt((sigma_allow + P) / Math.max(sigma_allow - P, 1e-9)) - 1) : t_thin;
+  const t_req   = needThick ? t_thick : t_thin;
+
+  // Head thickness
+  let t_head;
+  if (headType === 'hemispherical') {
+    t_head = P * r_inner / (2 * sigma_allow);
+  } else if (headType === 'ellipsoidal') {
+    t_head = P * r_inner / sigma_allow;                          // 2:1 ASME simplified
+  } else {
+    t_head = r_inner * Math.sqrt(3 * P / sigma_allow);          // flat plate clamped
+  }
+
+  // Stress check at actual (config) or required thickness
+  const t_chk   = t_config || t_req;
+  const sig_h   = P * r_inner / t_chk;
+  const sig_a   = P * r_inner / (2 * t_chk);
+  const sig_vm  = Math.sqrt(sig_h**2 - sig_h*sig_a + sig_a**2);
+  const FOS     = isFinite(sig_vm) && sig_vm > 0 ? mat.Sy / sig_vm : 999;
+  const fos_ok  = FOS >= SF;
+
+  // Mass estimate (cylinder + 2 heads)
+  const cylVol  = 2 * Math.PI * r_inner * t_req * L_cyl;
+  let headVol;
+  if (headType === 'hemispherical') headVol = 4 * Math.PI * r_inner**2 * t_head; // 2 × 2πr²t_head
+  else if (headType === 'ellipsoidal') headVol = 2 * Math.PI * r_inner**2 * t_head * 1.14; // approx surface factor
+  else headVol = 2 * Math.PI * r_inner**2 * t_head;
+  const mass = mat.rho * (cylVol + headVol);
+
+  // Bolt analysis
+  const F_ax    = P * Math.PI * r_inner**2;
+  const BCD     = parseFloat(manualBCD) || (r_inner + t_req + 0.018) * 2;
+  const F_bolt  = 0.7 * blt.Sp * blt.As;                       // 70% proof load
+  const n_load  = Math.ceil(F_ax / Math.max(F_bolt, 1e-9));
+  const n_circ  = Math.ceil(Math.PI * BCD / (3 * blt.d));
+  const n_auto  = Math.max(n_load, n_circ, 4);
+  const n_act   = parseInt(manualN) || n_auto;
+  const blt_fos = n_act > 0 ? (n_act * F_bolt) / Math.max(F_ax, 1e-9) : 0;
+
+  const mm  = v => isFinite(v) && v >= 0 ? (v*1e3).toFixed(2)+' mm' : '—';
+  const mpa = v => isFinite(v)           ? (v/1e6).toFixed(2)+' MPa' : '—';
+  const fmtFos = v => !isFinite(v)||v>999 ? '>999' : v.toFixed(2);
+  const kn  = v => isFinite(v)           ? (v/1e3).toFixed(2)+' kN'  : '—';
+
+  const Row = ({ label, val, ok, warn }) => {
+    const col = ok === true ? 'var(--cds-support-success)'
+              : ok === false ? 'var(--cds-support-error)'
+              : warn ? 'var(--cds-text-warning)'
+              : 'var(--cds-text-primary)';
+    return (
+      <tr>
+        <td style={{ color:'var(--cds-text-secondary)', fontFamily:"'IBM Plex Sans',sans-serif", fontSize:12, padding:'6px 12px' }}>{label}</td>
+        <td style={{ textAlign:'right', fontFamily:"'IBM Plex Mono',monospace", fontSize:12, color:col, padding:'6px 12px', fontWeight: ok===true||ok===false ? 600 : 400 }}>{val}</td>
+      </tr>
+    );
+  };
+
+  return (
+    <div className="animate-fadeInUp" style={{ paddingBottom:32 }}>
+      <div className="section-title">Structural Design Calculator</div>
+      <div className="section-subtitle" style={{ marginBottom:20 }}>
+        시뮬레이션 결과 기반 실시간 구조 해석 — 재료/볼트 변경 시 즉시 반영됩니다
+        {simMaxP ? <span style={{ marginLeft:8, fontFamily:"'IBM Plex Mono',monospace", color:'var(--cds-support-error)', fontSize:13 }}>
+          · 시뮬레이션 최대 압력: {(simMaxP/1e6).toFixed(3)} MPa
+        </span> : <span style={{ marginLeft:8, fontSize:12, color:'var(--cds-text-helper)' }}>(시뮬레이션 실행 후 최대 압력이 자동 반영됩니다)</span>}
+      </div>
+
+      <div className="td-designer-grid" style={{ display:'grid', gridTemplateColumns:'320px 1fr', gap:16, alignItems:'start' }}>
+
+        {/* ── LEFT: Inputs ─────────────────────────────────────── */}
+        <div>
+
+          {/* Component selector */}
+          <div className="td-card">
+            <div className="td-section-hdr">해석 대상</div>
+            <div style={{ display:'flex', gap:6 }}>
+              {[['chamber','🔥 연소실'],['oxidizer','💧 산화제 탱크']].map(([id, lbl]) => (
+                <button key={id} onClick={() => setComp(id)} style={{
+                  flex:1, height:34, fontSize:12, fontWeight:500, cursor:'pointer',
+                  fontFamily:"'IBM Plex Sans',sans-serif",
+                  background: comp===id ? 'var(--cds-interactive)' : 'var(--cds-layer-02)',
+                  color: comp===id ? '#fff' : 'var(--cds-text-secondary)',
+                  border: `1px solid ${comp===id ? 'var(--cds-interactive)' : 'var(--cds-border-subtle-01)'}`,
+                  transition:'all .15s',
+                }}>{lbl}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Design pressure */}
+          <div className="td-card">
+            <div className="td-section-hdr">설계 압력</div>
+            {simMaxP && (
+              <div style={{ display:'flex', gap:6, marginBottom:10 }}>
+                {[[true,`시뮬 최대 ${(simMaxP/1e6).toFixed(2)} MPa`],[false,'직접 입력']].map(([v, lbl]) => (
+                  <button key={String(v)} onClick={() => setUseSimP(v)} style={{
+                    flex:1, height:28, fontSize:11, fontWeight:500, cursor:'pointer',
+                    fontFamily:"'IBM Plex Sans',sans-serif",
+                    background: useSimP===v ? 'var(--cds-interactive)' : 'var(--cds-layer-02)',
+                    color: useSimP===v ? '#fff' : 'var(--cds-text-secondary)',
+                    border: `1px solid ${useSimP===v ? 'var(--cds-interactive)' : 'var(--cds-border-subtle-01)'}`,
+                    transition:'all .15s',
+                  }}>{lbl}</button>
+                ))}
+              </div>
+            )}
+            {(!useSimP || !simMaxP) && (
+              <div className="cds-form-item">
+                <label className="cds-label">압력 (Pa)</label>
+                <input className="cds-text-input" type="number" step="10000" value={manualP}
+                  onChange={e => setManualP(e.target.value)}/>
+              </div>
+            )}
+            {useSimP && simMaxP && (
+              <div style={{ fontSize:12, fontFamily:"'IBM Plex Mono',monospace", color:'var(--cds-text-helper)', padding:'4px 0' }}>
+                P = {(simMaxP/1e6).toFixed(4)} MPa ({simMaxP.toFixed(0)} Pa)
+              </div>
+            )}
+          </div>
+
+          {/* Material */}
+          <div className="td-card">
+            <div className="td-section-hdr">재료</div>
+            <div className="cds-form-item" style={{ marginBottom:10 }}>
+              <label className="cds-label">재료 선택</label>
+              <select className="cds-text-input" value={material} onChange={e => setMaterial(e.target.value)}>
+                {Object.keys(MATERIALS_DB).map(k => <option key={k}>{k}</option>)}
+              </select>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4, marginBottom:10 }}>
+              {[['Sy', mpa(mat.Sy)],['Su', mpa(mat.Su)],['ρ', mat.rho+' kg/m³'],['E', (mat.E/1e9).toFixed(0)+' GPa']].map(([l,v]) => (
+                <div key={l} style={{ fontSize:11 }}>
+                  <span style={{ fontFamily:"'IBM Plex Mono',monospace", fontWeight:600, color:'var(--cds-text-primary)' }}>{l} </span>
+                  <span style={{ color:'var(--cds-text-helper)' }}>{v}</span>
+                </div>
+              ))}
+            </div>
+            <div className="cds-form-item">
+              <label className="cds-label">안전계수 (SF)</label>
+              <input className="cds-text-input" type="number" step="0.1" min="1.0" value={sf}
+                onChange={e => setSf(e.target.value)}/>
+            </div>
+          </div>
+
+          {/* Head type */}
+          <div className="td-card">
+            <div className="td-section-hdr">엔드캡 형상</div>
+            {[
+              ['hemispherical','반구형 (Hemispherical)','t = PR / 2σ_allow'],
+              ['ellipsoidal',  '2:1 타원형 (Ellipsoidal)','t = PR / σ_allow'],
+              ['flat',         '평판 (Flat Plate)','t = R√(3P/σ_allow)'],
+            ].map(([id, lbl, formula]) => (
+              <label key={id} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8, cursor:'pointer' }}>
+                <input type="radio" checked={headType===id} onChange={() => setHeadType(id)}
+                  style={{ accentColor:'var(--cds-interactive)', flexShrink:0 }}/>
+                <span style={{ fontSize:12, color:'var(--cds-text-primary)', flex:1 }}>{lbl}</span>
+                <span style={{ fontSize:10, color:'var(--cds-text-helper)', fontFamily:"'IBM Plex Mono',monospace" }}>{formula}</span>
+              </label>
+            ))}
+          </div>
+
+          {/* Bolt */}
+          <div className="td-card">
+            <div className="td-section-hdr">플랜지 볼트</div>
+            <div className="cds-form-item" style={{ marginBottom:10 }}>
+              <label className="cds-label">볼트 규격</label>
+              <select className="cds-text-input" value={boltKey} onChange={e => setBoltKey(e.target.value)}>
+                {Object.keys(BOLT_DB).map(k => <option key={k}>{k}</option>)}
+              </select>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+              <div className="cds-form-item">
+                <label className="cds-label">볼트 원 지름 BCD (m)</label>
+                <input className="cds-text-input" type="number" step="0.001" min="0"
+                  placeholder={((r_inner+t_req+0.018)*2).toFixed(3)+' (자동)'}
+                  value={manualBCD} onChange={e => setManualBCD(e.target.value)}/>
+              </div>
+              <div className="cds-form-item">
+                <label className="cds-label">볼트 수 (빈칸=자동)</label>
+                <input className="cds-text-input" type="number" step="1" min="4"
+                  placeholder={n_auto+' (자동)'}
+                  value={manualN} onChange={e => setManualN(e.target.value)}/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── RIGHT: Results ───────────────────────────────────── */}
+        <div>
+
+          {/* Wall thickness & stress */}
+          <div className="td-card">
+            <div className="td-section-hdr">실린더 벽 해석 — {compLabel}</div>
+            <div style={{ fontSize:11, fontFamily:"'IBM Plex Mono',monospace", color:'var(--cds-text-helper)', marginBottom:10 }}>
+              r_i = {(r_inner*1e3).toFixed(1)} mm · P = {(P/1e6).toFixed(3)} MPa · SF = {SF.toFixed(1)}
+              {needThick && <span style={{ color:'var(--cds-support-info)', marginLeft:8 }}>⚠ 두꺼운 벽 → Lamé 방정식 사용</span>}
+            </div>
+            <table className="td-result-table" style={{ width:'100%' }}>
+              <thead>
+                <tr>
+                  <th style={{ padding:'6px 12px', fontSize:11 }}>항목</th>
+                  <th style={{ padding:'6px 12px', fontSize:11, textAlign:'right' }}>결과</th>
+                </tr>
+              </thead>
+              <tbody>
+                <Row label="최소 벽 두께 (후프 지배)" val={mm(t_req)} ok={isFinite(t_req)&&t_req>0}/>
+                <Row label="엔드캡 두께" val={mm(t_head)}/>
+                {t_config && <Row label={`현재 설정 두께 (config)`} val={mm(t_config)} ok={t_config>=t_req} warn={t_config<t_req}/>}
+                <Row label="후프 응력 σ_θ" val={mpa(sig_h)} ok={sig_h<=sigma_allow}/>
+                <Row label="축방향 응력 σ_a" val={mpa(sig_a)}/>
+                <Row label="Von Mises 응력 σ_vm" val={mpa(sig_vm)} ok={fos_ok} warn={FOS>=1&&!fos_ok}/>
+                <Row label="안전계수 FOS" val={fmtFos(FOS)} ok={fos_ok} warn={FOS>=1&&!fos_ok}/>
+                <Row label="허용 응력 σ_allow" val={mpa(sigma_allow)}/>
+                <Row label="질량 추정 (실린더 + 헤드 2개)" val={isFinite(mass) ? mass.toFixed(3)+' kg' : '—'}/>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Bolt analysis */}
+          <div className="td-card">
+            <div className="td-section-hdr">플랜지 볼트 해석</div>
+            <div style={{ fontSize:11, fontFamily:"'IBM Plex Mono',monospace", color:'var(--cds-text-helper)', marginBottom:10 }}>
+              F_axial = {kn(F_ax)} · 볼트당 허용력 = {kn(F_bolt)}
+            </div>
+            <table className="td-result-table" style={{ width:'100%' }}>
+              <thead>
+                <tr>
+                  <th style={{ padding:'6px 12px', fontSize:11 }}>항목</th>
+                  <th style={{ padding:'6px 12px', fontSize:11, textAlign:'right' }}>결과</th>
+                </tr>
+              </thead>
+              <tbody>
+                <Row label="압력 축방향 하중" val={kn(F_ax)}/>
+                <Row label="필요 볼트 수 (하중 기준)" val={n_load}/>
+                <Row label="필요 볼트 수 (3d 피치 기준)" val={n_circ}/>
+                <Row label="최소 필요 볼트 수" val={n_auto}/>
+                <Row label="볼트 원 지름 BCD" val={mm(BCD)}/>
+                <Row label="볼트 피치 (간격)" val={mm(Math.PI*BCD/n_act)} ok={Math.PI*BCD/n_act>=3*blt.d}/>
+                <Row label="볼트 그룹 FOS" val={fmtFos(blt_fos)} ok={blt_fos>=1.5} warn={blt_fos>=1&&blt_fos<1.5}/>
+              </tbody>
+            </table>
+          </div>
+
+          {/* Geometry reference */}
+          <div className="td-card">
+            <div className="td-section-hdr">형상 참조 (Config)</div>
+            <div style={{ fontSize:11, color:'var(--cds-text-helper)', lineHeight:1.8, fontFamily:"'IBM Plex Mono',monospace" }}>
+              {comp === 'chamber' ? <>
+                R_chamber = {(r_inner*1e3).toFixed(1)} mm · L = {(L_cyl*1e3).toFixed(0)} mm<br/>
+                목표 연소실 압력 = {((+(config.combution_chamber_pressure)||0)/1e6).toFixed(2)} MPa<br/>
+                목 반지름 = {((+(config.nozzle_throat_radius)||0)*1e3).toFixed(2)} mm<br/>
+                면적비 = {(((+(config.nozzle_exit_radius)||0.02)**2) / ((+(config.nozzle_throat_radius)||0.009)**2)).toFixed(2)}
+              </> : <>
+                R_tank = {(r_inner*1e3).toFixed(1)} mm · L = {(L_cyl*1e3).toFixed(0)} mm<br/>
+                Config 두께 = {((+(config.oxidizer_tank_tickness)||0)*1e3).toFixed(2)} mm<br/>
+                산화제 종류 = {config.oxidizer || '—'} · 질량 = {config.oxidizer_M||'—'} kg
+              </>}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Engine cross-section visualization */}
+      <EngineSection config={config}/>
+    </div>
+  );
+}
+
+/* ===================================================================
+   CUSTOM TOOLTIP
+   =================================================================== */
+function CustomTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip">
+        <div className="label">Time: {Number(label).toFixed(3)}s</div>
+        <div className="value">{payload[0].name}: {Number(payload[0].value).toFixed(6)}</div>
+      </div>
+    );
+  }
+  return null;
+}
+
+/* ===================================================================
+   ACCORDION ITEM
+   =================================================================== */
+function AccordionItem({ group, config, onChange, defaultOpen }) {
+  const [open, setOpen] = useState(defaultOpen || false);
+  return (
+    <div className="cds-accordion__item">
+      <button
+        className={`cds-accordion__heading ${open ? 'cds-accordion__item--open' : ''}`}
+        onClick={() => setOpen(!open)}
+        style={open ? { background:'var(--cds-hover-ui)' } : {}}
+      >
+        <ChevronRight />
+        <span style={{ marginRight:8, opacity:0.7 }}>{group.icon}</span>
+        {group.label}
+        <span style={{ marginLeft:'auto', fontSize:12, color:'var(--cds-text-helper)' }}>{group.fields.length} fields</span>
+      </button>
+      <div className={`cds-accordion__content ${!open ? 'cds-accordion__content--hidden' : ''}`}>
+        {group.fields.map(field => (
+          <React.Fragment key={field.key}>
+            {field.divider && <div className="field-section-label">{field.divider}</div>}
+            <div className={`cds-form-item ${field.fullWidth ? 'full-width' : ''}`}>
+              <label className="cds-label">
+                {field.label}
+                {field.unit && <span style={{ color:'var(--cds-text-placeholder)' }}> ({field.unit})</span>}
+              </label>
+              {field.type === 'select' ? (
+                <select
+                  className="cds-text-input"
+                  value={config[field.key] ?? ''}
+                  onChange={e => onChange(field.key, e.target.value)}
+                >
+                  {field.options.map(opt => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  className="cds-text-input"
+                  type={field.type === 'text' ? 'text' : 'number'}
+                  step={field.step || 'any'}
+                  value={config[field.key] ?? ''}
+                  onChange={e => {
+                    const v = field.type === 'text' ? e.target.value
+                      : field.type === 'integer' ? parseInt(e.target.value) || 0
+                      : parseFloat(e.target.value) || 0;
+                    onChange(field.key, v);
+                  }}
+                />
+              )}
+              {field.helper && <div className="cds-helper-text">{field.helper}</div>}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ===================================================================
+   THEME TOGGLE
+   =================================================================== */
+function ThemeToggle({ theme, onToggle }) {
+  return (
+    <button className="theme-toggle" onClick={onToggle}>
+      {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+      {theme === 'dark' ? 'Light' : 'Dark'}
+    </button>
+  );
+}
+
+/* ===================================================================
+   MAIN APP
+   =================================================================== */
+function App() {
+  const [config,
+    setConfig]     = useState({...DEFAULT_CONFIG});
+  const [rocketName, setRocketName] = useState('TAS-I');
+  const [results,    setResults]    = useState(null);
+  const [loading,    setLoading]    = useState(false);
+  const [error,      setError]      = useState(null);
+  const [success,    setSuccess]    = useState(null);
+  const [termination, setTermination] = useState(null);
+  const [preTab,      setPreTab]      = useState('structure');
+  const [grainSubTab, setGrainSubTab] = useState('result');
+  const [simulatedConfig, setSimulatedConfig] = useState(null);
+  const [activeTab,  setActiveTab]  = useState('charts');
+  const [simLog,     setSimLog]     = useState('');
+  const [theme,      setTheme]      = useState(() => {
+    try { return localStorage.getItem('tusi-theme')||'light'; } catch { return 'light'; }
+  });
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem('tusi-theme', theme); } catch {}
+  }, [theme]);
+
+  useEffect(() => {
+    // MDO 페이지의 "Open in Simulator" 로 넘어온 최적 형상이 있으면 그것을 우선 로드
+    let handoff = null;
+    try { handoff = JSON.parse(localStorage.getItem('tusi-mdo-handoff') || 'null'); localStorage.removeItem('tusi-mdo-handoff'); } catch {}
+    const handoffName = handoff && Object.keys(handoff)[0];
+    if (handoffName && handoff[handoffName]) {
+      setRocketName(handoffName);
+      setConfig({...DEFAULT_CONFIG, ...handoff[handoffName]});
+      setSuccess('MDO 최적 형상을 불러왔습니다');
+      return;
+    }
+    fetch('/api/default-config', { credentials: 'same-origin' })
+      .then(r=>{ if(!r.ok) throw new Error(); return r.json(); })
+      .then(data => {
+        const name = Object.keys(data)[0];
+        if (name && data[name]) { setRocketName(name); setConfig({...DEFAULT_CONFIG,...data[name]}); }
+      }).catch(()=>{});
+  }, []);
+
+  const handleConfigChange = useCallback((key, value) => setConfig(prev=>({...prev,[key]:value})), []);
+
+  const handleSimulate = useCallback(async () => {
+    setLoading(true); setError(null); setSuccess(null); setResults(null); setSimLog(''); setTermination(null);
+    // 시뮬레이션은 그레인/유량 설정에 따라 수 분까지 걸릴 수 있다.
+    // fetch()는 기본적으로 타임아웃이 없어서, 중간의 어떤 네트워크 장비가
+    // 유휴 연결을 조용히 끊더라도 사용자에게는 원인 불명의 실패로 보인다 —
+    // 서버(gunicorn --timeout)와 맞춰 최대 5분까지는 명시적으로 기다리고,
+    // 초과 시 타임아웃임을 분명히 알리도록 AbortController를 사용한다.
+    const SIMULATE_TIMEOUT_MS = 5 * 60 * 1000;
+    const controller = new AbortController();
+    const timeoutId  = setTimeout(() => controller.abort(), SIMULATE_TIMEOUT_MS);
+    try {
+      const res  = await fetch('/api/simulate', { method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json'}, body:JSON.stringify({[rocketName]:config}), signal: controller.signal });
+      const data = await res.json();
+      if (!res.ok || data.error) { setError(data.error||'Simulation failed'); if(data.stderr)setSimLog(data.stderr); return; }
+      setResults(data);
+      setSimulatedConfig(config);
+      setGrainSubTab('result');
+      const impulseSuffix = data.total_impulse != null ? ` · 총 임펄스 ${data.total_impulse.toFixed(2)} N·s` : '';
+      setSuccess(`완료 — ${data.row_count}개 데이터 포인트, ${data.grain?.snapshots?.length||0}개 그레인 스냅샷${impulseSuffix}`);
+      if(data.termination?.code) setTermination(data.termination);
+      if(data.stdout) setSimLog(data.stdout);
+      setActiveTab('charts');
+    } catch(err) {
+      if (err.name === 'AbortError') setError('시뮬레이션이 5분 제한 시간을 초과했습니다. dt를 늘리거나 simt를 줄여서 다시 시도해보세요.');
+      else setError(err.message||'Network error');
+    } finally { clearTimeout(timeoutId); setLoading(false); }
+  }, [config, rocketName]);
+
+  const handleDownloadJSON = useCallback(() => {
+    const blob = new Blob([JSON.stringify({[rocketName]:config},null,4)], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='rocket.json'; a.click(); URL.revokeObjectURL(url);
+  }, [config, rocketName]);
+
+  const handleUploadJSON = useCallback(e => {
+    const file = e.target.files[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        const name = Object.keys(data)[0];
+        if(name && data[name]) { setRocketName(name); setConfig(prev=>({...prev,...data[name]})); setSuccess(`"${file.name}" 로드 완료`); }
+        else setError('Invalid JSON format');
+      } catch { setError('JSON 파싱 실패'); }
+    };
+    reader.readAsText(file); e.target.value='';
+  }, []);
+
+  // 보고서: 실행한 형상 + 결과를 넘기고 새 탭에서 인쇄(PDF 저장) — 그래프용 데이터는 최대 1200점으로 줄임
+  const openReport = () => {
+    if (!results) return;
+    const n = results.row_count || (results.data['Time (s)'] || []).length;
+    const step = Math.max(1, Math.ceil(n / 1200));
+    const data = {};
+    for (const c of results.columns) data[c] = (results.data[c] || []).filter((_, i) => i % step === 0 || i === n - 1);
+    const payload = {
+      name: rocketName, config: simulatedConfig || config, generated: Date.now(),
+      groups: FIELD_GROUPS.map(g => ({ label: g.label, fields: g.fields.map(f => ({ key: f.key, label: f.label, unit: f.unit || '' })) })),
+      results: { columns: results.columns, data, stats: results.stats, total_impulse: results.total_impulse,
+                 steady_state: results.steady_state, injector_dp: results.injector_dp, termination: results.termination,
+                 row_count: results.row_count },
+    };
+    try { localStorage.setItem('tusi-report', JSON.stringify(payload)); }
+    catch (e) { alert('보고서 데이터를 저장하지 못했습니다: ' + e.message); return; }
+    window.open('/report?print=1', '_blank');
+  };
+
+  const chartData = results ? (() => {
+    const time = results.data['Time (s)']||[];
+    return { time, columns: results.columns.filter(c=>c!=='Time (s)') };
+  })() : null;
+
+  const tickFill   = theme==='dark' ? '#c6c6c6' : '#525252';
+  const gridStroke = theme==='dark' ? '#393939' : '#e0e0e0';
+  const hasGrain   = results?.grain?.snapshots?.length > 0;
+
+  const TabBtn = ({id, icon, label, badge}) => (
+    <button className={`cds-tab ${activeTab===id?'cds-tab--selected':''}`} onClick={()=>setActiveTab(id)}>
+      <span style={{display:'inline-flex',alignItems:'center',gap:6}}>
+        {icon} {label}
+        {badge != null && (
+          <span style={{background:'var(--cds-interactive)',color:'#fff',fontSize:10,fontWeight:600,padding:'1px 6px',borderRadius:10,fontFamily:"'IBM Plex Mono',monospace"}}>{badge}</span>
+        )}
+      </span>
+    </button>
+  );
+
+  return (
+    <>
+      <header className="cds-header">
+        <div className="cds-header__name">
+          <img src="/static/logo.png" alt="" style={{height:24,opacity:0.9}}/>
+          TUSI Hybrid Rocket Engine Simulator
+        </div>
+        <nav className="cds-header__nav">
+          <span style={{color:'#c6c6c6',fontSize:12,marginRight:8,fontFamily:"'IBM Plex Mono',monospace"}}>{rocketName}</span>
+          {results && (
+            <button className="cds-header__action" onClick={()=>window.open('/api/download-csv','_blank')}>
+              <DownloadIcon/> CSV
+            </button>
+          )}
+          {results && (
+            <button className="cds-header__action" onClick={openReport} title="형상 개요 · 통계 · 결과 그래프 · 도면 PDF (화이트 테마)">
+              <ReportIcon/> Report
+            </button>
+          )}
+          <a className="theme-toggle" href="/mdo" style={{textDecoration:'none',marginRight:0}}><DnaIcon/> MDO</a>
+          <a className="theme-toggle" href="/surrogate" style={{textDecoration:'none',marginRight:8}}><BoltIcon/> Surrogate</a>
+          <a className="theme-toggle" href="/training" style={{textDecoration:'none',marginRight:8}}><ChartIcon/> Training</a>
+          <a className="theme-toggle" href="/drawing" style={{textDecoration:'none',marginRight:8}}
+             onClick={()=>{ try { localStorage.setItem('tusi-drawing-config', JSON.stringify({[rocketName]:config})); } catch {} }}><RulerIcon/> Drawing</a>
+          <button className="theme-toggle" onClick={()=>setTheme(t=>t==='light'?'dark':'light')}>
+            {theme==='dark'?<SunIcon/>:<MoonIcon/>}
+            {theme==='dark'?'Light':'Dark'}
+          </button>
+        </nav>
+      </header>
+
+      <div className="app-container">
+        <aside className="config-panel">
+          <div className="config-header">
+            <h2>Engine Configuration</h2>
+            <p>하이브리드 로켓 엔진 파라메터 설정</p>
+          </div>
+          <div style={{padding:'16px 24px 0'}}>
+            <div className="cds-form-item">
+              <label className="cds-label">Rocket Designation</label>
+              <input className="cds-text-input" type="text" value={rocketName} onChange={e=>setRocketName(e.target.value)}/>
+            </div>
+          </div>
+          <div className="config-actions">
+            <button className="cds-btn cds-btn--primary cds-btn--compact" onClick={handleSimulate} disabled={loading}><PlayIcon/> Run Simulation</button>
+            <button className="cds-btn cds-btn--tertiary cds-btn--compact" onClick={handleDownloadJSON}><DownloadIcon/> Save JSON</button>
+            <button className="cds-btn cds-btn--ghost cds-btn--compact" onClick={()=>fileInputRef.current?.click()}><UploadIcon/> Load JSON</button>
+            <input ref={fileInputRef} type="file" accept=".json" className="file-input-hidden" onChange={handleUploadJSON}/>
+          </div>
+          <div className="cds-accordion">
+            {FIELD_GROUPS.map((g,i)=><AccordionItem key={g.id} group={g} config={config} onChange={handleConfigChange} defaultOpen={i===0}/>)}
+          </div>
+        </aside>
+
+        <main className="result-panel">
+          {error && (
+            <div className="cds-notification cds-notification--error animate-fadeInUp">
+              <div><div className="cds-notification__title">오류</div><div className="cds-notification__subtitle">{error}</div></div>
+              <button className="cds-notification__close" onClick={()=>setError(null)}>✕</button>
+            </div>
+          )}
+          {success && (
+            <div className="cds-notification cds-notification--success animate-fadeInUp">
+              <div><div className="cds-notification__title">완료</div><div className="cds-notification__subtitle">{success}</div></div>
+              <button className="cds-notification__close" onClick={()=>setSuccess(null)}>✕</button>
+            </div>
+          )}
+          {termination && (
+            <div className={`cds-notification ${termination.code === 'TIME_LIMIT_REACHED' ? 'cds-notification--success' : 'cds-notification--warning'} animate-fadeInUp`}>
+              <div>
+                <div className="cds-notification__title">
+                  {termination.code === 'TIME_LIMIT_REACHED' ? '종료 사유 · 정상 종료' : '종료 사유 · 조기 종료'}
+                </div>
+                <div className="cds-notification__subtitle">
+                  [{termination.code}] {termination.message}
+                </div>
+              </div>
+              <button className="cds-notification__close" onClick={()=>setTermination(null)}>✕</button>
+            </div>
+          )}
+          {results?.injector_dp && (
+            <div className={`cds-notification ${results.injector_dp.ok ? 'cds-notification--success' : 'cds-notification--warning'} animate-fadeInUp`}>
+              <div>
+                <div className="cds-notification__title">
+                  {results.injector_dp.ok ? '인젝터 차압 · 기준 만족' : '인젝터 차압 · 기준 미달 (역류 위험)'}
+                </div>
+                <div className="cds-notification__subtitle">
+                  연소 중 최소 (Pt−Pc)/Pc = {(results.injector_dp.min_ratio * 100).toFixed(1)}% @ {results.injector_dp.min_time.toFixed(2)} s
+                  · 평균 {(results.injector_dp.avg_ratio * 100).toFixed(1)}% · 기준 ≥ {(results.injector_dp.limit * 100).toFixed(0)}%
+                  {!results.injector_dp.ok && ' — 인젝터 면적을 줄이거나 노즐 목을 키워 챔버압을 낮추세요'}
+                </div>
+              </div>
+            </div>
+          )}
+          {simLog && <div className="sim-log">{simLog}</div>}
+
+          {!results && !loading && (
+            <>
+              <div className="cds-tabs">
+                <button className={`cds-tab ${preTab==='structure'?'cds-tab--selected':''}`} onClick={()=>setPreTab('structure')}>
+                  <span style={{display:'inline-flex',alignItems:'center',gap:6}}><WrenchIcon/> Structure</span>
+                </button>
+                <button className={`cds-tab ${preTab==='grain'?'cds-tab--selected':''}`} onClick={()=>setPreTab('grain')}>
+                  <span style={{display:'inline-flex',alignItems:'center',gap:6}}><GrainIcon/> Grain Preview</span>
+                </button>
+              </div>
+
+              {preTab === 'grain' && (
+                <div className="animate-fadeIn" style={{paddingTop:24}}>
+                  <div className="section-title">Grain Shape Preview (t=0)</div>
+                  <div className="section-subtitle" style={{marginBottom:24}}>
+                    {(config.grain_type||'PORT')} 타입 · 파라미터를 바꾸면 실시간으로 반영됩니다
+                  </div>
+                  <GrainLivePreview config={config}/>
+                </div>
+              )}
+
+              {preTab === 'structure' && (
+                <div className="animate-fadeIn" style={{paddingTop:24}}>
+                  <DesignTab config={config} simResults={null}/>
+                </div>
+              )}
+            </>
+          )}
+
+          {results && chartData && (
+            <div className="animate-fadeIn">
+              <div className="cds-tabs">
+                <TabBtn id="charts" icon={<ChartIcon/>} label="Performance Charts"/>
+                <TabBtn id="table"  icon={<TableIcon/>} label="Statistics Table"/>
+                <TabBtn id="grain"  icon={<GrainIcon/>} label="Grain Visualization" badge={hasGrain?results.grain.snapshots.length:null}/>
+                <TabBtn id="design" icon={<WrenchIcon/>} label="Tank Design"/>
+              </div>
+
+              {/* Charts tab */}
+              {activeTab==='charts' && (
+                <div className="chart-grid">
+                  {chartData.columns.map((col,idx) => {
+                    const values = results.data[col]||[];
+                    const data   = chartData.time.map((t,i)=>({time:t,value:values[i] ?? (col.startsWith('Injector') ? null : 0)}));
+                    const stat   = results.stats[col];
+                    const palette = theme==='dark' ? CHART_COLORS_DARK : CHART_COLORS_LIGHT;
+                    const color  = palette[idx%palette.length];
+                    const unit   = col.match(/\(([^)]+)\)/)?.[1]||'';
+                    // 추력·Isp 차트에는 정상상태 구간을 음영으로 표시하고 그 구간 평균을 함께 보여준다
+                    const ss     = results.steady_state;
+                    const ssVal  = !ss ? null : col.startsWith('Thrust (') ? ss.thrust_avg_ss : col.startsWith('Isp') ? ss.isp_ss : null;
+                    return (
+                      <div key={col} className="chart-card" style={{animationDelay:`${idx*.05}s`}}>
+                        <div className="chart-card__title">{col.split('(')[0].trim()}</div>
+                        {unit && <div className="chart-card__subtitle">Unit: {unit}</div>}
+                        <ResponsiveContainer width="100%" height={200}>
+                          <LineChart data={data} margin={{top:5,right:10,left:10,bottom:5}}>
+                            <CartesianGrid strokeDasharray="3 3" stroke={gridStroke}/>
+                            <XAxis dataKey="time" type="number" domain={['dataMin','dataMax']} tick={{fontSize:11,fill:tickFill,fontFamily:"'IBM Plex Mono',monospace"}} tickFormatter={v=>Number(v).toFixed(1)} stroke={gridStroke}/>
+                            {ssVal != null && <ReferenceArea x1={ss.ss_start} x2={ss.ss_end} fill={color} fillOpacity={0.08} stroke="none"
+                              label={{ value:'정상상태', position:'insideTopLeft', fontSize:10, fill:tickFill }}/>}
+                            <YAxis tick={{fontSize:11,fill:tickFill,fontFamily:"'IBM Plex Mono',monospace"}} tickFormatter={v=>{
+                              if(Math.abs(v)>=1e6)return(v/1e6).toFixed(1)+'M';
+                              if(Math.abs(v)>=1e3)return(v/1e3).toFixed(1)+'k';
+                              if(Math.abs(v)<.01&&v!==0)return v.toExponential(1);
+                              return v.toFixed(2);
+                            }} stroke={gridStroke} width={60}/>
+                            <Tooltip content={<CustomTooltip/>}/>
+                            <Line type="monotone" dataKey="value" stroke={color} strokeWidth={2} dot={false} name={col} activeDot={{r:4,fill:color,stroke:theme==='dark'?'#161616':'#ffffff',strokeWidth:2}}/>
+                          </LineChart>
+                        </ResponsiveContainer>
+                        {stat && (
+                          <div className="chart-card__stats">
+                            {[['Min',stat.min],['Max',stat.max],['Avg',stat.avg], ...(ssVal != null ? [['정상상태 Avg', ssVal]] : [])].map(([l,v])=>(
+                              <div className="chart-card__stat" key={l}>
+                                <span className="chart-card__stat-label">{l}</span>
+                                <span className="chart-card__stat-value">{formatVal(v)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Table tab */}
+              {activeTab==='table' && (
+                <div className="animate-fadeInUp">
+                  <div className="section-title">Performance Statistics</div>
+                  <div className="section-subtitle">{results.row_count}개 타임스텝 기준 요약</div>
+
+                  <div style={{display:'flex',gap:16,flexWrap:'wrap',marginBottom:20}}>
+                    {results.total_impulse != null && (
+                      <div className="grain-stat-card" style={{width:280}}>
+                        <div className="grain-stat-card__label">Total Impulse</div>
+                        <div className="grain-stat-card__value">
+                          {formatVal(results.total_impulse)}<span className="grain-stat-card__unit">N·s</span>
+                        </div>
+                      </div>
+                    )}
+                    {results.steady_state && (
+                      <>
+                        <div className="grain-stat-card" style={{width:280}}>
+                          <div className="grain-stat-card__label">정상상태 평균 추력</div>
+                          <div className="grain-stat-card__value">
+                            {formatVal(results.steady_state.thrust_avg_ss)}<span className="grain-stat-card__unit">N</span>
+                          </div>
+                        </div>
+                        <div className="grain-stat-card" style={{width:280}}>
+                          <div className="grain-stat-card__label">정상상태 평균 비추력 Isp</div>
+                          <div className="grain-stat-card__value">
+                            {results.steady_state.isp_ss != null ? results.steady_state.isp_ss.toFixed(2) : '—'}<span className="grain-stat-card__unit">s</span>
+                          </div>
+                        </div>
+                        <div className="grain-stat-card" style={{width:280}}>
+                          <div className="grain-stat-card__label">정상상태 구간</div>
+                          <div className="grain-stat-card__value">
+                            {results.steady_state.ss_start.toFixed(2)}–{results.steady_state.ss_end.toFixed(2)}<span className="grain-stat-card__unit">s ({results.steady_state.ss_duration.toFixed(2)} s)</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    {results.injector_dp && (
+                      <div className="grain-stat-card" style={{width:280}}>
+                        <div className="grain-stat-card__label">Min Injector Δp / Pc (연소 중)</div>
+                        <div className="grain-stat-card__value" style={{color: results.injector_dp.ok ? undefined : 'var(--cds-support-error)'}}>
+                          {(results.injector_dp.min_ratio * 100).toFixed(1)}<span className="grain-stat-card__unit">% (기준 ≥ {(results.injector_dp.limit * 100).toFixed(0)}%)</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="cds-data-table-container">
+                    <table className="cds-data-table">
+                      <thead><tr><th>Parameter</th><th style={{textAlign:'right'}}>Min</th><th style={{textAlign:'right'}}>Max</th><th style={{textAlign:'right'}}>Avg</th></tr></thead>
+                      <tbody>
+                        {Object.entries(results.stats).map(([col,stat],i)=>(
+                          <tr key={col} className="animate-fadeInUp" style={{animationDelay:`${i*.03}s`}}>
+                            <td style={{fontFamily:"'IBM Plex Sans',sans-serif",fontWeight:500,color:'var(--cds-text-primary)'}}>{col}</td>
+                            <td style={{textAlign:'right'}}>{formatVal(stat.min)}</td>
+                            <td style={{textAlign:'right'}}>{formatVal(stat.max)}</td>
+                            <td style={{textAlign:'right'}}>{formatVal(stat.avg)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* Grain tab */}
+              {activeTab==='grain' && (
+                <div className="animate-fadeInUp">
+                  <div className="section-title">Grain Burn-back Visualization</div>
+                  <div className="section-subtitle" style={{marginBottom:16}}>
+                    Level-set 기반 횡단면 변화{hasGrain&&` · ${results.grain.snapshots.length}개 스냅샷 · ±${(results.grain.extent*1000).toFixed(1)} mm`}
+                  </div>
+
+                  <div className="grain-toggle-row" style={{maxWidth:420}}>
+                    <button className={`grain-toggle-btn ${grainSubTab==='result'?'active':''}`} onClick={()=>setGrainSubTab('result')}>
+                      Simulated Result
+                    </button>
+                    <button className={`grain-toggle-btn ${grainSubTab==='preview'?'active':''}`} onClick={()=>setGrainSubTab('preview')}>
+                      Current Config Preview
+                    </button>
+                  </div>
+
+                  {grainSubTab==='result' && <GrainVisualizer grainData={results.grain}/>}
+
+                  {grainSubTab==='preview' && (
+                    <div className="animate-fadeIn">
+                      {simulatedConfig && JSON.stringify(simulatedConfig) !== JSON.stringify(config) && (
+                        <div className="cds-notification cds-notification--warning" style={{marginBottom:16}}>
+                          <div>
+                            <div className="cds-notification__title">설정이 변경됨</div>
+                            <div className="cds-notification__subtitle">실행된 시뮬레이션 이후 파라미터가 바뀌었습니다. 아래는 현재(미실행) 설정 기준 t=0 단면이며, 반영하려면 다시 실행하세요.</div>
+                          </div>
+                        </div>
+                      )}
+                      <GrainLivePreview config={config}/>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Design tab */}
+              {activeTab==='design' && (
+                <DesignTab config={config} simResults={results}/>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
+
+      {loading && (
+        <div className="cds-loading-overlay">
+          <div className="cds-loading-spinner"/>
+          <div className="cds-loading-bar-container"><div className="cds-loading-bar"/></div>
+          <div className="cds-loading-text">시뮬레이션 실행 중…</div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function formatVal(v) {
+  if(v==null||isNaN(v)) return '—';
+  if(Math.abs(v)>=1e6) return (v/1e6).toFixed(4)+' M';
+  if(Math.abs(v)>=1e3) return (v/1e3).toFixed(4)+' k';
+  if(Math.abs(v)<0.001&&v!==0) return v.toExponential(4);
+  return v.toFixed(6);
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</html>

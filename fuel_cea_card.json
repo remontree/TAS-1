@@ -1,0 +1,6 @@
+{
+  "PARAFFIN": "fuel PARAFFIN_C25 C 25.0 H 52.0 wt%=100.0\nh,cal=-21300.0 t(k)=298.15 rho.g/cc=0.90",
+  "HTPB": "fuel HTPB C 7.335 H 10.982 O 0.638 N 0.186 wt%=100.0\nh,cal=-12100.0 t(k)=298.15 rho.g/cc=0.92",
+  "HDPE": "fuel HDPE C 1.0 H 2.0 wt%=100.0\nh,cal=-1193.0 t(k)=298.15 rho.g/cc=0.95",
+  "ABS": "fuel ABS C 3.85 H 4.85 N 0.43 wt%=100.0\nh,cal=14000.0 t(k)=298.15 rho.g/cc=1.07"
+}

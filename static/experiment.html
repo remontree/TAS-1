@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TUSI — Experiment Runner</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── Rocket Club Design System — Light Theme (design-light.md) ── */
+    :root,[data-theme="light"]{
+      --cds-background:#ffffff;--cds-layer-01:#f4f4f4;--cds-layer-02:#ffffff;
+      --cds-layer-accent-01:#e0e0e0;--cds-field-01:#f4f4f4;--cds-border-subtle-00:#e0e0e0;
+      --cds-border-subtle-01:#c6c6c6;--cds-border-strong-01:#8d8d8d;--cds-text-primary:#161616;
+      --cds-text-secondary:#525252;--cds-text-placeholder:#a8a8a8;--cds-text-on-color:#ffffff;
+      --cds-text-on-color-disabled:#8d8d8d;--cds-text-helper:#6f6f6f;--cds-text-inverse:#ffffff;
+      --cds-text-warning:#8e6a00;--cds-background-inverse:#393939;--cds-link-primary:#0f62fe;
+      --cds-interactive:#0f62fe;--cds-interactive-hover:#0050e6;--cds-button-secondary:#393939;
+      --cds-button-secondary-hover:#474747;--cds-button-tertiary:#0f62fe;--cds-button-tertiary-hover:#0050e6;
+      --cds-button-tertiary-hover-text:#ffffff;--cds-button-disabled:#c6c6c6;--cds-button-danger:#da1e28;
+      --cds-button-danger-hover:#b81921;--cds-support-error:#da1e28;--cds-support-success:#24a148;
+      --cds-support-warning:#f1c21b;--cds-support-info:#0043ce;--cds-accent-gold:#b28600;
+      --cds-focus:#0f62fe;--cds-highlight:#d0e2ff;--cds-overlay:rgba(22,22,22,0.5);
+      --cds-hover-ui:#e8e8e8;--cds-hover-row:#e8e8e8;--cds-notif-error-bg:#fff1f1;
+      --cds-notif-success-bg:#defbe6;--cds-notif-warning-bg:#fcf4d6;--cds-notif-info-bg:#edf5ff;
+      --cds-tag-blue-bg:#d0e2ff;--cds-tag-blue-text:#0043ce;--cds-tag-green-bg:#a7f0ba;
+      --cds-tag-green-text:#0e6027;--cds-tag-red-bg:#ffd7d9;--cds-tag-red-text:#a2191f;
+      --cds-tag-gray-bg:#e0e0e0;--cds-tag-gray-text:#161616;--cds-drop-bg:#edf5ff;
+      --cds-drop-border:#0f62fe;--cds-log-bg:#161616;--cds-log-text:#6fdc8c;
+      --cds-log-border:#24a148;--cds-grain-bg:#ffffff;--cds-grain-grid:#e0e0e0;
+      --cds-grain-casing:#525252;
+    }
+    [data-theme="dark"]{
+      --cds-background:#161616;--cds-layer-01:#262626;--cds-layer-02:#393939;
+      --cds-layer-accent-01:#393939;--cds-field-01:#262626;--cds-border-subtle-00:#393939;
+      --cds-border-subtle-01:#525252;--cds-border-strong-01:#6f6f6f;--cds-text-primary:#f4f4f4;
+      --cds-text-secondary:#c6c6c6;--cds-text-placeholder:#6f6f6f;--cds-text-on-color:#ffffff;
+      --cds-text-on-color-disabled:#8d8d8d;--cds-text-helper:#a8a8a8;--cds-text-inverse:#161616;
+      --cds-text-warning:#f1c21b;--cds-background-inverse:#f4f4f4;--cds-link-primary:#78a9ff;
+      --cds-interactive:#0f62fe;--cds-interactive-hover:#0050e6;--cds-button-secondary:#6f6f6f;
+      --cds-button-secondary-hover:#5e5e5e;--cds-button-tertiary:#ffffff;--cds-button-tertiary-hover:#f4f4f4;
+      --cds-button-tertiary-hover-text:#161616;--cds-button-disabled:#6f6f6f;--cds-button-danger:#da1e28;
+      --cds-button-danger-hover:#b81921;--cds-support-error:#fa4d56;--cds-support-success:#42be65;
+      --cds-support-warning:#f1c21b;--cds-support-info:#4589ff;--cds-accent-gold:#d2a106;
+      --cds-focus:#ffffff;--cds-highlight:#001d6c;--cds-overlay:rgba(0,0,0,0.65);
+      --cds-hover-ui:#333333;--cds-hover-row:#333333;--cds-notif-error-bg:#262626;
+      --cds-notif-success-bg:#262626;--cds-notif-warning-bg:#262626;--cds-notif-info-bg:#262626;
+      --cds-tag-blue-bg:#0043ce;--cds-tag-blue-text:#d0e2ff;--cds-tag-green-bg:#198038;
+      --cds-tag-green-text:#a7f0ba;--cds-tag-red-bg:#da1e28;--cds-tag-red-text:#ffd7d9;
+      --cds-tag-gray-bg:#525252;--cds-tag-gray-text:#f4f4f4;--cds-drop-bg:#262626;
+      --cds-drop-border:#78a9ff;--cds-log-bg:#262626;--cds-log-text:#6fdc8c;
+      --cds-log-border:#42be65;--cds-grain-bg:#161616;--cds-grain-grid:#393939;
+      --cds-grain-casing:#c6c6c6;
+    }
+
+    /* ── Base ───────────────────────────────────────────── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;
+      transition:background-color .2s ease,border-color .2s ease,color .15s ease;}
+    html{font-size:16px;-webkit-font-smoothing:antialiased;}
+    body{font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+      background:var(--cds-background);color:var(--cds-text-primary);
+      line-height:1.5;min-height:100vh;}
+
+    /* ── Animations ─────────────────────────────────────── */
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    .anim-up{animation:fadeInUp .4s cubic-bezier(.25,.46,.45,.94) forwards;}
+
+    /* ── Carbon Header (always dark) ────────────────────── */
+    .cds-header{
+      position:fixed;top:0;left:0;right:0;z-index:8000;
+      height:48px;background:#161616;
+      display:flex;align-items:center;padding:0 16px;
+      border-bottom:1px solid #393939;
+    }
+    .cds-header__name{color:#f4f4f4;font-size:14px;font-weight:600;letter-spacing:.16px;
+      display:flex;align-items:center;gap:10px;}
+    .cds-header__mark{height:24px;width:auto;flex-shrink:0;opacity:0.9;}
+    .cds-header__divider{color:#6f6f6f;margin:0 4px;font-weight:300;}
+    .cds-header__sub{font-size:11px;color:#a8a8a8;font-family:'IBM Plex Mono',monospace;letter-spacing:.32px;}
+    .cds-header__nav{margin-left:auto;display:flex;align-items:center;gap:8px;}
+    .header-link{background:transparent;border:none;color:#c6c6c6;height:48px;
+      padding:0 16px;font-family:'IBM Plex Sans',sans-serif;font-size:14px;
+      cursor:pointer;display:flex;align-items:center;gap:6px;
+      text-decoration:none;transition:background .15s,color .15s;}
+    .header-link:hover{background:#2c2c2c;color:#f4f4f4;}
+    .theme-btn{background:transparent;border:1px solid #6f6f6f;height:32px;padding:0 12px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;
+      letter-spacing:.32px;cursor:pointer;display:flex;align-items:center;gap:6px;
+      color:#c6c6c6;transition:background .15s,border-color .15s,color .15s;}
+    .theme-btn:hover{background:#2c2c2c;border-color:#c6c6c6;color:#f4f4f4;}
+
+    /* ── Page Layout ────────────────────────────────────── */
+    .page{margin-top:48px;padding:32px;max-width:1280px;margin-left:auto;margin-right:auto;}
+    .page-header{margin-bottom:28px;}
+    .page-header__title{font-size:28px;font-weight:300;letter-spacing:-.24px;margin-bottom:6px;}
+    .page-header__desc{font-size:14px;color:var(--cds-text-secondary);}
+
+    /* ── Cards ──────────────────────────────────────────── */
+    .card{background:var(--cds-layer-01);border:1px solid var(--cds-border-subtle-00);margin-bottom:24px;}
+    .card__header{padding:14px 20px;border-bottom:1px solid var(--cds-border-subtle-00);
+      display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;}
+    .card__title{font-size:14px;font-weight:600;letter-spacing:.16px;
+      color:var(--cds-text-primary);display:flex;align-items:center;gap:10px;}
+    .card__badge{background:var(--cds-interactive);color:#fff;font-size:11px;font-weight:600;
+      padding:1px 8px;border-radius:10px;font-family:'IBM Plex Mono',monospace;}
+    .card__body{padding:20px;}
+
+    /* ── Recovery Banner ────────────────────────────────── */
+    .recovery-banner{
+      background:var(--cds-notif-info-bg);border:1px solid var(--cds-support-info);
+      border-left:4px solid var(--cds-support-info);
+      padding:0;margin-bottom:24px;overflow:hidden;
+    }
+    .recovery-banner__header{
+      display:flex;align-items:center;gap:10px;padding:12px 16px;
+      cursor:pointer;user-select:none;
+    }
+    .recovery-banner__header:hover{background:var(--cds-hover-ui);}
+    .recovery-banner__title{font-size:14px;font-weight:600;color:var(--cds-text-primary);flex:1;}
+    .recovery-banner__count{font-size:12px;color:var(--cds-text-helper);}
+    .recovery-banner__chevron{transition:transform .2s;color:var(--cds-text-helper);}
+    .recovery-banner__chevron.open{transform:rotate(90deg);}
+    .recovery-banner__body{border-top:1px solid var(--cds-border-subtle-00);}
+    .recovery-job-row{
+      display:flex;align-items:center;gap:12px;
+      padding:10px 16px;border-bottom:1px solid var(--cds-border-subtle-00);
+    }
+    .recovery-job-row:last-child{border-bottom:none;}
+    .recovery-job-id{font-size:11px;font-family:'IBM Plex Mono',monospace;
+      color:var(--cds-text-helper);min-width:80px;}
+    .recovery-job-info{flex:1;font-size:13px;color:var(--cds-text-primary);}
+    .recovery-job-meta{font-size:11px;color:var(--cds-text-helper);margin-top:2px;}
+
+    /* ── Setup Grid ─────────────────────────────────────── */
+    .setup-grid{display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;}
+    @media(max-width:900px){.setup-grid{grid-template-columns:1fr;}}
+
+    /* ── Drop Zone ──────────────────────────────────────── */
+    .drop-zone{
+      border:2px dashed var(--cds-border-subtle-01);background:var(--cds-layer-02);
+      padding:36px 24px;text-align:center;cursor:pointer;position:relative;
+      transition:border-color .15s,background .15s;
+    }
+    .drop-zone.drag-over{border-color:var(--cds-drop-border);background:var(--cds-drop-bg);}
+    .drop-zone__input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;}
+    .drop-zone__icon{color:var(--cds-text-helper);margin-bottom:10px;}
+    .drop-zone__title{font-size:14px;font-weight:500;margin-bottom:4px;}
+    .drop-zone__desc{font-size:12px;color:var(--cds-text-helper);}
+
+    /* ── File List ──────────────────────────────────────── */
+    .file-list{margin-top:12px;}
+    .file-item{display:flex;align-items:center;gap:8px;padding:9px 12px;
+      background:var(--cds-layer-02);border:1px solid var(--cds-border-subtle-00);margin-bottom:4px;}
+    .file-item__name{font-size:12px;font-family:'IBM Plex Mono',monospace;flex:1;
+      color:var(--cds-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .file-item__cases{font-size:11px;color:var(--cds-text-helper);white-space:nowrap;}
+    .file-item__remove{background:none;border:none;cursor:pointer;padding:4px;
+      color:var(--cds-text-helper);display:flex;align-items:center;transition:color .15s;}
+    .file-item__remove:hover{color:var(--cds-support-error);}
+
+    /* ── Settings ───────────────────────────────────────── */
+    .settings-panel{display:flex;flex-direction:column;gap:14px;}
+    .setting-card{background:var(--cds-layer-02);border:1px solid var(--cds-border-subtle-00);padding:14px;}
+    .setting-label{font-size:11px;font-weight:600;letter-spacing:.64px;text-transform:uppercase;
+      color:var(--cds-text-helper);margin-bottom:8px;}
+    .cds-input{width:100%;height:40px;padding:0 16px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;color:var(--cds-text-primary);
+      background:var(--cds-field-01);border:none;border-bottom:1px solid var(--cds-border-strong-01);
+      outline:none;transition:border-color .15s,box-shadow .15s;}
+    .cds-input:focus{border-bottom-color:var(--cds-focus);box-shadow:inset 0 -2px 0 0 var(--cds-focus);}
+    .cds-input::placeholder{color:var(--cds-text-placeholder);}
+    .input-helper{font-size:11px;color:var(--cds-text-helper);margin-top:5px;letter-spacing:.32px;}
+    .worker-presets{display:flex;gap:4px;margin-top:8px;}
+    .preset-btn{height:26px;padding:0 10px;background:var(--cds-layer-01);
+      border:1px solid var(--cds-border-subtle-01);font-family:'IBM Plex Sans',sans-serif;
+      font-size:12px;font-weight:500;color:var(--cds-text-secondary);cursor:pointer;
+      transition:background .15s,color .15s,border-color .15s;}
+    .preset-btn:hover,.preset-btn.active{background:var(--cds-interactive);
+      border-color:var(--cds-interactive);color:#fff;}
+    .case-summary{font-size:12px;color:var(--cds-text-helper);line-height:1.8;
+      max-height:140px;overflow-y:auto;}
+    .case-summary .case-name{font-family:'IBM Plex Mono',monospace;
+      font-size:11px;color:var(--cds-text-primary);}
+
+    /* ── Buttons ────────────────────────────────────────── */
+    .btn{display:inline-flex;align-items:center;gap:7px;
+      font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:400;
+      letter-spacing:.16px;border:none;cursor:pointer;padding:10px 18px;
+      min-height:40px;white-space:nowrap;transition:background .15s;}
+    .btn svg{fill:currentColor;flex-shrink:0;}
+    .btn--primary{background:var(--cds-interactive);color:#fff;}
+    .btn--primary:hover{background:var(--cds-interactive-hover);}
+    .btn--primary:disabled{background:var(--cds-button-disabled);color:var(--cds-text-on-color-disabled);cursor:not-allowed;}
+    .btn--secondary{background:var(--cds-button-secondary);color:#fff;}
+    .btn--secondary:hover{background:var(--cds-button-secondary-hover);}
+    .btn--tertiary{background:transparent;color:var(--cds-interactive);
+      border:1px solid var(--cds-interactive);}
+    .btn--tertiary:hover{background:var(--cds-button-tertiary-hover);color:var(--cds-button-tertiary-hover-text);border-color:var(--cds-button-tertiary-hover);}
+    .btn--ghost{background:transparent;color:var(--cds-link-primary);}
+    .btn--ghost:hover{background:var(--cds-hover-ui);}
+    .btn--danger{background:var(--cds-button-danger);color:#fff;}
+    .btn--danger:hover{background:var(--cds-button-danger-hover);}
+    .btn--sm{padding:5px 12px;min-height:30px;font-size:12px;}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+
+    /* ── Stats Grid ─────────────────────────────────────── */
+    .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);
+      gap:1px;background:var(--cds-border-subtle-00);}
+    @media(max-width:700px){.stats-grid{grid-template-columns:repeat(3,1fr);}}
+    .stat-box{background:var(--cds-layer-01);padding:14px 18px;}
+    .stat-box__label{font-size:11px;font-weight:600;letter-spacing:.64px;
+      text-transform:uppercase;color:var(--cds-text-helper);margin-bottom:4px;}
+    .stat-box__value{font-size:26px;font-weight:300;font-family:'IBM Plex Mono',monospace;
+      color:var(--cds-text-primary);letter-spacing:-.48px;line-height:1;}
+    .stat-box--running .stat-box__value{color:var(--cds-interactive);}
+    .stat-box--done    .stat-box__value{color:var(--cds-support-success);}
+    .stat-box--error   .stat-box__value{color:var(--cds-support-error);}
+
+    /* ── Progress Bar ───────────────────────────────────── */
+    .progress-wrap{height:4px;background:var(--cds-layer-accent-01);overflow:hidden;}
+    .progress-fill{height:100%;background:var(--cds-interactive);transition:width .6s ease;}
+
+    /* ── Table ──────────────────────────────────────────── */
+    .tbl-wrap{overflow-x:auto;}
+    table.cds-table{width:100%;border-collapse:collapse;font-size:14px;}
+    table.cds-table thead tr{background:var(--cds-layer-accent-01);}
+    table.cds-table th{padding:11px 14px;text-align:left;font-weight:600;font-size:11px;
+      letter-spacing:.48px;text-transform:uppercase;color:var(--cds-text-primary);
+      border-bottom:1px solid var(--cds-border-subtle-01);white-space:nowrap;}
+    table.cds-table td{padding:11px 14px;border-bottom:1px solid var(--cds-border-subtle-00);
+      color:var(--cds-text-secondary);}
+    table.cds-table tbody tr:hover{background:var(--cds-hover-row);}
+    .td-name{font-family:'IBM Plex Mono',monospace;font-size:13px;
+      color:var(--cds-text-primary);font-weight:500;}
+    .td-mono{font-family:'IBM Plex Mono',monospace;font-size:12px;}
+    .td-dur{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--cds-text-helper);}
+
+    /* ── Status Tags ────────────────────────────────────── */
+    .tag{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+      font-size:11px;font-weight:600;letter-spacing:.32px;white-space:nowrap;}
+    .tag--pending{background:var(--cds-tag-gray-bg);color:var(--cds-tag-gray-text);}
+    .tag--running{background:var(--cds-tag-blue-bg);color:var(--cds-tag-blue-text);}
+    .tag--done   {background:var(--cds-tag-green-bg);color:var(--cds-tag-green-text);}
+    .tag--error  {background:var(--cds-tag-red-bg);color:var(--cds-tag-red-text);}
+    .tag__spin{width:9px;height:9px;border:1.5px solid transparent;
+      border-top-color:currentColor;border-radius:50%;
+      animation:spin .7s linear infinite;flex-shrink:0;}
+
+    /* ── Notifications ──────────────────────────────────── */
+    .notif{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;
+      font-size:14px;border-left:3px solid;margin-bottom:16px;animation:fadeInUp .3s ease;}
+    .notif--error  {background:var(--cds-notif-error-bg);border-color:var(--cds-support-error);}
+    .notif--success{background:var(--cds-notif-success-bg);border-color:var(--cds-support-success);}
+    .notif--info   {background:var(--cds-notif-info-bg);border-color:var(--cds-support-info);}
+    .notif__title{font-weight:600;margin-bottom:2px;}
+    .notif__body{font-size:13px;color:var(--cds-text-secondary);}
+    .notif__close{margin-left:auto;background:none;border:none;cursor:pointer;
+      padding:2px 6px;color:var(--cds-text-secondary);font-size:16px;line-height:1;}
+
+    /* ── Saved Results ──────────────────────────────────── */
+    .result-row{display:flex;align-items:center;gap:10px;padding:10px 16px;
+      border-bottom:1px solid var(--cds-border-subtle-00);transition:background .12s;}
+    .result-row:hover{background:var(--cds-hover-row);}
+    .result-row:last-child{border-bottom:none;}
+    .result-row__name{font-size:13px;font-family:'IBM Plex Mono',monospace;
+      color:var(--cds-text-primary);flex:1;}
+    .result-row__meta{font-size:11px;color:var(--cds-text-helper);white-space:nowrap;}
+    .result-row__actions{display:flex;gap:6px;}
+
+    /* ── Empty ──────────────────────────────────────────── */
+    .empty{padding:40px 24px;text-align:center;color:var(--cds-text-secondary);}
+    .empty__title{font-size:15px;font-weight:500;color:var(--cds-text-primary);margin-bottom:6px;}
+    .empty__desc{font-size:13px;line-height:1.6;}
+
+    /* ── Error detail ───────────────────────────────────── */
+    .err-cell{font-size:11px;font-family:'IBM Plex Mono',monospace;
+      color:var(--cds-support-error);max-width:260px;
+      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:help;}
+  </style>
+</head>
+<body>
+
+<!-- ══ Header ══════════════════════════════════════════════════════════════ -->
+<header class="cds-header">
+  <div class="cds-header__name">
+    <img src="/static/logo.png" alt="" class="cds-header__mark"/>
+    TUSI
+    <span class="cds-header__divider">/</span>
+    <span class="cds-header__sub">EXPERIMENT RUNNER</span>
+  </div>
+  <nav class="cds-header__nav">
+    <a href="/" class="header-link">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M14 7H3.83l3.58-3.59L6 2 1 7l5 5 1.41-1.41L3.83 9H14V7z"/>
+      </svg>
+      메인으로
+    </a>
+    <button class="theme-btn" id="themeBtn">
+      <svg id="themeIcon" width="14" height="14" viewBox="0 0 32 32" fill="currentColor"></svg>
+      <span id="themeLabel">Dark</span>
+    </button>
+  </nav>
+</header>
+
+<!-- ══ Page ════════════════════════════════════════════════════════════════ -->
+<div class="page">
+
+  <div class="page-header anim-up">
+    <div class="page-header__title">Experiment Runner</div>
+    <div class="page-header__desc">여러 테스트 케이스를 병렬로 일괄 시뮬레이션합니다. 탭을 닫아도 서버에서 계속 실행됩니다.</div>
+  </div>
+
+  <!-- 알림 영역 -->
+  <div id="notifArea"></div>
+
+  <!-- ══ 잡 복구 배너 (서버에 실행 중인 잡이 있을 때만 표시) ══════════════════ -->
+  <div class="recovery-banner anim-up" id="recoveryBanner" style="display:none;">
+    <div class="recovery-banner__header" onclick="toggleRecovery()">
+      <svg width="16" height="16" viewBox="0 0 32 32" fill="var(--cds-support-info)">
+        <path d="M16 2a14 14 0 100 28A14 14 0 0016 2zm0 6a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm2 16h-4v-2h1v-6h-1v-2h3v8h1v2z"/>
+      </svg>
+      <span class="recovery-banner__title">서버에서 실행 중이거나 최근 완료된 잡이 있습니다</span>
+      <span class="recovery-banner__count" id="recoveryCount"></span>
+      <svg class="recovery-banner__chevron" id="recoveryChevron" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"/>
+      </svg>
+    </div>
+    <div class="recovery-banner__body" id="recoveryBody" style="display:none;"></div>
+  </div>
+
+  <!-- ══ 설정 카드 ═══════════════════════════════════════════════════════════ -->
+  <div class="card anim-up">
+    <div class="card__header">
+      <div class="card__title">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM8.5 1.6l3.7 3.7-.7.7L9 3.4V12H8V3.4L5.5 6 4.8 5.3l3.7-3.7z"/>
+        </svg>
+        실험 설정
+      </div>
+      <span class="card__badge" id="totalCaseBadge" style="display:none;">0 케이스</span>
+    </div>
+    <div class="card__body">
+      <div class="setup-grid">
+
+        <!-- 파일 업로드 -->
+        <div>
+          <div class="drop-zone" id="dropZone">
+            <input type="file" class="drop-zone__input" id="fileInput" multiple accept=".json"/>
+            <div class="drop-zone__icon">
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor" opacity=".35">
+                <path d="M26 24v4H6v-4H4v4a2 2 0 002 2h20a2 2 0 002-2v-4zM6 12l1.41 1.41L15 5.83V24h2V5.83l7.59 7.58L26 12 16 2 6 12z"/>
+              </svg>
+            </div>
+            <div class="drop-zone__title">JSON 파일 드래그 & 드롭</div>
+            <div class="drop-zone__desc">또는 클릭하여 파일 선택 · 여러 파일 동시 업로드 가능</div>
+          </div>
+          <div class="file-list" id="fileList"></div>
+        </div>
+
+        <!-- 설정 패널 -->
+        <div class="settings-panel">
+          <div class="setting-card">
+            <div class="setting-label">병렬 워커 수</div>
+            <input class="cds-input" type="number" id="workerInput" min="1" max="32" value="4"/>
+            <div class="input-helper">동시에 실행할 프로세스 수 (1–32)</div>
+            <div class="worker-presets">
+              <button class="preset-btn" data-v="1">×1</button>
+              <button class="preset-btn active" data-v="4">×4</button>
+              <button class="preset-btn" data-v="8">×8</button>
+              <button class="preset-btn" data-v="16">×16</button>
+            </div>
+          </div>
+
+          <div class="setting-card">
+            <div class="setting-label">케이스 목록</div>
+            <div class="case-summary" id="caseSummary">
+              <span style="color:var(--cds-text-helper);">파일을 업로드하면 케이스 목록이 표시됩니다.</span>
+            </div>
+          </div>
+
+          <button class="btn btn--primary" id="runBtn" disabled style="width:100%;justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M7 28V4l22 12z"/></svg>
+            실험 실행
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ 실험 현황 카드 ════════════════════════════════════════════════════════ -->
+  <div class="card anim-up" id="statusCard" style="display:none;">
+    <div class="card__header">
+      <div class="card__title" id="statusTitle">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M15 14H2V1H1v13c0 .6.4 1 1 1h13v-1zm-3-9v7h2V5h-2zm-4 3v4h2V8H8zm-4 1v3h2v-3H4z"/>
+        </svg>
+        실험 현황
+      </div>
+      <div class="btn-row">
+        <span class="td-mono" id="jobIdLabel" style="font-size:11px;color:var(--cds-text-helper);"></span>
+        <button class="btn btn--secondary btn--sm" id="dlAllBtn" style="display:none;" onclick="downloadAll()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM7.5 11.4l-3.7-3.7.7-.7L7 9.6V1h1v8.6l2.5-2.6.7.7-3.7 3.7z"/>
+          </svg>
+          전체 ZIP
+        </button>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+    <!-- Summary counters -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-box__label">전체</div>
+        <div class="stat-box__value" id="st-total">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box__label">대기</div>
+        <div class="stat-box__value" id="st-pending">0</div>
+      </div>
+      <div class="stat-box stat-box--running">
+        <div class="stat-box__label">실행 중</div>
+        <div class="stat-box__value" id="st-running">0</div>
+      </div>
+      <div class="stat-box stat-box--done">
+        <div class="stat-box__label">완료</div>
+        <div class="stat-box__value" id="st-done">0</div>
+      </div>
+      <div class="stat-box stat-box--error">
+        <div class="stat-box__label">오류</div>
+        <div class="stat-box__value" id="st-error">0</div>
+      </div>
+    </div>
+
+    <!-- Case table -->
+    <div class="tbl-wrap">
+      <table class="cds-table">
+        <thead>
+          <tr>
+            <th>케이스명</th>
+            <th>상태</th>
+            <th>시작</th>
+            <th>소요시간</th>
+            <th>행 수</th>
+            <th>오류</th>
+            <th>다운로드</th>
+          </tr>
+        </thead>
+        <tbody id="caseTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══ 저장된 결과 카드 ══════════════════════════════════════════════════════ -->
+  <div class="card anim-up">
+    <div class="card__header">
+      <div class="card__title">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M9 1H3c-.6 0-1 .4-1 1v12c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V5L9 1zm0 1.8L12.2 6H9V2.8zM4 14V3h4v4h4v7H4z"/>
+        </svg>
+        저장된 결과 파일
+        <span style="font-size:11px;color:var(--cds-text-helper);font-weight:400;">(3일 후 자동 삭제)</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn--ghost btn--sm" onclick="loadSavedResults()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M12.5 2.2A7 7 0 002 8H0l2.8 2.8L5.6 8H3.5a5.5 5.5 0 1110.8 1.4l1.5.4A7 7 0 0012.5 2.2z"/>
+          </svg>
+          새로고침
+        </button>
+        <button class="btn btn--secondary btn--sm" onclick="downloadAll()">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM7.5 11.4l-3.7-3.7.7-.7L7 9.6V1h1v8.6l2.5-2.6.7.7-3.7 3.7z"/>
+          </svg>
+          전체 ZIP
+        </button>
+      </div>
+    </div>
+    <div id="savedResultsBody">
+      <div class="empty"><div class="empty__title">저장된 결과 없음</div>
+        <div class="empty__desc">실험을 실행하면 결과 CSV 파일이 여기에 표시됩니다.</div></div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   THEME
+   ════════════════════════════════════════════════════════════════════ */
+const SUN  = 'M16 8a8 8 0 100 16A8 8 0 0016 8zm0-6a1 1 0 010 2 1 1 0 010-2zm0 24a1 1 0 010 2 1 1 0 010-2zM4 16a1 1 0 01-2 0 1 1 0 012 0zm24 0a1 1 0 01-2 0 1 1 0 012 0z';
+const MOON = 'M13.502 5.414a15.075 15.075 0 000 21.17C17.275 30.357 22.497 32 27.502 32c1.252 0 2.5-.108 3.726-.321-6.827.674-13.019-1.49-17.488-5.96a15.065 15.065 0 010-21.305z';
+
+let _theme = localStorage.getItem('tusi-theme') || 'light';
+applyTheme(_theme);
+
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  const icon  = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  if (icon)  icon.innerHTML = `<path d="${t==='dark' ? SUN : MOON}"/>`;
+  if (label) label.textContent = t==='dark' ? 'Light' : 'Dark';
+  localStorage.setItem('tusi-theme', t);
+  _theme = t;
+}
+document.getElementById('themeBtn').onclick = () => applyTheme(_theme==='dark' ? 'light' : 'dark');
+
+/* ════════════════════════════════════════════════════════════════════
+   WORKER PRESETS
+   ════════════════════════════════════════════════════════════════════ */
+document.querySelectorAll('.preset-btn').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('workerInput').value = btn.dataset.v;
+  };
+});
+document.getElementById('workerInput').addEventListener('input', () =>
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active')));
+
+/* ════════════════════════════════════════════════════════════════════
+   NOTIFICATION
+   ════════════════════════════════════════════════════════════════════ */
+function showNotif(type, title, body, autoClose=true) {
+  const id  = 'n' + Date.now();
+  const el  = document.createElement('div');
+  el.className = `notif notif--${type}`;
+  el.id = id;
+  el.innerHTML = `
+    <div style="flex:1">
+      <div class="notif__title">${title}</div>
+      ${body ? `<div class="notif__body">${body}</div>` : ''}
+    </div>
+    <button class="notif__close" onclick="document.getElementById('${id}').remove()">✕</button>`;
+  document.getElementById('notifArea').prepend(el);
+  if (autoClose && type !== 'error') setTimeout(() => el.remove(), 7000);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   FILE UPLOAD
+   ════════════════════════════════════════════════════════════════════ */
+let uploadedFiles = [];  // [{name, cases:{key:config}}]
+
+const dropZone  = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  handleFiles(Array.from(e.dataTransfer.files));
+});
+fileInput.addEventListener('change', e => { handleFiles(Array.from(e.target.files)); fileInput.value=''; });
+
+function handleFiles(files) {
+  const jsons = files.filter(f => f.name.endsWith('.json'));
+  if (!jsons.length) { showNotif('error','오류','.json 파일만 업로드할 수 있습니다.'); return; }
+  let left = jsons.length;
+  jsons.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (typeof data !== 'object' || Array.isArray(data)) throw new Error('최상위가 Object여야 합니다');
+        if (!uploadedFiles.find(f => f.name === file.name))
+          uploadedFiles.push({ name: file.name, cases: data });
+      } catch(err) {
+        showNotif('error', `파싱 오류: ${file.name}`, err.message);
+      }
+      if (--left === 0) renderFileList();
+    };
+    reader.readAsText(file);
+  });
+}
+
+function removeFile(i) { uploadedFiles.splice(i,1); renderFileList(); }
+
+function renderFileList() {
+  const allCases = mergeAllCases();
+  const count    = Object.keys(allCases).length;
+  const badge    = document.getElementById('totalCaseBadge');
+  badge.textContent = `${count} 케이스`;
+  badge.style.display = count ? '' : 'none';
+  document.getElementById('runBtn').disabled = count === 0;
+
+  // Case summary
+  const names = Object.keys(allCases);
+  const sumEl = document.getElementById('caseSummary');
+  if (names.length === 0) {
+    sumEl.innerHTML = '<span style="color:var(--cds-text-helper);">파일을 업로드하면 케이스 목록이 표시됩니다.</span>';
+  } else {
+    const shown = names.slice(0, 10);
+    const more  = names.length - shown.length;
+    sumEl.innerHTML = shown.map(n => `<div class="case-name">· ${n}</div>`).join('')
+      + (more > 0 ? `<div style="color:var(--cds-text-helper);font-size:11px;margin-top:2px;">… 외 ${more}개</div>` : '');
+  }
+
+  // File list
+  document.getElementById('fileList').innerHTML = uploadedFiles.map((f,i) => `
+    <div class="file-item">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style="color:var(--cds-text-helper);flex-shrink:0;">
+        <path d="M9 1H3c-.6 0-1 .4-1 1v12c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V5L9 1zm0 1.8L12.2 6H9V2.8zM4 14V3h4v4h4v7H4z"/>
+      </svg>
+      <span class="file-item__name" title="${f.name}">${f.name}</span>
+      <span class="file-item__cases">${Object.keys(f.cases).length}케이스</span>
+      <button class="file-item__remove" onclick="removeFile(${i})">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M12 4.7l-.7-.7L8 7.3 4.7 4l-.7.7L7.3 8 4 11.3l.7.7L8 8.7l3.3 3.3.7-.7L8.7 8z"/>
+        </svg>
+      </button>
+    </div>`).join('');
+}
+
+function mergeAllCases() {
+  const all = {};
+  uploadedFiles.forEach(f => Object.assign(all, f.cases));
+  return all;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   JOB RECOVERY — 서버의 잡 목록을 페이지 로드 시 확인
+   ════════════════════════════════════════════════════════════════════ */
+let currentJobId   = null;
+let pollTimer      = null;
+let recoveryOpen   = false;
+
+async function checkServerJobs() {
+  try {
+    const res  = await fetch('/api/experiment/jobs', { credentials: 'same-origin' });
+    if (!res.ok) return;
+    const data = await res.json();
+    const jobs = data.jobs || [];
+
+    if (jobs.length === 0) return;
+
+    // 서버 잡 목록 표시
+    renderRecoveryBanner(jobs);
+
+    // localStorage에 저장된 job_id가 서버에 존재하면 자동 복구
+    const savedId = localStorage.getItem('tusi_experiment_job_id');
+    if (savedId) {
+      const match = jobs.find(j => j.id === savedId);
+      if (match) {
+        // 아직 완료 안 됐거나 방금 완료된 경우 자동 복구
+        attachToJob(savedId, match);
+      }
+    } else {
+      // 실행 중인 잡이 하나만 있으면 자동 복구
+      const running = jobs.filter(j => j.status === 'running' || j.status === 'pending');
+      if (running.length === 1) {
+        attachToJob(running[0].id, running[0]);
+        showNotif('info', '실행 중인 잡 자동 복구', `${running[0].total}개 케이스 · 탭을 닫아도 계속 실행 중이었습니다.`);
+      }
+    }
+  } catch (e) {
+    // 무시
+  }
+}
+
+function renderRecoveryBanner(jobs) {
+  const banner = document.getElementById('recoveryBanner');
+  const count  = document.getElementById('recoveryCount');
+  const body   = document.getElementById('recoveryBody');
+
+  count.textContent = `${jobs.length}개 잡`;
+  banner.style.display = '';
+
+  body.innerHTML = jobs.map(j => {
+    const pct    = j.total > 0 ? Math.round((j.counts.done + j.counts.error) / j.total * 100) : 0;
+    const status = j.status === 'running' ? '실행 중' : j.status === 'done' ? '완료' : j.status === 'pending' ? '대기' : j.status;
+    const color  = j.status === 'running' ? 'var(--cds-interactive)'
+                 : j.status === 'done'    ? 'var(--cds-support-success)'
+                 : 'var(--cds-text-helper)';
+    const names  = j.case_names.slice(0, 5).join(', ') + (j.case_names.length > 5 ? ` … 외 ${j.case_names.length-5}개` : '');
+    const isActive = currentJobId === j.id;
+    return `
+      <div class="recovery-job-row">
+        <div class="recovery-job-id">${j.id.slice(0,8)}…</div>
+        <div style="flex:1">
+          <div class="recovery-job-info">
+            <span style="color:${color};font-weight:600;">${status}</span>
+            &nbsp;·&nbsp; ${j.total}개 케이스 (${pct}% 완료)
+            &nbsp;·&nbsp; 워커 ${j.num_workers}개
+          </div>
+          <div class="recovery-job-meta">${names}</div>
+        </div>
+        <button class="btn btn--tertiary btn--sm" onclick="attachToJob('${j.id}', null)" ${isActive ? 'disabled' : ''}>
+          ${isActive ? '✓ 현재 잡' : '복구'}
+        </button>
+      </div>`;
+  }).join('');
+}
+
+function toggleRecovery() {
+  recoveryOpen = !recoveryOpen;
+  document.getElementById('recoveryBody').style.display  = recoveryOpen ? '' : 'none';
+  document.getElementById('recoveryChevron').classList.toggle('open', recoveryOpen);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   ATTACH / POLL
+   ════════════════════════════════════════════════════════════════════ */
+async function attachToJob(jobId, summary) {
+  currentJobId = jobId;
+  localStorage.setItem('tusi_experiment_job_id', jobId);
+  document.getElementById('jobIdLabel').textContent = `JOB ${jobId.slice(0,8)}`;
+
+  // 상태 카드 표시 (케이스 목록을 서버에서 가져와 테이블 초기화)
+  const res  = await fetch(`/api/experiment/status/${jobId}`, { credentials: 'same-origin' });
+  const job  = await res.json();
+
+  initStatusCard(job);
+  updateStatusCard(job);
+  startPolling(jobId);
+
+  document.getElementById('statusCard').style.display = '';
+  document.getElementById('statusCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function initStatusCard(job) {
+  const names = Object.keys(job.cases || {});
+  document.getElementById('caseTbody').innerHTML = names.map(name => `
+    <tr id="row-${CSS.escape(name)}" data-case="${name}">
+      <td class="td-name">${name}</td>
+      <td><span class="tag tag--pending">대기 중</span></td>
+      <td class="td-mono">—</td>
+      <td class="td-dur">—</td>
+      <td class="td-mono">—</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>`).join('');
+}
+
+function startPolling(jobId) {
+  clearInterval(pollTimer);
+  // 폴링 응답: 완료 여부(status) + csv_name + 최소 메타데이터만 수신
+  // 실제 CSV 데이터는 다운로드 버튼 클릭 시에만 전송됨
+  pollTimer = setInterval(async () => {
+    try {
+      const res = await fetch(`/api/experiment/status/${jobId}`, { credentials: 'same-origin' });
+      if (!res.ok) return;
+      const job = await res.json();
+      updateStatusCard(job);
+
+      if (job.status === 'done') {
+        clearInterval(pollTimer);
+        const runBtn = document.getElementById('runBtn');
+        runBtn.disabled = false;
+        runBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M7 28V4l22 12z"/></svg> 실험 실행`;
+        document.getElementById('dlAllBtn').style.display = 'inline-flex';
+
+        const cases  = job.cases || {};
+        const done   = Object.values(cases).filter(c => c.status==='done').length;
+        const errors = Object.values(cases).filter(c => c.status==='error').length;
+        showNotif('success', '실험 완료',
+          `${done}개 성공${errors ? ' · ' + errors + '개 오류' : ''} · ${fmtDur(job.started_at, job.finished_at)}`);
+        loadSavedResults();
+        checkServerJobs();   // 배너 갱신
+      }
+    } catch(e) { /* 무시 */ }
+  }, 1800);
+}
+
+function updateStatusCard(job) {
+  const cases   = job.cases || {};
+  const names   = Object.keys(cases);
+  let pending=0, running=0, done=0, error=0;
+  names.forEach(n => {
+    const s = cases[n].status;
+    if (s==='pending') pending++;
+    else if (s==='running') running++;
+    else if (s==='done') done++;
+    else if (s==='error') error++;
+  });
+  const total = names.length;
+  const pct   = total > 0 ? Math.round((done+error)/total*100) : 0;
+
+  document.getElementById('st-total').textContent   = total;
+  document.getElementById('st-pending').textContent = pending;
+  document.getElementById('st-running').textContent = running;
+  document.getElementById('st-done').textContent    = done;
+  document.getElementById('st-error').textContent   = error;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  // 타이틀 업데이트
+  document.getElementById('statusTitle').innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+      <path d="M15 14H2V1H1v13c0 .6.4 1 1 1h13v-1zm-3-9v7h2V5h-2zm-4 3v4h2V8H8zm-4 1v3h2v-3H4z"/>
+    </svg>
+    실험 현황
+    <span style="font-size:11px;color:var(--cds-text-helper);font-weight:400;">${pct}% 완료</span>`;
+
+  // 각 행 업데이트
+  names.forEach(name => {
+    const c   = cases[name];
+    const row = document.querySelector(`tr[data-case="${CSS.escape(name)}"]`);
+    if (!row) return;
+    const td = row.querySelectorAll('td');
+
+    // 상태 태그
+    const tagMap = {
+      pending: `<span class="tag tag--pending">대기 중</span>`,
+      running: `<span class="tag tag--running"><span class="tag__spin"></span>실행 중</span>`,
+      done:    `<span class="tag tag--done">✓ 완료</span>`,
+      error:   `<span class="tag tag--error">✕ 오류</span>`,
+    };
+    td[1].innerHTML = tagMap[c.status] || '';
+
+    // 시작 시각
+    td[2].textContent = c.started_at ? fmtTime(c.started_at) : '—';
+
+    // 소요 시간
+    if (c.started_at && c.finished_at) {
+      td[3].textContent = fmtDur(c.started_at, c.finished_at);
+    } else if (c.started_at && c.status === 'running') {
+      td[3].textContent = fmtDur(c.started_at, Date.now()/1000) + '…';
+    } else {
+      td[3].textContent = '—';
+    }
+
+    // 행 수 (완료 여부 표시용 경량 정수값만 수신)
+    td[4].textContent = c.row_count > 0 ? c.row_count.toLocaleString() : '—';
+
+    // 오류 메시지
+    td[5].innerHTML = c.error
+      ? `<span class="err-cell" title="${c.error}">${c.error}</span>`
+      : '—';
+
+    // 다운로드 버튼 (완료 + csv_name 있을 때만 표시, CSV 내용 전송은 버튼 클릭 시에만)
+    td[6].innerHTML = (c.status === 'done' && c.csv_name)
+      ? `<button class="btn btn--ghost btn--sm" onclick="downloadFile('${c.csv_name}')">
+           <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+             <path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM7.5 11.4l-3.7-3.7.7-.7L7 9.6V1h1v8.6l2.5-2.6.7.7-3.7 3.7z"/>
+           </svg>CSV
+         </button>`
+      : '—';
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   RUN EXPERIMENT
+   ════════════════════════════════════════════════════════════════════ */
+document.getElementById('runBtn').onclick = runExperiment;
+
+async function runExperiment() {
+  const allCases   = mergeAllCases();
+  const caseCount  = Object.keys(allCases).length;
+  if (caseCount === 0) { showNotif('error','케이스 없음','먼저 JSON 파일을 업로드하세요.'); return; }
+
+  const numWorkers = Math.max(1, Math.min(32, parseInt(document.getElementById('workerInput').value) || 4));
+  const runBtn     = document.getElementById('runBtn');
+  runBtn.disabled  = true;
+  runBtn.innerHTML = `<span class="tag__spin" style="width:14px;height:14px;border-width:2px;border-color:#fff3;border-top-color:#fff;"></span> 제출 중…`;
+
+  try {
+    const res  = await fetch('/api/experiment/submit', {
+      method: 'POST', credentials: 'same-origin',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ cases: allCases, num_workers: numWorkers }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) throw new Error(data.error || '제출 실패');
+
+    // job_id를 localStorage에 저장 → 탭 닫았다 재접속해도 복구 가능
+    localStorage.setItem('tusi_experiment_job_id', data.job_id);
+
+    currentJobId = data.job_id;
+    document.getElementById('jobIdLabel').textContent = `JOB ${data.job_id.slice(0,8)}`;
+    document.getElementById('dlAllBtn').style.display = 'none';
+    document.getElementById('statusCard').style.display = '';
+    document.getElementById('statusCard').scrollIntoView({ behavior:'smooth', block:'start' });
+
+    showNotif('info', '실험 시작됨', `${data.total}개 케이스 · ${numWorkers}개 워커 · 탭을 닫아도 서버에서 계속 실행됩니다.`);
+
+    // 서버에서 초기 상태 받아 테이블 구성
+    const sRes = await fetch(`/api/experiment/status/${data.job_id}`, { credentials:'same-origin' });
+    const job  = await sRes.json();
+    initStatusCard(job);
+    updateStatusCard(job);
+    startPolling(data.job_id);
+
+  } catch(err) {
+    showNotif('error', '실험 제출 실패', err.message);
+    runBtn.disabled = false;
+    runBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor"><path d="M7 28V4l22 12z"/></svg> 실험 실행`;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   SAVED RESULTS
+   ════════════════════════════════════════════════════════════════════ */
+async function loadSavedResults() {
+  const body = document.getElementById('savedResultsBody');
+  body.innerHTML = `<div class="empty"><div class="empty__desc" style="animation:pulse 1.2s ease infinite;">로딩 중…</div></div>`;
+  try {
+    const res   = await fetch('/api/experiment/results', { credentials:'same-origin' });
+    const data  = await res.json();
+    const files = data.files || [];
+    if (!files.length) {
+      body.innerHTML = `<div class="empty"><div class="empty__title">저장된 결과 없음</div>
+        <div class="empty__desc">실험을 실행하면 결과 CSV 파일이 여기에 표시됩니다.</div></div>`;
+      return;
+    }
+    const now = Date.now() / 1000;
+    body.innerHTML = files.map(f => {
+      const expiresSec = Math.max(0, 3*24*3600 - (now - f.mtime));
+      return `
+        <div class="result-row">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" style="color:var(--cds-text-helper);flex-shrink:0;">
+            <path d="M9 1H3c-.6 0-1 .4-1 1v12c0 .6.4 1 1 1h10c.6 0 1-.4 1-1V5L9 1zm0 1.8L12.2 6H9V2.8zM4 14V3h4v4h4v7H4z"/>
+          </svg>
+          <span class="result-row__name">${f.name}</span>
+          <span class="result-row__meta">${fmtSize(f.size)} · ${fmtDateTime(f.mtime)} · 만료 ${fmtExpiry(expiresSec)}</span>
+          <div class="result-row__actions">
+            <button class="btn btn--ghost btn--sm" onclick="downloadFile('${f.name}')">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M13 11v3H3v-3H2v3c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-3h-1zM7.5 11.4l-3.7-3.7.7-.7L7 9.6V1h1v8.6l2.5-2.6.7.7-3.7 3.7z"/>
+              </svg>다운로드
+            </button>
+            <button class="btn btn--danger btn--sm" onclick="deleteFile('${f.name}',this)">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6 2h4v1H6zM3 4h10v1H3zm2 2h6l-.5 7H5.5L4 6h-.5L3 4h10l-.5 2H13zM6 7v5h1V7H6zm3 0v5h1V7H9z"/>
+              </svg>삭제
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    body.innerHTML = `<div class="empty"><div class="empty__desc">불러오기 실패: ${e.message}</div></div>`;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   DOWNLOAD / DELETE
+   ════════════════════════════════════════════════════════════════════ */
+function downloadFile(filename) {
+  // CSV 내용 전송은 이 명시적 클릭 이후에만 발생
+  const a = document.createElement('a');
+  a.href = `/api/experiment/download/${encodeURIComponent(filename)}`;
+  a.download = filename;
+  a.click();
+}
+function downloadAll() { window.open('/api/experiment/download-all','_blank'); }
+
+async function deleteFile(filename, btn) {
+  if (!confirm(`"${filename}" 을(를) 삭제하시겠습니까?`)) return;
+  btn.disabled = true;
+  try {
+    const res = await fetch(`/api/experiment/delete/${encodeURIComponent(filename)}`, {
+      method:'DELETE', credentials:'same-origin'
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    loadSavedResults();
+  } catch(e) {
+    showNotif('error','삭제 실패',e.message);
+    btn.disabled = false;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   UTILITIES
+   ════════════════════════════════════════════════════════════════════ */
+function fmtTime(ts) {
+  return new Date(ts*1000).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+function fmtDateTime(ts) {
+  return new Date(ts*1000).toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+}
+function fmtDur(start, end) {
+  const s = Math.max(0, end-start);
+  if (s < 60)   return s.toFixed(1)+'s';
+  if (s < 3600) return Math.floor(s/60)+'m '+Math.floor(s%60)+'s';
+  return Math.floor(s/3600)+'h '+Math.floor((s%3600)/60)+'m';
+}
+function fmtSize(b) {
+  if (b<1024)       return b+' B';
+  if (b<1048576)    return (b/1024).toFixed(1)+' KB';
+  return (b/1048576).toFixed(1)+' MB';
+}
+function fmtExpiry(s) {
+  if (s<=0) return '만료됨';
+  const d=Math.floor(s/86400), h=Math.floor((s%86400)/3600);
+  if (d>0) return `${d}일 후`;
+  if (h>0) return `${h}시간 후`;
+  return `${Math.floor(s/60)}분 후`;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════════════ */
+loadSavedResults();
+checkServerJobs();   // 페이지 로드 시 서버 잡 목록 확인 → 자동 복구
+</script>
+</body>
+</html>

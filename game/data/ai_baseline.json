@@ -1,0 +1,26 @@
+{
+ "target": {
+  "score": 1125,
+  "apo": 3000,
+  "engine": "204827",
+  "air": {
+   "body": 4,
+   "fin": 2,
+   "nose": 3
+  },
+  "note": "바람 4 m/s 기준"
+ },
+ "max": {
+  "score": 11844,
+  "apo": 11844,
+  "engine": "876431",
+  "air": {
+   "body": 4,
+   "fin": 2,
+   "nose": 3
+  },
+  "note": "바람 4 m/s 기준"
+ },
+ "built_at": "2026-11-16T12:09:29.169Z",
+ "searched": 278374
+}

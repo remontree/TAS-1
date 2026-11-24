@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TAS-1 Launch League · Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=IBM+Plex+Sans+KR:wght@300;400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="/static/css/app.css">
+<link rel="stylesheet" href="/static/css/wall.css">
+</head>
+<body class="wallbody">
+<div class="wall">
+  <header class="w-h">
+    <span class="w-brand">TAS-1 <b>Launch League</b></span>
+    <span class="chip nogo w-live"><i></i>Live</span>
+    <span class="w-stat"><b id="s-players">0</b> 참가</span>
+    <span class="w-stat"><b id="s-launches">0</b> 발사</span>
+    <span class="w-stat"><b id="s-crash">0</b> 추락</span>
+    <span class="w-stat"><b id="s-10m">0</b> 최근 10분</span>
+    <span class="w-sp"></span>
+    <span class="w-stat" id="s-wind">바람 —</span>
+    <span class="w-stat" id="s-clock">--:--:--</span>
+  </header>
+  <section class="w-boards">
+    <div class="w-board">
+      <div class="w-bh"><h2>목표 고도 <span id="tgt">3,000</span> m</h2><span class="lbl">정확도 + 산화제 절약</span></div>
+      <div id="lb-target" class="lb"></div>
+    </div>
+    <div class="w-board">
+      <div class="w-bh"><h2>최고 고도</h2><span class="lbl">추락 없이 가장 높이</span></div>
+      <div id="lb-max" class="lb"></div>
+    </div>
+  </section>
+  <section class="w-sky">
+    <div class="sky" id="sky"><canvas id="gl"></canvas>
+      <div class="hud">
+        <div>
+          <span class="lbl">리플레이 · 최근 공식 발사</span>
+          <div class="w-who" id="r-who">—</div>
+          <div class="tele"><div><b id="h-alt">0</b><span>고도 m</span></div><div><b id="h-spd">0</b><span>km/h</span></div><div><b id="h-clock">T+00.0</b><span>시간</span></div></div>
+          <div class="banner idle" id="banner">WAITING<small>첫 공식 발사를 기다리는 중</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="w-side">
+    <div class="w-card"><span class="w-ct">최근 궤적 · 고도 vs 수평거리</span><canvas id="side"></canvas></div>
+    <div class="w-card"><span class="w-ct">발사 피드</span><div class="feed" id="feed"></div></div>
+    <div class="w-card rud"><span class="w-ct">Hall of RUD · 오늘의 추락</span><div id="rud"></div></div>
+  </section>
+  <footer class="w-f">
+    <img id="qr" alt="참가 QR 코드" src="/api/qr.svg">
+    <div class="w-fx">
+      <b>QR을 찍고 지금 참가하세요</b>
+      <span class="mono" id="url">—</span>
+      <span id="lut">엔진 성능: TAS-1 시계열 서로게이트</span>
+    </div>
+    <div class="w-fx w-ai" id="ai"></div>
+  </footer>
+</div>
+<script src="/static/vendor/three.min.js"></script>
+<script src="/static/js/flight.js"></script>
+<script src="/static/js/render.js"></script>
+<script src="/static/js/wall.js"></script>
+</body>
+</html>

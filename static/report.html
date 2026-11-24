@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TUSI Simulation Report</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="/vendor/react.production.min.js" crossorigin></script>
+<script src="/vendor/react-dom.production.min.js" crossorigin></script>
+<script src="/vendor/prop-types.min.js" crossorigin></script>
+<script src="/vendor/babel.min.js"></script>
+<script src="/vendor/Recharts.js"></script>
+<style>
+  /* 보고서는 항상 화이트 테마 (Carbon White) */
+  :root { --ink:#161616; --ink2:#525252; --ink3:#6f6f6f; --bd:#e0e0e0; --bd2:#c6c6c6; --l1:#f4f4f4; --blue:#0f62fe; --err:#da1e28; --ok:#198038; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:'IBM Plex Sans','IBM Plex Sans KR',sans-serif;color:var(--ink);background:#e0e0e0;font-size:10pt;letter-spacing:.1px}
+  .toolbar{position:sticky;top:0;z-index:10;background:#161616;color:#f4f4f4;height:48px;display:flex;align-items:center;gap:12px;padding:0 16px;font-size:13px}
+  .toolbar b{font-weight:600}.toolbar span{color:#8d8d8d}
+  .toolbar button{margin-left:auto;height:32px;padding:0 16px;background:#0f62fe;border:none;color:#fff;font:inherit;font-size:13px;cursor:pointer}
+  .toolbar button + button{margin-left:0;background:transparent;border:1px solid #6f6f6f}
+  .doc{padding:24px 0;display:flex;flex-direction:column;align-items:center;gap:24px}
+  .page{width:210mm;min-height:297mm;background:#fff;padding:14mm 14mm 16mm;box-shadow:0 2px 10px rgba(0,0,0,.2);position:relative}
+  .page.sheet{width:420mm;min-height:297mm;padding:0}
+  .phead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--ink);padding-bottom:2mm;margin-bottom:6mm;font-size:8pt;color:var(--ink2)}
+  .phead b{color:var(--ink);font-weight:600;font-size:9pt}
+  h1{font-size:24pt;font-weight:300;line-height:1.2;margin:8mm 0 3mm}
+  h2{font-size:14pt;font-weight:500;margin:0 0 4mm;display:flex;gap:3mm;align-items:baseline}
+  h2 span{font-family:'IBM Plex Mono',monospace;font-size:9pt;color:var(--blue);border:1px solid var(--blue);padding:0 1.5mm}
+  h3{font-size:10.5pt;font-weight:600;margin:5mm 0 2mm}
+  .lead{color:var(--ink2);font-size:10pt;margin-bottom:6mm}
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:6mm}
+  .meta div{padding:2.5mm 0;font-size:8pt;color:var(--ink2)}.meta b{display:block;color:var(--ink);font-size:10pt;font-weight:500;margin-top:.5mm}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:5mm}
+  .kpi{background:var(--l1);padding:3mm}.kpi .l{font-size:7.5pt;color:var(--ink2)}.kpi .v{font-size:16pt;font-weight:300;margin-top:1mm;font-family:'IBM Plex Sans',sans-serif}
+  .kpi .v small{font-size:8pt;color:var(--ink2);margin-left:1mm}.kpi .s{font-size:7pt;color:var(--ink3);margin-top:.5mm}
+  .kpi.bad .v{color:var(--err)}
+  .groups{column-count:3;column-gap:4mm}
+  .groups table{font-size:7.5pt}.groups td{padding:.9mm 1.4mm}
+  .group{break-inside:avoid;margin-bottom:4mm}
+  .group h4{font-size:9pt;font-weight:600;padding:1.5mm 2mm;background:#e8e8e8;border-bottom:1px solid var(--bd2)}
+  table{width:100%;border-collapse:collapse;font-size:8.5pt}
+  td,th{padding:1.3mm 2mm;border-bottom:1px solid var(--bd);vertical-align:top;text-align:left}
+  th{background:#e8e8e8;font-weight:600;border-bottom:1px solid var(--bd2)}
+  td.n,th.n{text-align:right;font-family:'IBM Plex Mono',monospace;white-space:nowrap}
+  td.u{color:var(--ink3);width:14mm;font-size:7.5pt}
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:4mm}
+  .chart{border:1px solid var(--bd);padding:2.5mm 2.5mm 1.5mm;break-inside:avoid}
+  .chart .t{font-size:9pt;font-weight:600}.chart .su{font-size:7pt;color:var(--ink3);margin-bottom:1mm}
+  .chart .st{display:flex;gap:3mm;font-size:7pt;color:var(--ink2);border-top:1px solid var(--bd);padding-top:1mm;margin-top:1mm;font-family:'IBM Plex Mono',monospace}
+  .note{font-size:8pt;color:var(--ink2);margin-top:3mm}
+  .foot{position:absolute;bottom:7mm;left:14mm;right:14mm;display:flex;justify-content:space-between;font-size:7pt;color:var(--ink3);border-top:1px solid var(--bd);padding-top:1.5mm}
+  .sheet svg{display:block;width:420mm;height:297mm}
+  .sheet{--dw-ink:#111111;--dw-paper:#ffffff}
+  .empty{padding:40mm 0;text-align:center;color:var(--ink2)}
+  @page { size: A4 portrait; margin: 0 }
+  @page sheet { size: A3 landscape; margin: 0 }
+  @media print {
+    body{background:#fff}
+    .toolbar{display:none}
+    .doc{padding:0;gap:0;display:block}
+    .page{box-shadow:none;break-after:page;margin:0;min-height:297mm}
+    .page.sheet{page:sheet;height:297mm;min-height:0;overflow:hidden}
+    .page:last-child{break-after:auto}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="/static/drawing_core.jsx"></script>
+<script type="text/babel">
+const { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, ReferenceArea } = Recharts;
+
+const COLORS = ['#6929c4','#1192e8','#005d5d','#9f1853','#fa4d56','#570408','#198038','#002d9c','#ee538b','#b28600','#009d9a','#012749','#8a3800','#a56eff'];
+
+function fmt(v, d) {
+  if (v == null || !isFinite(v)) return '—';
+  if (d != null) return Number(v).toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+  const a = Math.abs(v);
+  if (a >= 1e6) return (v / 1e6).toFixed(3) + ' M';
+  if (a >= 1e3) return (v / 1e3).toFixed(3) + ' k';
+  if (a < 0.001 && v !== 0) return v.toExponential(3);
+  return Number(v.toPrecision(5)).toString();
+}
+const tick = v => { const a = Math.abs(v); if (a >= 1e6) return (v / 1e6).toFixed(1) + 'M'; if (a >= 1e3) return (v / 1e3).toFixed(1) + 'k'; if (a < .01 && v !== 0) return v.toExponential(0); return Number(v.toFixed(2)).toString(); };
+const findCol = (stats, re) => Object.keys(stats || {}).find(k => re.test(k));
+
+function Page({ title, name, date, no, children, sheet }) {
+  if (sheet) return <div className="page sheet">{children}</div>;
+  return (
+    <div className="page">
+      <div className="phead"><b>TAS-1 하이브리드 로켓 엔진 시뮬레이션 보고서</b><span>{name} · {date}</span></div>
+      {children}
+      <div className="foot"><span>TUSI Hybrid Rocket Engine Simulator</span><span>{title} · {no}</span></div>
+    </div>
+  );
+}
+
+function Kpis({ r }) {
+  const st = r.stats || {}, ss = r.steady_state, dp = r.injector_dp;
+  const cT = findCol(st, /^Thrust/i), cPc = findCol(st, /chamber.*pressure/i), cPt = findCol(st, /tank.*pressure/i), cIsp = findCol(st, /^Isp/i);
+  const items = [
+    ['총 임펄스', fmt(r.total_impulse, 1), 'N·s', ''],
+    ['정상상태 평균 추력', ss ? fmt(ss.thrust_avg_ss, 1) : '—', 'N', ss ? `구간 ${ss.ss_start.toFixed(2)}–${ss.ss_end.toFixed(2)} s` : ''],
+    ['정상상태 평균 비추력', ss && ss.isp_ss != null ? fmt(ss.isp_ss, 2) : '—', 's', '∫F dt / (∫ṁ dt · g₀)'],
+    ['정상상태 지속 시간', ss ? fmt(ss.ss_duration, 2) : '—', 's', ''],
+    ['최대 추력', cT ? fmt(st[cT].max, 1) : '—', 'N', cT ? `평균 ${fmt(st[cT].avg, 1)} N (전체 시간)` : ''],
+    ['최대 챔버압', cPc ? fmt(st[cPc].max / 1e6, 3) : '—', 'MPa', ''],
+    ['최대 탱크압', cPt ? fmt(st[cPt].max / 1e6, 3) : '—', 'MPa', ''],
+    ['최소 인젝터 Δp / Pc', dp ? fmt(dp.min_ratio * 100, 1) : '—', '%', dp ? `기준 ≥ ${(dp.limit * 100).toFixed(0)}% · ${dp.ok ? '만족' : '미달'}` : '', dp && !dp.ok],
+  ];
+  return (
+    <div className="kpis">{items.map(([l, v, u, s, bad]) => (
+      <div key={l} className={`kpi ${bad ? 'bad' : ''}`}><div className="l">{l}</div><div className="v">{v}<small>{u}</small></div><div className="s">{s}</div></div>))}
+    </div>
+  );
+}
+
+function ConfigGroups({ groups, cfg }) {
+  const shown = new Set();
+  const gs = (groups || []).map(gr => ({ label: gr.label, rows: gr.fields.filter(f => f.key in cfg).map(f => { shown.add(f.key); return f; }) })).filter(g => g.rows.length);
+  const rest = Object.keys(cfg).filter(k => !shown.has(k));
+  if (rest.length) gs.push({ label: '기타', rows: rest.map(k => ({ key: k, label: k })) });
+  const val = v => typeof v === 'number' ? (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(3) : Number(v.toPrecision(6)).toString()) : String(v);
+  return (
+    <div className="groups">{gs.map(g => (
+      <div key={g.label} className="group"><h4>{g.label}</h4>
+        <table><tbody>{g.rows.map(f => (
+          <tr key={f.key}><td>{f.label}</td><td className="n">{val(cfg[f.key])}</td><td className="u">{f.unit || ''}</td></tr>))}</tbody></table>
+      </div>))}
+    </div>
+  );
+}
+
+function Charts({ r }) {
+  const time = r.data['Time (s)'] || [];
+  const cols = r.columns.filter(c => c !== 'Time (s)');
+  const ss = r.steady_state;
+  return (
+    <div className="charts">{cols.map((col, i) => {
+      const vals = r.data[col] || [];
+      const data = time.map((t, j) => ({ t, v: vals[j] == null ? null : vals[j] }));
+      const unit = (col.match(/\(([^)]+)\)/) || [])[1] || '';
+      const st = r.stats[col];
+      const ssVal = !ss ? null : col.startsWith('Thrust (') ? ss.thrust_avg_ss : col.startsWith('Isp') ? ss.isp_ss : null;
+      return (
+        <div key={col} className="chart">
+          <div className="t">{col.split('(')[0].trim()}</div>
+          <div className="su">{unit ? `단위 ${unit} · ` : ''}가로축 시간 [s]{ssVal != null ? ' · 음영 = 정상상태 구간' : ''}</div>
+          <LineChart width={318} height={175} data={data} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+            <CartesianGrid stroke="#e0e0e0" vertical={false}/>
+            <XAxis dataKey="t" type="number" domain={['dataMin', 'dataMax']} tick={{ fontSize: 8, fill: '#525252', fontFamily: 'IBM Plex Mono' }} tickFormatter={v => Number(v).toFixed(0)} stroke="#c6c6c6"/>
+            <YAxis tick={{ fontSize: 8, fill: '#525252', fontFamily: 'IBM Plex Mono' }} tickFormatter={tick} stroke="#c6c6c6" width={40}/>
+            {ssVal != null && <ReferenceArea x1={ss.ss_start} x2={ss.ss_end} fill={COLORS[i % COLORS.length]} fillOpacity={0.08} stroke="none"/>}
+            <Line type="monotone" dataKey="v" stroke={COLORS[i % COLORS.length]} strokeWidth={1.6} dot={false} isAnimationActive={false} connectNulls={false}/>
+          </LineChart>
+          {st && <div className="st"><span>최소 {fmt(st.min)}</span><span>최대 {fmt(st.max)}</span><span>평균 {fmt(st.avg)}</span>{ssVal != null && <span>정상상태 {fmt(ssVal)}</span>}</div>}
+        </div>
+      );
+    })}</div>
+  );
+}
+
+function chunk(a, n) { const out = []; for (let i = 0; i < a.length; i += n) out.push(a.slice(i, i + n)); return out; }
+
+function Report({ p }) {
+  const r = p.results, cfg = p.config, name = p.name;
+  const date = new Date(p.generated || Date.now()).toLocaleString('ko-KR');
+  const g = derive(cfg);
+  const cols = r.columns.filter(c => c !== 'Time (s)');
+  const chartPages = chunk(cols, 6);
+  const term = r.termination || {};
+  let no = 0;
+  const N = () => `${++no}`;
+  const props = { g, cfg, name };
+  const stEntries = Object.entries(r.stats || {});
+  return (
+    <div className="doc">
+      <Page title="형상 개요" name={name} date={date} no={N()}>
+        <h1>{name} 시뮬레이션 보고서</h1>
+        <div className="lead">하이브리드 로켓 엔진 형상, 시뮬레이션 통계·결과 그래프, 엔진 도면</div>
+        <div className="meta">
+          <div>작성<b>{date}</b></div>
+          <div>타임스텝<b>{r.row_count} × {cfg.dt} s</b></div>
+          <div>시뮬레이션 시간<b>{cfg.simt} s</b></div>
+          <div>종료<b>{term.code || '—'}</b></div>
+        </div>
+        <h2><span>1</span>형상 개요</h2>
+        <div className="kpis">
+          {[['산화제', `${cfg.oxidizer} ${fmt(+cfg.oxidizer_M, 2)} kg`], ['탱크 내경 × 길이', `Ø${(g.Rt * 2).toFixed(1)} × ${g.Lt.toFixed(1)} mm`],
+            ['연료 그레인', `${cfg.fuel} Ø${(g.Rf * 2).toFixed(1)} × ${g.Lf.toFixed(1)} mm`], ['포트', g.grain === 'PORT' ? `${g.nport} × Ø${(g.ri * 2).toFixed(2)} mm` : g.grain],
+            ['인젝터', `${g.nOri} × Ø${(g.rOri * 2).toFixed(2)} mm`], ['챔버 내경 × 길이', `Ø${(g.Rc * 2).toFixed(1)} × ${g.Lc.toFixed(1)} mm`],
+            ['노즐 목 / 출구', `Ø${(g.Rth * 2).toFixed(2)} / Ø${(g.Re * 2).toFixed(2)} mm`], ['면적비 ε', g.eps.toFixed(2)]].map(([l, v]) => (
+            <div key={l} className="kpi"><div className="l">{l}</div><div className="v" style={{ fontSize: '10.5pt', fontWeight: 400 }}>{v}</div></div>))}
+        </div>
+        <h3>입력 파라미터</h3>
+        <ConfigGroups groups={p.groups} cfg={cfg}/>
+      </Page>
+
+      <Page title="시뮬레이션 통계" name={name} date={date} no={N()}>
+        <h2><span>2</span>시뮬레이션 통계</h2>
+        <div className="lead">{r.row_count}개 타임스텝 기준 · 정상상태 = 추력이 최대의 90%에 처음 도달한 시점부터 급락(액체 산화제 소진) 직전까지</div>
+        <Kpis r={r}/>
+        {term.message && <div className="note" style={{ marginBottom: '4mm' }}>종료 사유: {term.code} — {term.message}</div>}
+        <table>
+          <thead><tr><th>항목</th><th className="n">최소</th><th className="n">최대</th><th className="n">평균</th></tr></thead>
+          <tbody>{stEntries.map(([k, s]) => <tr key={k}><td>{k}</td><td className="n">{fmt(s.min)}</td><td className="n">{fmt(s.max)}</td><td className="n">{fmt(s.avg)}</td></tr>)}</tbody>
+        </table>
+        <div className="note">평균은 시뮬레이션 전체 시간 기준 (연소 종료 후 구간 포함). 정상상태 값은 위 카드 참고.</div>
+      </Page>
+
+      {chartPages.map((cs, i) => (
+        <Page key={'c' + i} title="시뮬레이션 결과 그래프" name={name} date={date} no={N()}>
+          <h2><span>3</span>시뮬레이션 결과 그래프{chartPages.length > 1 ? ` (${i + 1}/${chartPages.length})` : ''}</h2>
+          <Charts r={{ ...r, columns: ['Time (s)', ...cs] }}/>
+        </Page>
+      ))}
+
+      <Page sheet><AssemblySheet {...props}/></Page>
+      <Page sheet><TankSheet {...props}/></Page>
+      <Page sheet><InjectorSheet {...props}/></Page>
+      <Page sheet><GrainSheet {...props}/></Page>
+      <Page sheet><ChamberSheet {...props}/></Page>
+    </div>
+  );
+}
+
+function App() {
+  const p = useMemo(() => { try { return JSON.parse(localStorage.getItem('tusi-report') || 'null'); } catch { return null; } }, []);
+  useEffect(() => {
+    if (!p) return;
+    document.title = `${p.name}_시뮬레이션_보고서`;
+    if (new URLSearchParams(location.search).get('print') === '1') {
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => window.print(), 900));
+    }
+  }, [p]);
+  return (
+    <>
+      <div className="toolbar"><b>TAS-1 시뮬레이션 보고서</b><span>{p ? p.name : ''} · 인쇄 대화상자에서 대상 'PDF로 저장' 선택 (A4 + 도면 A3)</span>
+        <button onClick={() => window.print()}>PDF 저장</button>
+        <button onClick={() => window.close()}>닫기</button></div>
+      {!p || !p.results ? <div className="doc"><div className="page"><div className="empty">보고서 데이터가 없습니다. 시뮬레이터에서 시뮬레이션을 실행한 뒤 Report 버튼을 누르세요.</div></div></div>
+        : <Report p={p}/>}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

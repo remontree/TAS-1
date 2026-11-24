@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#161616">
+<title>TAS-1 Launch League</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=IBM+Plex+Sans+KR:wght@300;400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+
+<!-- 등록 / 다시 접속 -->
+<div id="auth" class="auth" hidden>
+  <div class="auth-hero">
+    <span class="lbl">TAS-1 · Hybrid rocket engine simulator</span>
+    <h1>TAS-1 <b>Launch League</b></h1>
+    <p>엔진과 기체를 설계해 발사하세요. 엔진 성능은 실제 로켓 시뮬레이터로 학습한 AI(서로게이트 모델)가 계산합니다.</p>
+  </div>
+  <div class="seg" role="tablist">
+    <button type="button" id="tab-reg" aria-pressed="true">처음 왔어요</button>
+    <button type="button" id="tab-login" aria-pressed="false">다시 접속</button>
+  </div>
+  <form class="f" id="f-reg" novalidate>
+    <div class="field"><label for="r-name">이름</label><input id="r-name" autocomplete="name" maxlength="20" required></div>
+    <div class="field"><label for="r-sid">학번</label><input id="r-sid" inputmode="numeric" pattern="\d*" maxlength="12" required></div>
+    <div class="field"><label for="r-dept">학과</label><input id="r-dept" maxlength="30" list="depts" required>
+      <datalist id="depts"><option value="소프트웨어학과"><option value="컴퓨터공학과"><option value="인공지능학과"><option value="정보통신공학과"><option value="기계공학과"><option value="항공우주공학과"></datalist></div>
+    <div class="field"><label for="r-phone">전화번호</label><input id="r-phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="13" placeholder="010-0000-0000" required><small>다른 기기에서 다시 접속할 때 학번과 함께 씁니다.</small></div>
+    <div class="consent">
+      <div>수집 항목: 이름, 학번, 학과, 전화번호 · 목적: 참가자 식별, 재접속, 시상 연락 · 보유: 행사 종료 후 7일 이내 파기. 순위표에는 이름 가운데 글자를 가리고 학과만 표시합니다. 동의하지 않으면 참가할 수 없습니다.</div>
+      <label><input type="checkbox" id="r-consent"> 개인정보 수집·이용에 동의합니다</label>
+    </div>
+    <div class="formerr" id="reg-err" role="alert"></div>
+    <button class="btn solid" type="submit" id="reg-btn">등록하고 시작</button>
+  </form>
+  <form class="f" id="f-login" novalidate hidden>
+    <div class="field"><label for="l-sid">학번</label><input id="l-sid" inputmode="numeric" maxlength="12" required></div>
+    <div class="field"><label for="l-phone">전화번호</label><input id="l-phone" type="tel" inputmode="tel" maxlength="13" placeholder="010-0000-0000" required></div>
+    <div class="formerr" id="login-err" role="alert"></div>
+    <button class="btn solid" type="submit">다시 접속</button>
+    <p style="font-size:12.5px;color:var(--muted)">같은 휴대폰에서는 자동으로 로그인됩니다. 학번이나 전화번호를 잊었다면 부스에 문의하세요.</p>
+  </form>
+</div>
+
+<!-- 앱 -->
+<div id="app" class="shell" hidden>
+  <header class="top">
+    <span class="brand">TAS-1 <b>Launch League</b></span>
+    <span class="sp"></span>
+    <span class="chip" id="wind-chip" title="현재 바람">WIND —</span>
+    <span class="chip" id="left-chip">공식 3/3</span>
+  </header>
+  <main class="views">
+    <section class="view" id="v-design">
+      <div class="cutcard">
+        <svg id="cut" viewBox="0 0 1000 236" role="img" aria-label="로켓 단면도"></svg>
+        <div class="cutmeta"><span class="chip" id="m-margin">안정 —</span><span class="chip" id="m-len">전장 —</span><span class="chip" id="m-mass">질량 —</span><span class="chip" id="m-apo">예상 —</span></div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="t-eng" aria-selected="true">엔진 Engine</button>
+        <button type="button" role="tab" id="t-air" aria-selected="false">기체 Airframe</button>
+      </div>
+      <div class="knobs" id="k-eng"></div>
+      <div class="knobs" id="k-air" hidden>
+        <div class="knob" data-view="nose" id="knob-nose">
+          <div class="row"><span><span class="nm">Nose Cone</span> <span class="an">노즈 형상</span></span><span class="v" id="v-nose"></span></div>
+          <div class="noses" id="noses" role="group" aria-label="노즈콘 형상"></div>
+        </div>
+      </div>
+      <div class="insets">
+        <div class="inset" data-view="inj"><span class="lbl">Injector</span><svg id="in-inj" viewBox="0 0 120 92"></svg><span class="mono" id="in-inj-t"></span></div>
+        <div class="inset" data-view="grain"><span class="lbl">Grain</span><svg id="in-grain" viewBox="0 0 120 92"></svg><span class="mono" id="in-grain-t"></span></div>
+        <div class="inset" data-view="nozzle"><span class="lbl">Nozzle</span><svg id="in-noz" viewBox="0 0 120 92"></svg><span class="mono" id="in-noz-t"></span></div>
+        <div class="inset" data-view="fin"><span class="lbl">Fin</span><svg id="in-fin" viewBox="0 0 120 92"></svg><span class="mono" id="in-fin-t"></span></div>
+      </div>
+      <div class="card" id="c-eng">
+        <div class="card-h"><span class="lbl">추력 곡선</span><span class="mono" style="font-size:11px;color:var(--muted)" id="r-peak"></span></div>
+        <svg class="curve" id="curve" viewBox="0 0 300 64" preserveAspectRatio="none" aria-label="추력 곡선"></svg>
+        <div class="kv"><div><b id="r-isp">—</b><span>Isp s</span></div><div><b id="r-imp">—</b><span>총역적 kN·s</span></div><div><b id="r-bt">—</b><span>연소 s</span></div></div>
+        <div style="display:grid;gap:3px"><div class="card-h"><span class="lbl" style="font-size:10px">AI 확신도 (5개 모델 일치도)</span><span class="mono" style="font-size:11px;color:var(--info)" id="r-conf"></span></div><div class="conf"><i id="conf-bar"></i></div></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><span class="lbl">안정 여유 (Static margin)</span><b class="mono" style="font-size:20px;font-weight:500" id="r-margin">—</b></div>
+        <div class="mbar"><div class="zones" id="zones"></div><div class="needle" id="needle"></div><div class="ticks" id="ticks"></div></div>
+        <div class="kv"><div><b id="r-mass">—</b><span>이륙 질량 kg</span></div><div><b id="r-tw">—</b><span>추력/중량</span></div><div><b id="r-apo">—</b><span>무풍 예상 m</span></div></div>
+      </div>
+      <div class="card"><div class="msgs" id="msgs"></div></div>
+      <p class="foot">엔진 수치는 TAS-1 시계열 서로게이트(<span id="lut-info">—</span>) 결과입니다. 기체 안정성과 비행은 교육용으로 단순화한 모델입니다.</p>
+    </section>
+
+    <section class="view noscroll" id="v-flight" hidden>
+      <div class="sky" id="sky">
+        <canvas id="gl" aria-label="3D 비행 화면"></canvas>
+        <div class="empty" id="nogl" hidden style="position:absolute;inset:0;display:grid;place-items:center">이 기기에서는 3D를 표시할 수 없습니다.<br>아래 2D 그래프로 결과를 확인하세요.</div>
+        <div class="hud">
+          <div>
+            <div class="clockbig" id="h-clock">T+00:00.0</div>
+            <div class="tele">
+              <div><b id="h-alt">0</b><span>고도 m</span></div>
+              <div><b id="h-spd">0</b><span>km/h</span></div>
+              <div><b id="h-aoa">0°</b><span>받음각</span></div>
+              <div><b id="h-dr">0</b><span>수평 m</span></div>
+            </div>
+            <div class="banner idle" id="banner">STANDBY<small>설계 화면에서 발사하세요</small></div>
+          </div>
+          <div></div>
+          <div class="evs" id="evs">
+            <div data-e="ign"><i></i>점화</div><div data-e="rail"><i></i>레일</div><div data-e="maxq"><i></i>Max-Q</div>
+            <div data-e="bo"><i></i>연소 종료</div><div data-e="apo"><i></i>정점</div><div data-e="land"><i></i>착지</div>
+          </div>
+        </div>
+        <span class="skyhint">드래그 회전 · 기체 크기 확대 표시</span>
+      </div>
+      <div class="sheet" id="result" hidden>
+        <div class="status" id="res-status"><span class="dot"></span><span id="res-status-t">—</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px">
+          <div><span class="lbl">Apogee</span><div class="big" id="res-apo">—</div><span class="mono" style="font-size:11.5px;color:var(--muted)" id="res-delta"></span></div>
+          <div style="text-align:right"><span class="lbl" id="res-kind">공식 발사</span><div class="mono" style="font-size:22px" id="res-score">—</div><span class="mono" style="font-size:11.5px;color:var(--muted)" id="res-rank"></span></div>
+        </div>
+        <div class="rows"><div><span>안정 여유</span><b id="res-mar">—</b></div><div><span>최대 속도</span><b id="res-v">—</b></div><div><span>바람</span><b id="res-wind">—</b></div></div>
+        <div class="tip" id="res-tip"></div>
+        <div class="two"><button class="btn secondary" type="button" id="res-replay">다시 보기</button><button class="btn solid" type="button" id="res-design">다시 설계</button></div>
+      </div>
+    </section>
+
+    <section class="view" id="v-board" hidden>
+      <div class="myrank" id="myrank"></div>
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="b-target" aria-selected="true">목표 <span id="b-target-v">3,000</span> m</button>
+        <button type="button" role="tab" id="b-max" aria-selected="false">최고 고도</button>
+      </div>
+      <p class="foot" style="margin:0 0 6px" id="b-desc"></p>
+      <div class="lb" id="lb"></div>
+    </section>
+
+    <section class="view" id="v-me" hidden>
+      <div class="section-h"><h2 style="font-size:22px" id="me-name">—</h2><button class="btn" type="button" id="logout" style="min-height:32px;padding:6px 12px;font-size:12px">로그아웃</button></div>
+      <div class="rows" id="me-rows"></div>
+      <div class="section-h"><span class="lbl">발사 기록</span><span class="mono" style="font-size:11px;color:var(--muted)" id="me-count"></span></div>
+      <div class="hist" id="hist"></div>
+      <p class="foot">개인정보는 행사 종료 후 7일 이내 파기합니다. 삭제를 원하면 부스에 요청하세요.</p>
+    </section>
+  </main>
+
+  <div class="actionbar" id="actionbar">
+    <button class="btn" type="button" id="btn-test">연습 발사<small>순위 미반영</small></button>
+    <button class="btn solid" type="button" id="btn-launch">공식 발사<small id="btn-launch-s">3회 남음</small></button>
+  </div>
+  <nav class="bottom" aria-label="화면">
+    <button type="button" data-v="design" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2c3 3 4 7 4 11l-4 3-4-3c0-4 1-8 4-11z"/><path d="M8 13l-3 4h4M16 13l3 4h-4M10 19l2 3 2-3"/></svg>설계</button>
+    <button type="button" data-v="flight"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 20c4-1 9-6 12-14"/><circle cx="15" cy="6" r="2"/><path d="M3 21h18"/></svg>비행</button>
+    <button type="button" data-v="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>순위</button>
+    <button type="button" data-v="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>내 기록</button>
+  </nav>
+</div>
+
+<div class="modal" id="confirm" hidden>
+  <div class="box">
+    <h2 style="font-size:20px">공식 발사</h2>
+    <p style="color:var(--soft);font-size:14px" id="confirm-t">공식 발사 1회를 사용합니다. 결과는 순위표에 반영됩니다.</p>
+    <div class="two"><button class="btn secondary" type="button" id="confirm-no">취소</button><button class="btn solid" type="button" id="confirm-yes">발사</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="/static/js/flight.js?v=ports2"></script>
+<script src="/static/js/render.js?v=ports2"></script>
+<script src="/static/js/app.js?v=ports2"></script>
+</body>
+</html>

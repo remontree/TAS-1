@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TUSI Engine Drawing</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="/vendor/react.production.min.js" crossorigin></script>
+<script src="/vendor/react-dom.production.min.js" crossorigin></script>
+<script src="/vendor/babel.min.js"></script>
+<style>
+  :root, [data-theme="light"] {
+    --bg:#ffffff; --l1:#f4f4f4; --l2:#ffffff; --l3:#e8e8e8; --bd:#e0e0e0; --bd2:#c6c6c6;
+    --t1:#161616; --t2:#525252; --t3:#6f6f6f; --link:#0f62fe; --canvas:#e0e0e0; --err:#da1e28; --warn:#f1c21b;
+  }
+  [data-theme="dark"] {
+    --bg:#161616; --l1:#262626; --l2:#393939; --l3:#393939; --bd:#393939; --bd2:#525252;
+    --t1:#f4f4f4; --t2:#c6c6c6; --t3:#8d8d8d; --link:#78a9ff; --canvas:#0b0b0b; --err:#fa4d56; --warn:#f1c21b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'IBM Plex Sans','IBM Plex Sans KR',sans-serif;background:var(--bg);color:var(--t1);font-size:14px;letter-spacing:.16px}
+  .cds-header{position:fixed;top:0;left:0;right:0;z-index:8000;height:48px;background:#161616;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #393939}
+  .cds-header__name{color:#f4f4f4;font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+  .cds-header__divider{color:#6f6f6f;font-weight:300}
+  .cds-header__page{color:#c6c6c6;font-weight:400}
+  .cds-header__nav{margin-left:auto;display:flex;align-items:center;gap:8px}
+  .theme-toggle{background:transparent;border:1px solid #6f6f6f;height:32px;padding:0 12px;text-decoration:none;font-family:inherit;font-size:12px;font-weight:500;letter-spacing:.32px;cursor:pointer;display:flex;align-items:center;gap:6px;color:#c6c6c6}
+  .theme-toggle:hover{background:#2c2c2c;border-color:#c6c6c6;color:#f4f4f4}
+  .theme-toggle--active{background:#0f62fe;border-color:#0f62fe;color:#fff}
+  .app{margin-top:48px;display:flex;min-height:calc(100vh - 48px)}
+  .side{width:340px;min-width:340px;background:var(--l1);border-right:1px solid var(--bd);height:calc(100vh - 48px);position:sticky;top:48px;overflow-y:auto}
+  .side h2{font-size:20px;font-weight:600;padding:24px 24px 4px}
+  .side .sub{font-size:12px;color:var(--t3);padding:0 24px 16px;border-bottom:1px solid var(--bd)}
+  .drop{margin:16px 24px;border:1px dashed var(--bd2);padding:20px 16px;text-align:center;font-size:13px;color:var(--t2);cursor:pointer;background:var(--l2)}
+  .drop.over{border-color:var(--link);color:var(--t1)}
+  .drop b{display:block;color:var(--t1);margin-bottom:4px;font-weight:600}
+  .btnrow{display:flex;gap:8px;padding:0 24px 16px;flex-wrap:wrap}
+  .btn{height:32px;padding:0 12px;border:1px solid var(--bd2);background:var(--l2);color:var(--t1);font:inherit;font-size:12px;cursor:pointer}
+  .btn:hover{border-color:var(--t2)}
+  .btn--primary{background:#0f62fe;border-color:#0f62fe;color:#fff}
+  .sec{padding:12px 24px;border-top:1px solid var(--bd)}
+  .sec h3{font-size:12px;font-weight:600;color:var(--t2);letter-spacing:.32px;margin-bottom:8px}
+  table.kv{width:100%;border-collapse:collapse;font-size:12px}
+  table.kv td{padding:4px 0;border-bottom:1px solid var(--bd);color:var(--t2)}
+  table.kv td.v{text-align:right;color:var(--t1);font-family:'IBM Plex Mono',monospace}
+  .msg{margin:0 24px 12px;padding:8px 12px;font-size:12px;border-left:3px solid var(--err);background:var(--l2)}
+  .msg.warn{border-left-color:var(--warn)}
+  .main{flex:1;min-width:0;background:var(--canvas);display:flex;flex-direction:column;height:calc(100vh - 48px)}
+  .tabs{display:flex;background:var(--bg);border-bottom:1px solid var(--bd);overflow-x:auto;position:sticky;top:48px;z-index:10}
+  .tab{padding:12px 16px;font-size:14px;color:var(--t2);border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;white-space:nowrap;font-family:inherit}
+  .tab:hover{color:var(--t1);background:var(--l1)}
+  .tab.active{color:var(--t1);border-bottom-color:#0f62fe;font-weight:600}
+  .viewport{position:relative;overflow:hidden;flex:1;min-height:0;touch-action:none;user-select:none;cursor:grab}
+  .viewport:active{cursor:grabbing}
+  .stage{position:absolute;left:0;top:0;transform-origin:0 0}
+  .sheet{--dw-ink:#111111;--dw-paper:#ffffff;background:var(--dw-paper);box-shadow:0 2px 12px rgba(0,0,0,.25);width:100%}
+  [data-theme="dark"] .sheet{--dw-ink:#d0d0d0;--dw-paper:#1c1c1c;box-shadow:0 2px 16px rgba(0,0,0,.7)}
+  .zoombar{position:absolute;right:16px;bottom:16px;display:flex;align-items:center;background:var(--l2);border:1px solid var(--bd2);box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  .zoombar button{width:32px;height:32px;border:none;background:none;color:var(--t1);font-size:18px;cursor:pointer;font-family:inherit}
+  .zoombar button:hover{background:var(--l1)}
+  .zoombar button.fit{width:auto;padding:0 10px;font-size:12px;border-left:1px solid var(--bd)}
+  .zoombar span{min-width:48px;text-align:center;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--t2)}
+  .zoomhint{position:absolute;left:16px;bottom:16px;font-size:12px;color:var(--t3);pointer-events:none}
+  .sheet svg{display:block;width:100%;height:auto}
+  @media(max-width:900px){.main{height:80vh}.app{flex-direction:column}.side{width:100%;min-width:0;height:auto;position:static}.zoomhint{display:none}}
+  @media print{
+    @page{size:A3 landscape;margin:0}
+    .cds-header,.side,.tabs{display:none!important}
+    .app{margin:0}.main{background:#fff;height:auto}.viewport{overflow:visible}.stage{position:static;width:100%!important;transform:none!important}
+    .zoombar,.zoomhint{display:none!important}
+    .sheet,[data-theme="dark"] .sheet{--dw-ink:#111111;--dw-paper:#ffffff;box-shadow:none;max-width:none}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="/static/drawing_core.jsx"></script>
+<script type="text/babel">
+
+/* =====================================================================
+   앱
+   ===================================================================== */
+const TABS = [['asm', '전체 조립도'], ['tank', '산화제 탱크'], ['inj', '인젝터'], ['grain', '연료 그레인'], ['ch', '연소 챔버 · 노즐']];
+const EngineIcon = () => <svg width="14" height="14" viewBox="0 0 32 32"><path d="M4 11h14v10H4zM18 13l4-2v10l-4-2zM22 11l6-3v16l-6-3z" fill="none" stroke="currentColor" strokeWidth="2"/></svg>;
+const DnaIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M8 4h2c0 5 4 7 8 9s8 5 8 11v4h-2v-4c0-5-4-7-8-9s-8-5-8-11V4zm14 0h2v4c0 3-1 5-3 7l-1.4-1.4C21 12 22 10 22 8V4zM10 24c0-3 1-5 3-7l1.4 1.4C13 20 12 22 12 24v4h-2v-4z"/></svg>;
+const BoltIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M11.6 30a1 1 0 0 1-.9-1.4L14.4 19H8a1 1 0 0 1-.8-1.6l11-15a1 1 0 0 1 1.7 1L16.6 13H24a1 1 0 0 1 .8 1.6l-12.4 15a1 1 0 0 1-.8.4z"/></svg>;
+const ChartIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M4 2H2v26a2 2 0 0 0 2 2h26v-2H4z"/><path d="M30 9h-7v2h3.6L19 18.6 14.7 14.3a1 1 0 0 0-1.4 0L6 21.6 7.4 23l6.6-6.6 4.3 4.3a1 1 0 0 0 1.4 0L28 12.4V16h2z"/></svg>;
+const RulerIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M29.4 9.6 22.4 2.6a2 2 0 0 0-2.8 0L2.6 19.6a2 2 0 0 0 0 2.8l7 7a2 2 0 0 0 2.8 0l17-17a2 2 0 0 0 0-2.8zM11 28l-7-7 3-3 3.5 3.5 1.4-1.4L8.4 16.6l2.6-2.6 2 2 1.4-1.4-2-2 2.6-2.6 3.5 3.5 1.4-1.4L16.4 8.6l2.6-2.6 2 2 1.4-1.4-2-2L21 4l7 7z"/></svg>;
+const SunIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M16 12a4 4 0 1 1-4 4 4 4 0 0 1 4-4m0-2a6 6 0 1 0 6 6 6 6 0 0 0-6-6zM15 2h2v5h-2zM15 25h2v5h-2zM25 15h5v2h-5zM2 15h5v2H2z"/></svg>;
+const MoonIcon = () => <svg width="14" height="14" viewBox="0 0 32 32" fill="currentColor"><path d="M13.5 5.4a10.5 10.5 0 0 0 13.1 13.1A11 11 0 1 1 13.5 5.4M14 2a13 13 0 1 0 16 16A10.9 10.9 0 0 1 14 2z"/></svg>;
+
+function parseConfig(obj) {
+  if (!obj || typeof obj !== 'object') throw new Error('JSON 객체가 아닙니다');
+  if ('combution_chamber_radius' in obj) return { name: 'ENGINE', cfg: obj };
+  const keys = Object.keys(obj);
+  const k = keys.find(k => obj[k] && typeof obj[k] === 'object' && 'combution_chamber_radius' in obj[k]);
+  if (!k) throw new Error('엔진 형상 키(combution_chamber_radius 등)를 찾을 수 없습니다');
+  return { name: k, cfg: obj[k] };
+}
+
+/* 확대 · 이동 (PDF 뷰어 방식): 종이의 실제 픽셀 폭을 키워 다시 그림 → 확대해도 선명.
+   위치는 translate 로만 이동. 휠 = 커서 기준 확대, 드래그 = 이동, 더블클릭 = 맞춤 */
+const SHEET_RATIO = 297 / 420, PAD = 24;
+function ZoomView({ children, resetKey }) {
+  const ref = useRef(null);
+  const [vp, setVp] = useState({ w: 1200, h: 800 });
+  const [z, setZRaw] = useState(null);                  // { k, x, y } — 종이 왼쪽 위 위치 (px), 폭 = fit × k
+  const zr = useRef(null);
+  const setZ = v => { zr.current = v; setZRaw(v); };    // 연속 휠 이벤트가 최신 값을 쓰도록 즉시 반영
+  const fitW = v => Math.max(200, Math.min(v.w - 2 * PAD, (v.h - 2 * PAD) / SHEET_RATIO));
+  const fit = (v = vp) => { const w = fitW(v); setZ({ k: 1, x: (v.w - w) / 2, y: Math.max(PAD, (v.h - w * SHEET_RATIO) / 2) }); };
+  useLayoutEffect(() => {
+    const el = ref.current;
+    const measure = () => { const r = el.getBoundingClientRect(); const v = { w: r.width, h: r.height }; setVp(v); return v; };
+    const v = measure(); fit(v);
+    const ro = new ResizeObserver(() => { const v2 = measure(); if (!zr.current || zr.current.k === 1) fit(v2); });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  useEffect(() => { if (zr.current) fit(); }, [resetKey]);
+  const zoomAt = (factor, cx, cy) => {
+    const v = zr.current; if (!v) return;
+    const k = Math.min(Math.max(v.k * factor, 0.3), 20), f = k / v.k;
+    setZ({ k, x: cx - (cx - v.x) * f, y: cy - (cy - v.y) * f });
+  };
+  useEffect(() => {
+    const el = ref.current;
+    const onWheel = e => {
+      e.preventDefault();
+      const r = el.getBoundingClientRect();
+      zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX - r.left, e.clientY - r.top);
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+  const drag = useRef(null);
+  const down = e => { if (e.button !== 0) return; drag.current = { x: e.clientX, y: e.clientY }; e.currentTarget.setPointerCapture(e.pointerId); };
+  const move = e => {
+    if (!drag.current || !zr.current) return;
+    const dx = e.clientX - drag.current.x, dy = e.clientY - drag.current.y;
+    drag.current = { x: e.clientX, y: e.clientY };
+    setZ({ ...zr.current, x: zr.current.x + dx, y: zr.current.y + dy });
+  };
+  const up = () => { drag.current = null; };
+  const w = fitW(vp) * (z ? z.k : 1);
+  return (
+    <div className="viewport" ref={ref} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
+         onDoubleClick={() => fit()}>
+      <div className="stage" style={{ width: w, transform: z ? `translate(${z.x}px, ${z.y}px)` : undefined, visibility: z ? 'visible' : 'hidden' }}>
+        {children}
+      </div>
+      <div className="zoombar" onPointerDown={e => e.stopPropagation()} onDoubleClick={e => e.stopPropagation()}>
+        <button title="축소" onClick={() => zoomAt(1 / 1.4, vp.w / 2, vp.h / 2)}>−</button>
+        <span>{Math.round((z ? z.k : 1) * 100)}%</span>
+        <button title="확대" onClick={() => zoomAt(1.4, vp.w / 2, vp.h / 2)}>+</button>
+        <button title="화면에 맞춤 (더블클릭)" onClick={() => fit()} className="fit">맞춤</button>
+      </div>
+      <div className="zoomhint">휠 = 확대 · 드래그 = 이동 · 더블클릭 = 맞춤</div>
+    </div>
+  );
+}
+
+function App() {
+  const [theme, setTheme] = useState(() => {
+    const q = new URLSearchParams(location.search).get('theme');
+    if (q === 'dark' || q === 'light') return q;
+    try { return localStorage.getItem('tusi-theme') || 'light'; } catch { return 'light'; }
+  });
+  const [tab, setTab] = useState(() => (location.hash || '').slice(1) || 'asm');
+  const [src, setSrc] = useState(() => {
+    try {
+      const h = localStorage.getItem('tusi-drawing-config');
+      if (h) return { ...parseConfig(JSON.parse(h)), from: '시뮬레이터 현재 설정' };
+    } catch {}
+    return { ...parseConfig(DEFAULT), from: '기본 예시 (rocket.json)' };
+  });
+  const [err, setErr] = useState(null);
+  const [over, setOver] = useState(false);
+  const fileRef = useRef(null), sheetRef = useRef(null);
+
+  useEffect(() => { document.documentElement.setAttribute('data-theme', theme); try { localStorage.setItem('tusi-theme', theme); } catch {} }, [theme]);
+  useEffect(() => { try { history.replaceState(null, '', '#' + tab); } catch {} }, [tab]);
+
+  const g = useMemo(() => { try { return derive(src.cfg); } catch (e) { return null; } }, [src]);
+
+  const load = (file) => {
+    const r = new FileReader();
+    r.onload = () => {
+      try { const p = parseConfig(JSON.parse(r.result)); setSrc({ ...p, from: file.name }); setErr(null);
+            try { localStorage.setItem('tusi-drawing-config', r.result); } catch {} }
+      catch (e) { setErr(`불러오기 실패: ${e.message}`); }
+    };
+    r.readAsText(file);
+  };
+  const downloadSvg = () => {
+    const svg = sheetRef.current?.querySelector('svg');
+    if (!svg) return;
+    const cs = getComputedStyle(sheetRef.current);
+    const ink = cs.getPropertyValue('--dw-ink').trim() || '#111', paper = cs.getPropertyValue('--dw-paper').trim() || '#fff';
+    const full = svg.outerHTML.replace(/viewBox="[^"]*"/, 'viewBox="0 0 420 297"');
+    const txt = '<?xml version="1.0" encoding="UTF-8"?>\n' + full.replace('<svg ', '<svg width="420mm" height="297mm" ')
+      .replaceAll('var(--dw-ink)', ink).replaceAll('var(--dw-paper)', paper);
+    const url = URL.createObjectURL(new Blob([txt], { type: 'image/svg+xml' }));
+    const a = document.createElement('a'); a.href = url; a.download = `${src.name}_${tab}.svg`; a.click(); URL.revokeObjectURL(url);
+  };
+
+  const c = src.cfg, props = { g, cfg: c, name: src.name };
+  return (
+    <>
+      <header className="cds-header">
+        <div className="cds-header__name"><img src="/static/logo.png" alt="" style={{ height: 24, opacity: .9 }}/>TUSI Hybrid Rocket Engine Simulator
+          <span className="cds-header__divider">/</span><span className="cds-header__page">Drawing</span></div>
+        <nav className="cds-header__nav">
+          <a className="theme-toggle" href="/"><EngineIcon/> Simulator</a>
+          <a className="theme-toggle" href="/mdo"><DnaIcon/> MDO</a>
+          <a className="theme-toggle" href="/surrogate"><BoltIcon/> Surrogate</a>
+          <a className="theme-toggle" href="/training"><ChartIcon/> Training</a>
+          <a className="theme-toggle theme-toggle--active" href="/drawing"><RulerIcon/> Drawing</a>
+          <button className="theme-toggle" onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}>{theme === 'dark' ? <SunIcon/> : <MoonIcon/>}{theme === 'dark' ? 'Light' : 'Dark'}</button>
+        </nav>
+      </header>
+      <div className="app">
+        <aside className="side">
+          <h2>Engine Drawing</h2>
+          <div className="sub">엔진 형상 JSON → 조립도 · 부품도 (A3, mm)</div>
+          <div className={`drop ${over ? 'over' : ''}`} onClick={() => fileRef.current?.click()}
+               onDragOver={e => { e.preventDefault(); setOver(true); }} onDragLeave={() => setOver(false)}
+               onDrop={e => { e.preventDefault(); setOver(false); const f = e.dataTransfer.files?.[0]; if (f) load(f); }}>
+            <b>형상 JSON 업로드</b>시뮬레이터에서 다운로드한 rocket.json 을 끌어다 놓거나 클릭
+            <input ref={fileRef} type="file" accept=".json,application/json" style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) load(f); e.target.value = ''; }}/>
+          </div>
+          <div className="btnrow">
+            <button className="btn btn--primary" onClick={downloadSvg}>SVG 다운로드</button>
+            <button className="btn" onClick={() => window.print()}>인쇄 / PDF</button>
+            <button className="btn" onClick={() => { setSrc({ ...parseConfig(DEFAULT), from: '기본 예시 (rocket.json)' }); try { localStorage.removeItem('tusi-drawing-config'); } catch {} }}>기본 예시</button>
+          </div>
+          {err && <div className="msg">{err}</div>}
+          {g && g.warn.map((w, i) => <div key={i} className="msg warn">{w}</div>)}
+          <div className="sec"><h3>불러온 형상</h3>
+            <table className="kv"><tbody>
+              <tr><td>이름</td><td className="v">{src.name}</td></tr>
+              <tr><td>출처</td><td className="v">{src.from}</td></tr>
+            </tbody></table></div>
+          {g && <div className="sec"><h3>주요 치수 (mm)</h3>
+            <table className="kv"><tbody>
+              {[['탱크 내경 × 내부 길이', `Ø${f1(2 * g.Rt)} × ${f1(g.Lt)}`], ['관 두께', f2(g.t)], ['챔버 내경 × 길이', `Ø${f1(2 * g.Rc)} × ${f1(g.Lc)}`],
+                ['연료 외경 × 길이', `Ø${f1(2 * g.Rf)} × ${f1(g.Lf)}`], ['전연소실 (0.5 R)', f1(g.pre)], ['후연소실 (1.5 R)', f1(g.post)],
+                ['오리피스', `${g.nOri} × Ø${f2(2 * g.rOri)} × ${f2(g.plateT)}`], ['노즐 목 / 출구', `Ø${f2(2 * g.Rth)} / Ø${f2(2 * g.Re)}`],
+                ['면적비 ε', g.eps.toFixed(2)], ['노즐 길이', f1(g.Lnoz)], ['후연소실 뒤 잔여', f1(g.spare)]].map(([k, v]) =>
+                <tr key={k}><td>{k}</td><td className="v">{v}</td></tr>)}
+            </tbody></table></div>}
+          <div className="sec"><h3>도면 가정</h3>
+            <table className="kv"><tbody>
+              {[['공급 배관', '1/2" (OD 12.7 × t0.89)'], ['탱크 벌크헤드', `max(2t, ${ASSUME.bulkMin})`], ['노즐 수렴 / 확대', `${ASSUME.convHalf}° / ${ASSUME.divHalf}° 원추`],
+                ['노즐 입구 Ø', `챔버 내경 × ${ASSUME.nozInletFrac}`], ['오리피스 배치 범위', `챔버 내경 × ${ASSUME.injAvailFrac}`]].map(([k, v]) =>
+                <tr key={k}><td>{k}</td><td className="v">{v}</td></tr>)}
+            </tbody></table></div>
+        </aside>
+        <main className="main">
+          <div className="tabs">{TABS.map(([k, l]) => <button key={k} className={`tab ${tab === k ? 'active' : ''}`} onClick={() => setTab(k)}>{l}</button>)}</div>
+          <ZoomView resetKey={tab}>
+            <div className="sheet" ref={sheetRef}>
+              {!g ? <div style={{ padding: 40 }}>형상을 계산할 수 없습니다</div>
+                : tab === 'asm' ? <AssemblySheet {...props}/>
+                : tab === 'tank' ? <TankSheet {...props}/>
+                : tab === 'inj' ? <InjectorSheet {...props}/>
+                : tab === 'grain' ? <GrainSheet {...props}/>
+                : <ChamberSheet {...props}/>}
+            </div>
+          </ZoomView>
+        </main>
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
